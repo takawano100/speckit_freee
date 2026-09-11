@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1080" width="1400" height="1080">
+  <defs>
+    <filter id="sh" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#16283a" flood-opacity="0.13"/>
+    </filter>
+    <style>
+      .bg   { fill:#f5f8fa; }
+      .ttl  { fill:#21262e; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:27px; font-weight:700; }
+      .sub  { fill:#6b7684; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:16px; }
+      .panel{ fill:#ffffff; stroke:#cfd8e0; stroke-width:2; }
+      .ph   { fill:#21262e; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:20px; font-weight:700; }
+      .row  { fill:#21262e; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:17px; }
+      .note { fill:#6b7684; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:14px; }
+      .okc  { fill:#1f8a5b; }
+      .emc  { fill:#9aa5b1; }
+      .noc  { fill:#e07b39; }
+      .chip { font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:13px; font-weight:700; fill:#ffffff; text-anchor:middle; }
+      .lg   { fill:#4a5560; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:16px; }
+      .lgb  { fill:#b4562a; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:17px; font-weight:700; }
+      .mk   { fill:#fdf3e6; stroke:#e07b39; stroke-width:2.5; }
+      .mkh  { fill:#b4562a; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:20px; font-weight:700; }
+      .mkr  { fill:#7a4a24; font-family:'Yu Gothic UI','Meiryo',sans-serif; font-size:17px; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="1080"/>
+  <text class="ttl" x="56" y="46">いま freee に何が入っているか</text>
+  <text class="sub" x="56" y="76">開発用テスト事業所 12755401 ／ 2026-08-16 API実測。緑＝データあり　灰＝箱はあるが空　橙＝そもそも無い</text>
+
+  <!-- ===== 左パネル：人事労務 ===== -->
+  <g filter="url(#sh)"><rect class="panel" x="56" y="104" width="620" height="600" rx="8"/></g>
+  <text class="ph" x="80" y="140">freee人事労務（勤怠・給与）</text>
+
+  <rect class="okc" x="80" y="160" width="54" height="24" rx="12"/><text class="chip" x="107" y="177">あり</text>
+  <text class="row" x="148" y="178">事業所の初期設定（3ステップ）</text>
+  <text class="note" x="148" y="200">月末締め・翌月25日払い／協会けんぽ東京／雇用保険 一般事業</text>
+
+  <rect class="okc" x="80" y="220" width="54" height="24" rx="12"/><text class="chip" x="107" y="237">あり</text>
+  <text class="row" x="148" y="238">勤務・賃金設定「正社員」</text>
+  <text class="note" x="148" y="260">固定時間制／9:00-18:00・休憩12-13／1日8時間／法定休日 日曜</text>
+  <text class="note" x="148" y="280">★勤怠管理の方法＝freee人事労務で勤怠登録する（打刻APIの前提）</text>
+
+  <rect class="okc" x="80" y="300" width="54" height="24" rx="12"/><text class="chip" x="107" y="317">あり</text>
+  <text class="row" x="148" y="318">従業員　1名（テスト太郎 id 4174944）</text>
+
+  <rect class="okc" x="80" y="342" width="54" height="24" rx="12"/><text class="chip" x="107" y="359">あり</text>
+  <text class="row" x="148" y="360">基本給　月給 300,000円</text>
+
+  <rect class="emc" x="80" y="392" width="54" height="24" rx="12"/><text class="chip" x="107" y="409">空</text>
+  <text class="row" x="148" y="410">日次勤怠（所定は入っているが、実績は0）</text>
+  <text class="note" x="148" y="432">所定 9:00-18:00 / 480分は返るが、clock_in_at は null</text>
+
+  <rect class="emc" x="80" y="464" width="54" height="24" rx="12"/><text class="chip" x="107" y="481">空</text>
+  <text class="row" x="148" y="482">打刻の実績　0件</text>
+
+  <rect class="emc" x="80" y="506" width="54" height="24" rx="12"/><text class="chip" x="107" y="523">空</text>
+  <text class="row" x="148" y="524">月次集計　7月分 労働日数 0 / 総勤務 0分</text>
+
+  <rect class="emc" x="80" y="548" width="54" height="24" rx="12"/><text class="chip" x="107" y="565">空</text>
+  <text class="row" x="148" y="566">部門（groups）　0件</text>
+
+  <rect class="emc" x="80" y="590" width="54" height="24" rx="12"/><text class="chip" x="107" y="607">空</text>
+  <text class="row" x="148" y="608">役職（positions）　0件</text>
+
+  <text class="note" x="80" y="654">※ 残業・深夜・法定休日の内訳は、日次勤怠が最初から持っている</text>
+  <text class="note" x="80" y="676">　（total_overtime / total_latenight / total_holiday_work_mins）</text>
+
+  <!-- ===== 右パネル：会計 ===== -->
+  <g filter="url(#sh)"><rect class="panel" x="724" y="104" width="620" height="600" rx="8"/></g>
+  <text class="ph" x="748" y="140">freee会計</text>
+
+  <rect class="okc" x="748" y="160" width="54" height="24" rx="12"/><text class="chip" x="775" y="177">あり</text>
+  <text class="row" x="816" y="178">部門（sections）　3件</text>
+  <text class="note" x="816" y="200">営業部／営業部門／開発部門</text>
+
+  <rect class="okc" x="748" y="230" width="54" height="24" rx="12"/><text class="chip" x="775" y="247">あり</text>
+  <text class="row" x="816" y="248">品目（items）　46件</text>
+  <text class="note" x="816" y="270">★基本給・残業代・通勤手当・源泉所得税・</text>
+  <text class="note" x="816" y="290">　健康保険料/厚生年金/雇用保険（事業主負担分・預り分）</text>
+  <text class="note" x="816" y="310">　＝給与仕訳の受け皿が最初から入っている</text>
+
+  <rect class="okc" x="748" y="340" width="54" height="24" rx="12"/><text class="chip" x="775" y="357">あり</text>
+  <text class="row" x="816" y="358">メモタグ（tags）　3件</text>
+
+  <rect class="okc" x="748" y="382" width="54" height="24" rx="12"/><text class="chip" x="775" y="399">あり</text>
+  <text class="row" x="816" y="400">勘定科目　既定一式</text>
+
+  <rect class="okc" x="748" y="424" width="54" height="24" rx="12"/><text class="chip" x="775" y="441">あり</text>
+  <text class="row" x="816" y="442">取引（deals）　13件（2026年7月のサンプル）</text>
+
+  <rect class="emc" x="748" y="474" width="54" height="24" rx="12"/><text class="chip" x="775" y="491">空</text>
+  <text class="row" x="816" y="492">★取引に部門が付いていない</text>
+  <text class="note" x="816" y="514">13件すべて section_id = null。箱はあるが使われていない</text>
+
+  <rect class="emc" x="748" y="546" width="54" height="24" rx="12"/><text class="chip" x="775" y="563">空</text>
+  <text class="row" x="816" y="564">給与の仕訳　0件（給与計算をまだ回していない）</text>
+
+  <text class="note" x="748" y="612">※ 部門別損益・セグメント別損益のレポートAPIは揃っている</text>
+  <text class="note" x="748" y="634">　（trial_pl_sections / trial_pl_segment_1_tags …）</text>
+  <text class="note" x="748" y="656">※ ただし出せるのは「確定した数字」だけ</text>
+
+  <!-- ===== 下：無いもの ===== -->
+  <g filter="url(#sh)"><rect class="mk" x="56" y="736" width="1288" height="224" rx="8"/></g>
+  <text class="mkh" x="80" y="774">freee のどこにも無いもの ＝ ここを作る</text>
+
+  <rect class="noc" x="80" y="796" width="54" height="24" rx="12"/><text class="chip" x="107" y="813">無い</text>
+  <text class="mkr" x="148" y="814">プロジェクト（＝指図書番号）　　何の仕事か</text>
+
+  <rect class="noc" x="80" y="836" width="54" height="24" rx="12"/><text class="chip" x="107" y="853">無い</text>
+  <text class="mkr" x="148" y="854">工程　　そのプロジェクトのどの段階か</text>
+
+  <rect class="noc" x="80" y="876" width="54" height="24" rx="12"/><text class="chip" x="107" y="893">無い</text>
+  <text class="mkr" x="148" y="894">時間の割り当て　　その日の何時間を、どの仕事に充てたか</text>
+
+  <rect class="noc" x="740" y="796" width="54" height="24" rx="12"/><text class="chip" x="767" y="813">無い</text>
+  <text class="mkr" x="808" y="814">予定単価　　月給 ÷ 1ヶ月の平均所定労働時間</text>
+
+  <rect class="noc" x="740" y="836" width="54" height="24" rx="12"/><text class="chip" x="767" y="853">無い</text>
+  <text class="mkr" x="808" y="854">日次の労務費　　確定を待たない数字</text>
+
+  <rect class="noc" x="740" y="876" width="54" height="24" rx="12"/><text class="chip" x="767" y="893">無い</text>
+  <text class="mkr" x="808" y="894">月末の差異　　予定単価と、確定した給与の差</text>
+
+  <text class="lgb" x="56" y="1002">勤怠は「箱も内訳も揃っている」。会計は「受け皿も揃っている」。足りないのは、その間をつなぐ1軸だけ。</text>
+  <text class="lg"  x="56" y="1032">40年前、打刻に指図書番号と工程番号を足したのと、同じ穴が空いている。</text>
+</svg>

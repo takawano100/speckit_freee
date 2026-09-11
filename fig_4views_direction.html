@@ -1,0 +1,64 @@
+<!doctype html><meta charset="utf-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1280px;height:900px;background:#fff;position:relative;
+       font-family:'Yu Gothic UI','Meiryo',sans-serif;color:#1b3a56}
+  h1{position:absolute;left:48px;top:40px;font-size:34px;font-weight:700}
+  .sub{position:absolute;left:48px;top:90px;font-size:20px;color:#5b7a94}
+  .lead{position:absolute;left:760px;top:230px;width:472px;font-size:21px;line-height:2;color:#3d5f7a}
+  .lead b{color:#c96a10;font-weight:700}
+  .lead .h{display:block;font-size:24px;font-weight:700;color:#c96a10;margin-bottom:14px}
+  .cond{position:absolute;left:760px;top:520px;width:472px;border:2px solid #2f6b9a;
+        border-radius:10px;background:#f4f9fd;padding:20px 22px;font-size:19px;line-height:1.9;color:#3d5f7a}
+  .cond b{color:#1f4e79}
+  .foot{position:absolute;left:48px;top:806px;width:1184px;font-size:19px;line-height:1.8;
+        color:#3d5f7a;border-top:1px solid #d6e3ee;padding-top:20px}
+  .foot b{color:#c96a10}
+</style>
+
+<h1>目標が決まっていると、残りの3つは単純になる</h1>
+<div class="sub">頂点＝目標　／　中央＝システム　／　左下＝人間　／　右下＝データ</div>
+
+<svg width="1280" height="900">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#f0913f"/></marker>
+    <style>
+      .cell{stroke:#2f6b9a;stroke-width:2;fill:#f4f9fd}
+      .hot{fill:#fff0dd;stroke:#f0913f;stroke-width:3}
+      .lb{font-size:27px;font-weight:700;fill:#1b3a56;text-anchor:middle}
+      .lb.h{fill:#c96a10}
+      .ln{stroke:#f0913f;stroke-width:3;marker-end:url(#ar)}
+    </style>
+  </defs>
+  <g transform="translate(110,220)">
+    <polygon class="cell hot" points="270,0 135,234 405,234"/>
+    <polygon class="cell" points="135,234 0,468 270,468"/>
+    <polygon class="cell" points="405,234 270,468 540,468"/>
+    <polygon class="cell" points="135,234 405,234 270,468"/>
+    <text class="lb h" x="270" y="166">目標</text>
+    <text class="lb" x="270" y="326">システム</text>
+    <text class="lb" x="135" y="402">人間</text>
+    <text class="lb" x="405" y="402">データ</text>
+    <line class="ln" x1="270" y1="192" x2="270" y2="284"/>
+    <line class="ln" x1="222" y1="196" x2="152" y2="358"/>
+    <line class="ln" x1="318" y1="196" x2="388" y2="358"/>
+  </g>
+</svg>
+
+<div class="lead">
+  <span class="h">目標が2つ、先に決まっていた</span>
+  カスタマイズは一切しない。<br>紙を使った業務を一切なくす。<br><br>
+  そう決めた時点で、<b>システムは標準のまま</b>になり、<b>データは5テーブル</b>になり、
+  <b>関わる人の役割も単純</b>になった。
+</div>
+
+<div class="cond">
+  <b>ただし、これは条件つきだった。</b><br>
+  担当役員も、人事担当も、給与担当も、元SEだった。<br>
+  使う側にそれがなければ、標準のままでは回らなかった。
+</div>
+
+<div class="foot">
+  112で「4つの視点は工程ではない」と書いた。順に埋めていくものではなく、互いに答えを渡し合う。<b>この案件では、目標がいちばん先に答えを出した。</b>
+</div>

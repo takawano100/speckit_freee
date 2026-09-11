@@ -1,0 +1,1253 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>36人の組織台帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Murecho:wght@400;600;800&family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground: #f3efe6; --surface: #fffdf8; --sunk: #ebe5d8;
+  --ink: #243330; --ink-mid: #56665f; --ink-soft: #7e8b84;
+  --line: #e3dcce; --line-firm: #c9c0ae;
+  --api: #1f7a72; --api-lift: #ddefec;
+  --screen: #c2653f; --screen-lift: #fbe9dd;
+  --shadow: 0 1px 2px rgba(36,51,48,.05), 0 10px 28px rgba(36,51,48,.05);
+  --display: "Murecho", "Hiragino Kaku Gothic ProN", sans-serif;
+  --body: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #101a1b; --surface: #1a2626; --sunk: #223130;
+    --ink: #eaf0ed; --ink-mid: #aebeb9; --ink-soft: #86968f;
+    --line: #2b3a38; --line-firm: #3d4f4c;
+    --api: #6fc8bd; --api-lift: #122725;
+    --screen: #e8a07a; --screen-lift: #2e1d14;
+    --shadow: 0 1px 2px rgba(0,0,0,.45), 0 10px 28px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #101a1b; --surface: #1a2626; --sunk: #223130;
+  --ink: #eaf0ed; --ink-mid: #aebeb9; --ink-soft: #86968f;
+  --line: #2b3a38; --line-firm: #3d4f4c;
+  --api: #6fc8bd; --api-lift: #122725;
+  --screen: #e8a07a; --screen-lift: #2e1d14;
+  --shadow: 0 1px 2px rgba(0,0,0,.45), 0 10px 28px rgba(0,0,0,.35);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0 20px 80px; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.85; }
+.wrap { max-width: 1160px; margin: 0 auto; }
+
+.top { padding: 52px 0 26px; }
+.kicker { margin: 0 0 12px; font-family: var(--mono); font-size: .7rem; letter-spacing: .18em; color: var(--ink-soft); text-transform: uppercase; }
+h1 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(1.9rem, 4.6vw, 3rem); line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+.lede { margin: 16px 0 0; max-width: 62ch; color: var(--ink-mid); font-size: 1rem; }
+
+.tally { margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.tally div { padding: 15px 17px; background: var(--surface); display: grid; gap: 2px; }
+.tally div { min-width: 0; }
+.tally b { font-family: var(--display); font-weight: 800; font-size: 2rem; line-height: 1.1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.tally.wide { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.tally.wide b { font-size: 1.5rem; }
+.tally span { font-size: .73rem; color: var(--ink-soft); }
+.tally .good b { color: var(--api); }
+.tally .good { background: var(--api-lift); }
+
+/* タブ */
+.tabs { position: sticky; top: 0; z-index: 20; margin-top: 34px; padding: 10px 0; background: var(--ground); display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+.tab { padding: 9px 20px; cursor: pointer; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); color: var(--ink-mid); font-family: var(--display); font-weight: 600; font-size: .88rem; }
+.tab:hover { border-color: var(--line-firm); }
+.tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+.tab:focus-visible { outline: 2px solid var(--api); outline-offset: 2px; }
+.panel { padding-top: 34px; }
+
+.head { margin-bottom: 8px; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.head span { font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; color: var(--ink-soft); }
+h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(1.25rem, 2.5vw, 1.7rem); letter-spacing: -.01em; }
+.note { margin: 0 0 26px; max-width: 70ch; color: var(--ink-mid); font-size: .9rem; }
+section + section { margin-top: 56px; }
+
+/* 組織図 */
+.chart { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.branch { display: grid; }
+.hq { position: relative; z-index: 1; padding: 14px 17px; background: var(--ink); color: var(--ground); border-radius: 11px; display: grid; gap: 4px; }
+.hq b { font-family: var(--display); font-weight: 800; font-size: 1.06rem; }
+.hq em { font-style: normal; font-family: var(--mono); font-size: .64rem; opacity: .72; letter-spacing: .04em; }
+.hq .who { margin-top: 4px; display: flex; gap: 5px; flex-wrap: wrap; }
+.hq .who span { padding: 2px 8px; border-radius: 99px; background: rgba(255,255,255,.14); font-size: .68rem; }
+.kids { position: relative; margin: 0; padding: 14px 0 0 24px; list-style: none; display: grid; gap: 7px; }
+.dept { position: relative; }
+.dept::after { content: ""; position: absolute; left: -13px; top: -21px; bottom: -7px; width: 2px; background: var(--line-firm); }
+.dept:last-child::after { bottom: auto; height: 45px; }
+.dept::before { content: ""; position: absolute; left: -13px; top: 24px; width: 13px; height: 2px; background: var(--line-firm); }
+.dept-in { padding: 11px 14px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 9px; box-shadow: var(--shadow); }
+.dept-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.dept-top strong { font-family: var(--display); font-weight: 700; font-size: .95rem; }
+.count { flex: none; padding: 2px 9px; border-radius: 99px; background: var(--api-lift); color: var(--api); font-family: var(--mono); font-size: .7rem; font-weight: 500; }
+.dept-code { font-family: var(--mono); font-size: .62rem; color: var(--ink-soft); letter-spacing: .03em; }
+.roster { margin: 8px 0 0; padding: 8px 0 0; border-top: 1px dashed var(--line); display: grid; gap: 4px; list-style: none; }
+.roster li { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: baseline; font-size: .8rem; }
+.roster i { font-style: normal; font-family: var(--mono); font-size: .66rem; color: var(--ink-soft); white-space: nowrap; }
+.roster li.sub { color: var(--ink-soft); }
+.roster li.sub::after { content: ""; }
+.kenmu { padding: 1px 6px; border-radius: 3px; background: var(--screen-lift); color: var(--screen); font-family: var(--mono); font-size: .58rem; margin-left: 6px; }
+
+/* 社員テーブル */
+.controls { margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.controls select, .controls input { padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font-family: var(--body); font-size: .85rem; }
+.controls input { min-width: 200px; }
+.controls .n { margin-left: auto; font-family: var(--mono); font-size: .78rem; color: var(--ink-soft); }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { position: sticky; top: 0; background: var(--sunk); font-family: var(--display); font-weight: 700; font-size: .73rem; letter-spacing: .04em; color: var(--ink-mid); cursor: pointer; user-select: none; }
+th:hover { color: var(--ink); }
+th[data-sorted]::after { content: " ▾"; color: var(--api); }
+th[data-sorted="asc"]::after { content: " ▴"; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--sunk); }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+td.empty { padding: 28px 14px; text-align: center; color: var(--ink-soft); white-space: normal; }
+
+.paygrid { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(310px,1fr); gap: 18px; align-items: start; }
+@media (max-width: 1200px) { .paygrid { grid-template-columns: 1fr; } .paycard { position: static; } }
+.paybar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.paybar input[type=search] { flex: 1 1 190px; min-width: 150px; padding: 8px 12px; border: 1px solid var(--line-firm); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; font-size: .85rem; }
+.paybar button { padding: 7px 13px; border: 1px solid var(--line-firm); border-radius: 8px; background: var(--surface); color: var(--ink-mid); font: inherit; font-size: .78rem; cursor: pointer; font-family: var(--display); }
+.paybar button[aria-pressed="true"] { background: var(--api); border-color: var(--api); color: #fff; }
+.paybar .cnt { font-family: var(--mono); font-size: .74rem; color: var(--ink-soft); }
+
+table.pay { font-size: .8rem; }
+table.pay th, table.pay td { padding: 9px 11px; }
+table.pay td { white-space: nowrap; }
+table.pay td:nth-child(3), table.pay td:nth-child(4) { max-width: 190px; overflow: hidden; text-overflow: ellipsis; }
+table.pay tbody tr { cursor: pointer; }
+table.pay tbody tr:hover { background: var(--sunk); }
+table.pay tbody tr[aria-selected="true"] { background: var(--api-lift); box-shadow: inset 3px 0 0 var(--api); }
+table.pay td.ot b { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+table.pay td.ot { position: relative; }
+.otbar { display: block; height: 3px; border-radius: 2px; background: var(--api); margin-top: 3px; opacity: .55; }
+.otbar.hot { background: var(--screen); opacity: .85; }
+table.pay td.zero { color: var(--ink-soft); }
+.tag45 { display: inline-block; margin-left: 6px; padding: 0 5px; border-radius: 4px; background: var(--screen-lift); color: var(--screen); font-family: var(--display); font-size: .64rem; font-weight: 700; }
+.tagoff { display: inline-block; margin-left: 6px; padding: 0 5px; border-radius: 4px; background: var(--sunk); color: var(--ink-soft); font-family: var(--display); font-size: .64rem; }
+
+.paycard { position: sticky; top: 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
+.paycard header { padding: 15px 17px 12px; border-bottom: 1px solid var(--line); background: var(--sunk); }
+.paycard header h3 { margin: 0; font-family: var(--display); font-size: 1.05rem; }
+.paycard header p { margin: 3px 0 0; font-size: .76rem; color: var(--ink-mid); }
+.paycard header code { font-family: var(--mono); font-size: .68rem; color: var(--ink-soft); }
+.paysec { padding: 13px 17px; border-bottom: 1px solid var(--line); }
+.paysec:last-child { border-bottom: 0; }
+.paysec h4 { margin: 0 0 8px; font-family: var(--display); font-size: .7rem; letter-spacing: .07em; color: var(--ink-soft); font-weight: 700; }
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; font-size: .82rem; }
+.kv span { color: var(--ink-mid); }
+.kv b { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 500; }
+.kv.dim span, .kv.dim b { color: var(--ink-soft); }
+.kv.sum { margin-top: 7px; padding-top: 8px; border-top: 1px solid var(--line); font-size: .92rem; }
+.kv.sum b { font-weight: 700; }
+.kv.big b { font-size: 1.12rem; font-family: var(--display); }
+.paynote { padding: 11px 17px; background: var(--screen-lift); font-size: .74rem; line-height: 1.6; color: var(--ink-mid); }
+.paynote b { color: var(--screen); }
+
+.daysec { margin-top: 30px; }
+.dayhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.dayhead h3 { margin: 0; font-family: var(--display); font-size: 1.15rem; }
+.dayhead span { font-size: .8rem; color: var(--ink-mid); }
+table.day { font-size: .8rem; }
+table.day th, table.day td { padding: 7px 12px; }
+table.day th { cursor: default; }
+table.day td.d { font-family: var(--mono); }
+table.day tr.off td { color: var(--ink-soft); background: var(--sunk); }
+table.day tr.hol td { color: var(--screen); background: var(--screen-lift); }
+table.day tfoot td { font-weight: 700; background: var(--sunk); border-top: 2px solid var(--line-firm); }
+.kind { display: inline-block; padding: 0 6px; border-radius: 4px; font-size: .68rem; font-family: var(--display); }
+.kind.w { background: var(--api-lift); color: var(--api); }
+.kind.p { background: var(--sunk); color: var(--ink-soft); }
+.kind.l { background: var(--screen-lift); color: var(--screen); }
+.warnband { border: 1px solid var(--line-firm); border-left: 4px solid var(--screen); border-radius: 10px; background: var(--surface); padding: 13px 16px; }
+.chip { padding: 2px 9px; border-radius: 3px; font-family: var(--mono); font-size: .68rem; }
+.chip.p04, .chip.p03, .chip.p01, .chip.p02 { background: var(--api-lift); color: var(--api); }
+.chip.p05, .chip.p06 { background: var(--sunk); color: var(--ink-mid); }
+.chip.p07 { background: transparent; color: var(--ink-soft); font-size: .8rem; }
+.etype { padding: 2px 9px; border-radius: 3px; font-size: .74rem; background: var(--sunk); color: var(--ink-mid); }
+.etype.e-board-member { background: var(--api-lift); color: var(--api); font-weight: 700; }
+.etype.e-fixed-term, .etype.e-part-time { background: var(--screen-lift); color: var(--screen); }
+.sublabel { display: block; margin-top: 2px; font-family: var(--mono); font-size: .64rem; color: var(--screen); }
+
+/* 雇用形態と制度 */
+.legend { margin: 0 0 16px; display: flex; gap: 18px; flex-wrap: wrap; }
+.legend span { display: inline-flex; gap: 7px; align-items: center; font-size: .8rem; color: var(--ink-soft); }
+.mk { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: .72rem; font-weight: 700; }
+.mk.yes { background: var(--api-lift); color: var(--api); }
+.mk.no { background: var(--screen-lift); color: var(--screen); }
+.mk.maybe { background: var(--sunk); color: var(--ink-mid); }
+table.matrix td.cell-yes { background: var(--api-lift); }
+table.matrix th.rowhead small { display: block; margin-top: 2px; font-size: .7rem; color: var(--ink-soft); font-weight: 400; }
+table.matrix th { cursor: default; }
+table.matrix thead th { text-align: center; padding: 12px 14px; }
+table.matrix thead th b { display: block; font-family: var(--display); font-size: .92rem; color: var(--ink); }
+table.matrix thead th i { font-style: normal; font-family: var(--mono); font-size: .68rem; color: var(--ink-soft); }
+table.matrix th.rowhead, table.matrix td.rowhead { text-align: left; width: 30%; min-width: 190px; white-space: normal; font-family: var(--body); font-weight: 400; font-size: .84rem; color: var(--ink); background: var(--surface); position: static; }
+table.matrix td { text-align: center; white-space: normal; }
+table.matrix td.cell-no { background: var(--screen-lift); }
+table.matrix td.cell-maybe { background: var(--sunk); }
+table.matrix td small { display: block; margin-top: 2px; font-size: .68rem; color: var(--ink-soft); }
+table.matrix tr.divider td, table.matrix tr.divider th { border-top: 2px solid var(--line-firm); }
+
+.warnband { margin-top: 22px; padding: 20px 24px 22px; background: var(--screen-lift); border-left: 4px solid var(--screen); border-radius: 0 12px 12px 0; }
+.warnband b { font-family: var(--display); font-weight: 800; color: var(--screen); }
+.warnband p { margin: 8px 0 0; font-size: .87rem; color: var(--ink-mid); line-height: 1.85; }
+.warnband p b { color: var(--ink); }
+.warnband code { font-family: var(--mono); font-size: .8rem; }
+
+.who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; align-items: start; }
+.who-card { padding: 18px 20px 20px; background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--line-firm); border-radius: 11px; }
+.who-card.t-board { border-top-color: var(--api); }
+.who-card.t-fixed, .who-card.t-part { border-top-color: var(--screen); }
+.who-card h3 { margin: 0; display: flex; align-items: baseline; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 1.02rem; }
+.who-card h3 em { font-style: normal; font-family: var(--mono); font-size: .72rem; color: var(--ink-soft); }
+.who-card > p { margin: 4px 0 12px; font-size: .78rem; color: var(--ink-soft); }
+.who-card ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.who-card li { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; padding: 7px 0; border-top: 1px dashed var(--line); font-size: .82rem; }
+.who-card li:first-child { border-top: none; }
+.who-card li i { font-style: normal; font-family: var(--mono); font-size: .66rem; color: var(--ink-soft); white-space: nowrap; }
+
+.plan { margin: 0; padding: 0; list-style: none; counter-reset: p; display: grid; gap: 10px; }
+.plan li { counter-increment: p; position: relative; padding: 14px 18px 15px 52px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; font-size: .87rem; }
+.plan li::before { content: counter(p); position: absolute; left: 16px; top: 14px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--sunk); color: var(--ink-mid); font-family: var(--mono); font-size: .74rem; }
+.plan li b { display: block; font-family: var(--display); font-weight: 700; }
+.plan li span { color: var(--ink-soft); font-size: .8rem; }
+.plan li code { font-family: var(--mono); font-size: .72rem; color: var(--api); }
+
+/* できた / できない */
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+.col { padding: 22px 24px 24px; border-radius: 13px; }
+.col.did { background: var(--api-lift); border: 1px solid var(--api); }
+.col.didnt { background: var(--screen-lift); border: 1px solid var(--screen); }
+.col h3 { margin: 0 0 4px; font-family: var(--display); font-weight: 800; font-size: 1.08rem; }
+.col.did h3 { color: var(--api); } .col.didnt h3 { color: var(--screen); }
+.col > p { margin: 0 0 16px; font-size: .82rem; color: var(--ink-mid); }
+.col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.col li { padding: 11px 14px; background: var(--surface); border-radius: 8px; font-size: .85rem; line-height: 1.7; }
+.col li b { font-family: var(--display); font-weight: 700; }
+.col li code { display: block; margin-top: 4px; font-family: var(--mono); font-size: .66rem; color: var(--ink-soft); word-break: break-all; white-space: pre-wrap; }
+
+.snags { display: grid; gap: 16px; }
+.snag { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.12fr); gap: 8px 28px; padding: 22px 24px 23px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--screen); border-radius: 11px; box-shadow: var(--shadow); }
+.snag h3 { grid-column: 1; margin: 0; font-family: var(--display); font-weight: 800; font-size: 1.04rem; line-height: 1.45; }
+.snag > p { grid-column: 1; margin: 0; font-size: .86rem; color: var(--ink-mid); }
+.snag .code { grid-column: 2; grid-row: 1 / 4; align-self: start; padding: 14px 16px; background: var(--sunk); border-radius: 9px; font-family: var(--mono); font-size: .68rem; line-height: 1.75; color: var(--ink-mid); white-space: pre-wrap; word-break: break-all; overflow-x: auto; }
+.snag .code u { text-decoration: none; color: var(--screen); font-weight: 500; }
+.snag .code s { text-decoration: none; color: var(--api); font-weight: 500; }
+.lesson { grid-column: 1 / -1; margin: 14px 0 0; padding-top: 14px; border-top: 1px dashed var(--line); font-size: .88rem; }
+.lesson b { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; color: var(--screen); margin-right: 10px; }
+
+.todo { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.todo li { padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line-firm); border-radius: 9px; font-size: .87rem; }
+.todo li b { font-family: var(--display); font-weight: 700; display: block; }
+
+footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: .76rem; }
+footer code { font-family: var(--mono); font-size: .72rem; }
+
+@media (max-width: 900px) {
+  .chart { grid-template-columns: 1fr; }
+  .snag { grid-template-columns: 1fr; }
+  .snag .code { grid-column: 1; grid-row: auto; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+<header class="top">
+  <p class="kicker">freee-mcp / 人事労務 テストデータ 001</p>
+  <h1>36人の組織台帳</h1>
+  <p class="lede">freee社の公開情報をもとにした架空の組織を、MCP経由で freee人事労務へ入れた記録。部署18・役職6・従業員36人はAPIで作れた。人を部署へ入れるところだけ、APIに口が無く画面で入れた。一般社員に役職は付けない。</p>
+  <div class="tally">
+    <div><b>18</b><span>部署（3本部 + 15部）</span></div>
+    <div><b>6</b><span>役職</span></div>
+    <div><b>36</b><span>従業員</span></div>
+    <div class="good"><b>40</b><span>所属（うち兼務4）</span></div>
+    <div class="good"><b>5</b><span>勤務・賃金設定</span></div>
+    <div><b>98</b><span>APIでの書き込み</span></div>
+    <div><b>70</b><span>画面での操作</span></div>
+  </div>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" data-p="org">組織</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="emp">社員</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="pay">勤怠と給与</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="rule">雇用形態と制度</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="log">わかったこと</button>
+</div>
+
+<!-- ── 組織 ── -->
+<div class="panel" id="p-org" role="tabpanel">
+  <section>
+    <div class="head"><span>ORG</span><h2>入った組織</h2></div>
+    <p class="note">部門は「会社が何をやっているか」から導いた。人を採るなら人事部、給与を払うなら労務部、PCを配るなら情報システム部、というふうに。役職の階層とは別物として決めている。数字はその部署に所属している人数で、兼務も含む。</p>
+    <div class="chart" id="chart"></div>
+  </section>
+</div>
+
+<!-- ── 社員 ── -->
+<div class="panel" id="p-emp" role="tabpanel" hidden>
+  <section>
+    <div class="head"><span>PEOPLE</span><h2>社員情報</h2></div>
+    <p class="note">氏名・生年月日はすべて架空。組織の形と規模感だけを freee株式会社の公開会社情報から借りている。列見出しを押すと並び替わる。</p>
+    <div class="controls">
+      <select id="f-dept"><option value="">すべての部門</option></select>
+      <select id="f-pos"><option value="">すべての役職</option></select>
+      <select id="f-et"><option value="">すべての雇用形態</option><option>正社員</option><option>役員</option><option>契約社員</option><option>パート</option></select>
+      <input id="f-q" type="search" placeholder="氏名・社員番号で絞る" aria-label="氏名・社員番号で絞る">
+      <span class="n" id="count"></span>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th data-k="num">社員番号</th><th data-k="name">氏名</th><th data-k="dept">部門</th>
+          <th data-k="pos">役職</th><th data-k="etype">雇用形態</th><th data-k="entry">入社日</th><th data-k="age">年齢</th>
+          <th data-k="pay">基本給</th><th data-k="id">freee ID</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ── 勤怠と給与 ── -->
+<div class="panel" id="p-pay" role="tabpanel" hidden>
+  <section>
+    <div class="head"><span>AUG 2026</span><h2>誰が何時間働き、いくらになったか</h2></div>
+    <p class="note">2026年8月1日〜31日の勤怠を入れて給与計算を回した結果（2026年9月25日払い）。勤怠はAPIの月次サマリで1人1回ずつ書き、給与はfreeeが計算した。<b>行をクリックすると個人別の明細が開く。</b></p>
+
+    <div class="tally wide" style="margin-bottom:20px">
+      <div><b>34</b><span>勤怠を入れた人数</span></div>
+      <div><b>20</b><span>8月の所定労働日</span></div>
+      <div><b>723</b><span>総残業時間</span></div>
+      <div class="good"><b>19.5</b><span>1人あたり平均（時間）</span></div>
+      <div><b>2,670,431</b><span>残業代の合計（円）</span></div>
+      <div><b>22,249,431</b><span>総支給の合計（円）</span></div>
+      <div><b>3,693</b><span>残業1時間の平均単価（円）</span></div>
+    </div>
+
+    <div class="paygrid">
+      <div>
+        <div class="paybar">
+          <input type="search" id="paySearch" placeholder="氏名・部署・社員番号で絞り込む" aria-label="社員を検索">
+          <button id="sortOt" aria-pressed="true">残業が多い順</button>
+          <button id="sortNum" aria-pressed="false">社員番号順</button>
+          <span class="cnt" id="payCnt"></span>
+        </div>
+        <div class="tablewrap">
+          <table class="pay">
+            <thead><tr>
+              <th>社員番号</th><th>氏名</th><th>部署</th><th>勤務・賃金設定</th>
+              <th>労働日数</th><th>所定内</th><th>時間外</th><th>残業代</th><th>総支給</th>
+            </tr></thead>
+            <tbody id="payRows"></tbody>
+          </table>
+        </div>
+        <p class="note" style="margin-top:12px">時間外の帯は52時間を上限とした相対幅。<b class="tag45">45h超</b>は36協定アラートの「45時間超〜100時間未満」に入る人。</p>
+      </div>
+      <div class="paycard" id="payCard"></div>
+    </div>
+
+    <div class="daysec" id="daySec"></div>
+  </section>
+</div>
+
+<!-- ── 雇用形態と制度 ── -->
+<div class="panel" id="p-rule" role="tabpanel" hidden>
+  <section>
+    <div class="head"><span>RULES</span><h2>雇用形態で、何が変わるか</h2></div>
+    <p class="note">いちばん大きな分かれ目は<b>勤怠管理をするかどうか</b>。役員は打刻しない。労働時間が無いから割増も無く、36協定の対象にもならない。ここが決まらないと勤務体系が決められない。</p>
+
+    <div class="legend">
+      <span><b class="mk yes">○</b>対象</span>
+      <span><b class="mk no">✕</b>対象外</span>
+      <span><b class="mk maybe">△</b>要件を満たせば対象</span>
+    </div>
+
+    <div class="tablewrap">
+      <table class="matrix">
+        <thead><tr>
+          <th class="rowhead">項目</th>
+          <th><b>役員</b><i id="c-board">—</i></th>
+          <th><b>正社員</b><i id="c-regular">—</i></th>
+          <th><b>契約社員</b><i id="c-fixed">—</i></th>
+          <th><b>パート</b><i id="c-part">—</i></th>
+        </tr></thead>
+        <tbody id="matrix"></tbody>
+      </table>
+    </div>
+
+    <div class="warnband">
+      <b>いま、パートの社会保険判定が間違っている疑いがあります。</b>
+      <p>比嘉 美穂（時給1,300円）を登録した直後、freeeは健康保険・厚生年金とも <code>entried: false</code>（対象外）と判定し、標準報酬をそれぞれ 58,000円・88,000円 に置きました。<b>どちらもその保険の最低等級です。</b>つまり <code>pay_amount: 1300</code> を月額として扱った結果に見えます。</p>
+      <p>本来の判定は「週の所定労働時間が20時間以上か」「月額賃金88,000円以上か」で決まります。<b>freeeは所定労働時間を知りません。</b>勤務体系をまだ割り当てていないからです。週20時間なら月額は 1,300 × 86時間 = <b>111,800円</b> で、社会保険の対象になるはずです。</p>
+      <p><b>勤務体系を入れないと、社保の判定は正しくならない。</b>勤務体系を割り当てたあとに <code>entried</code> が変わるかどうかを見れば、freeeが所定労働時間から判定し直すのかが分かります。変わらなければ、freeeは時給×所定時間を自分では計算していないことになります。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>WHO</span><h2>誰がどれに当てはまるか</h2></div>
+    <p class="note">36人の内訳。役員2名とパート1名、契約社員1名は、制度の枝を1本ずつ通すために意図して散らしている。</p>
+    <div class="who-grid" id="who"></div>
+  </section>
+
+  <section>
+    <div class="head"><span>DONE</span><h2>勤務体系は5種そろった</h2></div>
+    <p class="note">勤務体系はAPIに口が無く、画面で作るしかない。5種すべてを作り、5種すべてに人を入れた。<b>空の体系は無い。</b></p>
+    <ol class="plan" id="plan"></ol>
+  </section>
+</div>
+
+<!-- ── わかったこと ── -->
+<div class="panel" id="p-log" role="tabpanel" hidden>
+  <section>
+    <div class="head"><span>BOUNDARY</span><h2>APIの届く先と、届かない先</h2></div>
+    <p class="note">MCPが持つのは汎用の5本（GET / POST / PUT / PATCH / DELETE）だけ。一括登録もCSVインポートも無い。<b>ただしそれはAPIの話で、画面には両方ある</b>（後述）。1件ずつ叩いて分かった境界線がこれ。</p>
+    <div class="split">
+      <div class="col did">
+        <h3>APIで作れた</h3>
+        <p>箱と、人そのもの。</p>
+        <ul>
+          <li><b>部署マスタ</b> 親子の階層つきで18件<code>POST /api/v1/groups</code></li>
+          <li><b>役職マスタ</b> 7件<code>POST /api/v1/positions</code></li>
+          <li><b>従業員</b> 必須は姓・名・カナ2つ・入社日・生年月日の6項目だけ<code>POST /api/v1/employees</code></li>
+          <li><b>社会保険は自動で立ち上がる</b> 月給を入れるだけで健康保険・厚生年金が entried、標準報酬月額も自動<code>代表取締役（月給120万）→ 健保 1,210,000 / 厚年 650,000
+厚生年金の等級上限が正しく効いている</code></li>
+          <li><b>加入要件の判定まで自動</b> 時給1,300円のパートだけ社会保険が対象外になった<code>entried: false（他の35名は true）</code></li>
+          <li><b>読み取りは充実している</b> 全員の所属・役職・階層・親部門を一度に取れる<code>GET /api/v1/employee_group_memberships?base_date=2026-08-31</code></li>
+        </ul>
+      </div>
+      <div class="col didnt">
+        <h3>APIでは届かない</h3>
+        <p>箱と人を、結びつけるところ。</p>
+        <ul>
+          <li><b>所属（誰がどの部署か）</b> 書き込みの口が存在しない。3通り試して3通りとも不可<code>POST /employees に group_id  → 無視
+PUT  /employees/{id} に group_id → 無視
+group_memberships は GET のみ</code></li>
+          <li><b>役職マスタと人の紐づけ</b> positions は作れるのに、人へ割り当てる口が無い<code>役職は所属レコードの一部。所属が書けない＝役職も書けない</code></li>
+          <li><b>肩書きと雇用形態</b> 作成時に渡しても無視される。別のPUTが要る<code>PUT /api/v1/employees/{id}/profile_rule</code></li>
+          <li><b>勤務体系の定義</b> 固定時間制・フレックス・シフト・時短。すべて画面の設定<code>APIに口が無い</code></li>
+          <li><b>承認経路</b> 読めるが作れない<code>GET /api/v1/approval_flow_routes ← GETのみ</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>TRICK</span><h2>15回の画面作業が、1回のAPIで済んだ</h2></div>
+    <p class="note">一般社員15名の役職「メンバー」を外したかった。役職は所属レコードの一部で、所属はAPIで書けない。画面で15回編集するはずだった。実際に編集ボタンを押したが、行の操作セルが読み込み中のまま返ってこない。そこで逆から攻めた。</p>
+    <div class="split" style="margin-bottom:38px">
+      <div class="col didnt">
+        <h3>正攻法は詰まった</h3>
+        <p>画面で1件ずつ役職を外す。</p>
+        <ul><li><b>操作セルが読み込み中のまま</b>所属の行に編集ボタンがあるはずだが、いつまでも spinner のまま描画されない<code>&lt;div class="vb-loading vb-loading--block"&gt;&lt;/div&gt;</code></li></ul>
+      </div>
+      <div class="col did">
+        <h3>マスタを消したら解決した</h3>
+        <p>人ではなく、役職マスタのほうを消す。</p>
+        <ul><li><b>所属は残り、役職だけが null になった</b>カスケード削除ではない。部門も期間も主務兼務もそのまま<code>DELETE /api/v1/positions/219968
+→ 200
+
+GET .../group_memberships
+→ {"group_name":"経理部",
+   "position_id": null,
+   "position_name": null}</code></li></ul>
+      </div>
+    </div>
+    <p class="note"><b>マスタを消すと、参照している側は壊れずに参照だけが切れる。</b>これは「所属が書けない」という制約を回避する抜け道になる。ただし全員に一度に効くので、一部の人だけ変えたいときには使えない。</p>
+
+    <div class="head"><span>HOURS</span><h2>勤務体系を作って分かったこと</h2></div>
+    <p class="note">勤務・賃金設定はAPIに口が無く、画面で作るしかない。4種を作り、今回使わない4制度も追加フォームで開いて中身だけ読んだ（保存はしていない）。</p>
+
+    <div class="split" style="margin-bottom:24px">
+      <div class="col didnt">
+        <h3>★時給者の社会保険は自動判定されない</h3>
+        <p>これが今回の山場だった。</p>
+        <ul><li><b>「週20時間」を入れても何も変わらなかった</b>比嘉 美穂（時給1,300円）にパートの勤務体系を割り当てた前後。<code>              割り当て前 → 割り当て後
+健保 entried   false  →  false
+健保 標準報酬  58,000 →  58,000
+厚年 entried   false  →  false
+厚年 標準報酬  88,000 →  88,000
+basic_pay.id  10461362 → 10463658  ← 保存は効いている</code></li>
+        <li><b>58,000と88,000は、それぞれの最低等級</b>freeeは <code>pay_amount: 1300</code> をそのまま月額として等級表を引いている。時給 × 所定労働時間（1,300 × 86時間 ≒ 111,800円）という換算をしていない。</li></ul>
+      </div>
+      <div class="col did">
+        <h3>月給者なら自動で立ち上がる</h3>
+        <p>できないのは「時給から月額を作る」ところだけ。</p>
+        <ul><li><b>等級表は正しく引ける</b>月給を渡すだけで加入も標準報酬も入る<code>桐生 雅彦（月給 1,200,000）
+健保 entried true / 標準報酬 1,210,000
+厚年 entried true / 標準報酬   650,000
+                    ↑ 厚生年金の等級上限が効いている</code></li>
+        <li><b>要求になる</b>時給者を含む事業所では、社保の加入判定と標準報酬を外で計算して入れる仕組みが要る。<code>PUT /employees/{id}/health_insurance_rule ← APIにある</code></li></ul>
+      </div>
+    </div>
+
+    <div class="tablewrap" style="margin-bottom:22px">
+      <table class="matrix">
+        <thead><tr><th class="rowhead">労働時間制度</th><th>入力欄</th><th>割増率の欄</th><th>その制度だけの欄</th></tr></thead>
+        <tbody>
+          <tr><th class="rowhead">固定時間制 <small>正社員・パート・契約社員</small></th><td>49</td><td>5種すべて</td><td>—</td></tr>
+          <tr><th class="rowhead">フレックスタイム制 <small>開発部4名</small></th><td>58</td><td>5種すべて</td><td><code class="inline">core_start_time / core_end_time / flexible_*</code></td></tr>
+          <tr class="divider"><th class="rowhead">シフト制</th><td>49</td><td>5種すべて</td><td><code class="inline">daily_statutory_work_mins / week_start_day</code></td></tr>
+          <tr><th class="rowhead">裁量労働制</th><td>42</td><td>5種すべて</td><td><code class="inline">daily_deemed_work_mins</code>（みなし労働時間）</td></tr>
+          <tr><th class="rowhead">管理監督者</th><td class="cell-no"><b>38</b></td><td class="cell-no"><b>深夜だけ</b></td><td>時間外・法定内・法定休日の欄が<b>消える</b></td></tr>
+          <tr><th class="rowhead">1ヶ月単位の変形労働時間制</th><td>50</td><td>5種すべて</td><td><code class="inline">monthly_prescribed_work_hours</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="snags" style="margin-bottom:38px">
+      <article class="snag">
+        <h3>同じ製品の中に、2つの流儀が同居している</h3>
+        <p><b>管理監督者を選ぶと、割増率の入力欄そのものが消える。</b>入力欄は49から38に減り、残るのは深夜割増だけ。労基法41条どおりを、UIの構造で表明している。</p>
+        <p>ところがコアタイムと勤怠タグは逆で、<b>欄はあるのに動かない。</b>「動かないものは欄ごと消す」流儀と「欄は置くが計算しない」流儀が、同じ画面群に混在している。</p>
+        <div class="code">管理監督者     → <s>欄ごと消える</s>（設定できないことが仕様の表明）
+  latenight_work_rate だけが残る
+
+コアタイム     → <u>欄はあるが計算されない</u>
+  「備忘録として入力できます。なお、コアタイムにもとづく
+    遅刻早退・欠勤控除の自動計算は行われません。」
+
+勤怠タグ       → <u>器はあるが中身が0件</u></div>
+        <p class="lesson"><b>教訓</b>欄があることは、動くことを意味しない。画面の説明文をそのまま読むほうが速い。freeeは正直に書いている。</p>
+      </article>
+
+      <article class="snag">
+        <h3>労働時間制度は、後から変えられない前提</h3>
+        <p>制度を切り替えようとすると確認が出る。編集画面にも「鍵マークのある項目は編集できません。コピーして新規作成してください」と書かれている。</p>
+        <div class="code">労働時間制度を変更すると入力内容が初期化されます
+<u>名称と備考以外の項目が初期化されます。</u>
+操作を続ける場合は「変更する」を選択してください。</div>
+        <p class="lesson"><b>教訓</b>勤務体系は使い捨てではなく積み上げる。作り直すのではなくコピーして枝を増やす設計になっている。</p>
+      </article>
+    </div>
+
+    <div class="head"><span>SKIP</span><h2>今回あえて使わなかった4制度</h2></div>
+    <p class="note">どれも「作れないから外した」のではない。<b>作ると他の検証が濁るから外した</b>。</p>
+    <ul class="todo" style="margin-bottom:38px">
+      <li><b>シフト制</b>沖縄のサポート1名だけではシフト表を作る意味が薄い。人を増やしてから。</li>
+      <li><b>管理監督者</b>部長15名を管理監督者にすると、割増賃金の検証ができなくなる。</li>
+      <li><b>裁量労働制</b>労使協定が前提。架空の会社で協定を結んだ体にするのは踏み込みすぎ。</li>
+      <li><b>変形労働時間制（1年 / 1ヶ月 / 1週間）</b>年間カレンダーの作成が要る。今回の題材（日次労務費）に効かない。</li>
+    </ul>
+
+    <div class="head"><span>CHOICE</span><h2>勤怠には、その前に決めるべき3択がある</h2></div>
+    <p class="note">勤務・賃金設定の「勤怠管理の方法」は、設定項目ではなく<b>要求の分岐</b>だった。ここを決めないと、同じ「freeeで労務管理する」でも中身がまったく別物になる。</p>
+
+    <div class="tablewrap" style="margin-bottom:24px">
+      <table class="matrix">
+        <thead><tr>
+          <th class="rowhead">勤怠管理の方法</th><th>freeeの役割</th><th>MCPで届くか</th><th>今回</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <th class="rowhead">① freee人事労務で勤怠登録する <small>打刻・カレンダー入力を集計</small></th>
+            <td>勤怠も給与も持つ</td>
+            <td class="cell-yes"><span class="mk yes">○</span><small>打刻・日次・月次・申請承認まで読める</small></td>
+            <td><b>これで行く</b><small>34名に適用</small></td>
+          </tr>
+          <tr>
+            <th class="rowhead">② 他サービスから勤怠を取り込む <small>freee勤怠管理Plus、King Of Time など</small></th>
+            <td>給与計算機に退く<small>「給与計算に関する項目のみ設定していきます」</small></td>
+            <td class="cell-no"><span class="mk no">✕</span><small>MCPの10サービスに勤怠管理Plusは無い</small></td>
+            <td class="cell-no">選べない<small>契約が営業経由の個別対応</small></td>
+          </tr>
+          <tr>
+            <th class="rowhead">③ freeeに勤怠登録しない <small>役員・業務委託・派遣社員など</small></th>
+            <td>給与だけ持つ<small>労働時間制度の欄そのものが消える</small></td>
+            <td class="cell-maybe"><span class="mk maybe">△</span><small>勤怠という概念が無くなる</small></td>
+            <td>役員2名に適用</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warnband" style="margin-bottom:24px">
+      <b>②は、契約の壁とAPIの壁が二重にある。</b>
+      <p>freee勤怠管理Plusは1ユーザー月額300円・初期費用ゼロと価格は公開されているが、申し込み導線は「お問い合わせ → ご提案 → ご契約」で、その場で申し込むボタンが無い。導入活用支援は別途有償。<b>契約は個別対応で営業窓口を通る。</b></p>
+      <p>仮に契約できたとしても、<b>MCPが対応する10サービスに勤怠管理Plusは入っていない。</b>買っても、AIエージェントからは触れないままになる。</p>
+    </div>
+
+    <div class="head"><span>SHAPE</span><h2>買うと届かなくなる領域が、作る場所になる</h2></div>
+    <p class="note">freee人事労務の画面には、本体の機能と、別プロダクト・有料オプションが並んで置かれている。見た目では区別がつかない。しかしMCPの口を見ると、境界がはっきりする。</p>
+
+    <div class="split" style="margin-bottom:38px">
+      <div class="col did">
+        <h3>本体 — APIで完全に読める</h3>
+        <p>ここは触らない。読んで使う。</p>
+        <ul>
+          <li><b>打刻・日次勤怠・月次集計</b><code>time_clocks / work_records / work_record_summaries</code></li>
+          <li><b>申請と承認</b>勤怠修正・残業・有給・特別休暇・月次の締め<code>approval_requests/*</code></li>
+          <li><b>従業員・部署・役職・社会保険</b><code>employees / groups / positions / *_insurance_rule</code></li>
+        </ul>
+      </div>
+      <div class="col didnt">
+        <h3>別プロダクト・有料オプション — MCPの口に無い</h3>
+        <p>買っても届かない。だから作る。</p>
+        <ul>
+          <li><b>AIシフト</b>ナビにあるが別ドメイン<code>ph.secure.freee.co.jp/ai_shift</code></li>
+          <li><b>雇用契約</b>「30日間無料でお試しできます」の有料オプション</li>
+          <li><b>freee勤怠管理Plus</b>別製品。契約は営業経由</li>
+          <li><b>freee工数管理</b>パスはあるが、有効な事業所が0件<code>GET /pm/users/me → {"companies":[]}</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="snags" style="margin-bottom:38px">
+      <article class="snag">
+        <h3>40年前と、同じ場所に同じ穴が空いている</h3>
+        <p>技術部にいた頃、勤怠はあったが工数が無かった。だから打刻に指図書番号と工程番号を足した。</p>
+        <p>いま、freeeに勤怠はある。APIで完全に読める。<b>無いのは「その時間が何の仕事だったか」だけ。</b>そして、それを埋めるはずの工数管理・シフト・契約は、買うとAPIの外へ出てしまう。</p>
+        <div class="code">1985年頃   打刻はある      → <u>工数が無い</u>      → 打刻に指図書番号を足した
+2026年     勤怠はある      → <u>工数が無い</u>      → ？
+           APIで全部読める    買うと届かなくなる</div>
+        <p class="lesson"><b>だから</b>本体の勤怠を読み、足りないものをMCPで作る。買って埋めるのではなく、作って埋める。40年後にもう一度、同じ判断をすることになる。</p>
+      </article>
+    </div>
+
+    <div class="head"><span>SABUROKU</span><h2>36協定は、freeeの中に無い</h2></div>
+    <p class="note">残業時間の上限は36協定で決める。ではその協定はfreeeのどこに登録するのか、と探した。<b>どこにも無かった。</b>あるのは協定ではなく、協定を超えそうかどうかの見張りだけ。</p>
+
+    <div class="split" style="margin-bottom:24px">
+      <div class="col did">
+        <h3>freeeが持っているもの</h3>
+        <p>見張り。3か所に分かれて置かれている。</p>
+        <ul>
+          <li><b>勤怠入力画面に当月の時間外予測を出す</b>現在 <b>ON</b>（初期値のまま）<code>設定 ▸ 勤怠基本設定
+company_attendance_setting.display_saburoku_prediction_on_input_screen</code></li>
+          <li><b>36協定違反チェックのアラート</b>現在 <b>OFF</b>。この画面は39項目すべてOFF<code>設定 ▸ 勤怠アラート</code></li>
+          <li><b>残業分析レポート</b>実績の集計。勤怠データが無いので現在すべて 0.0<code>人事レポート ▸ 残業分析レポート</code></li>
+        </ul>
+      </div>
+      <div class="col didnt">
+        <h3>freeeが持っていないもの</h3>
+        <p>協定そのもの。入力欄が存在しない。</p>
+        <ul>
+          <li><b>設定の一覧に「36協定」という項目が無い</b>近いのは勤怠アラートと勤怠基本設定だけ</li>
+          <li><b>対象期間・限度時間・特別条項</b>どこにも欄が無い</li>
+          <li><b>届出日・労働者代表</b>同上。協定書は外で管理するしかない</li>
+          <li><b>APIからも触れない</b>パスはあるが権限が無い<code>GET /api/v1/approval_requests/overtime_works/setting
+date 無し → 400「date が指定されていません。」
+date 有り → 403「アクセス権限がありません。」</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="note">見張りの閾値も動かせない。<b>この画面の input はチェックボックスが39個、数値入力はゼロ。</b>「指定した残業時間を超えそうになっていないか」と書かれているのに、指定する場所が無い。有効にしても数値欄は出てこなかった。</p>
+
+    <div class="tablewrap" style="margin-bottom:24px">
+      <table class="matrix">
+        <thead><tr><th class="rowhead">労働基準法が決めている枠</th><th>freeeが見ているか</th><th>どこで</th></tr></thead>
+        <tbody>
+          <tr><th class="rowhead">月45時間 <small>限度時間</small></th><td class="cell-yes"><span class="mk yes">○</span><small>見込みが45時間超〜100時間未満</small></td><td>勤怠アラート</td></tr>
+          <tr class="divider"><th class="rowhead">月100時間未満 <small>特別条項でも超えられない</small></th><td class="cell-yes"><span class="mk yes">○</span><small>見込みが100時間以上</small></td><td>勤怠アラート</td></tr>
+          <tr><th class="rowhead">年360時間 <small>限度時間</small></th><td class="cell-no"><span class="mk no">✕</span></td><td>—</td></tr>
+          <tr><th class="rowhead">年720時間 <small>特別条項の上限</small></th><td class="cell-no"><span class="mk no">✕</span></td><td>—</td></tr>
+          <tr><th class="rowhead">複数月平均80時間 <small>2〜6ヶ月の平均</small></th><td class="cell-no"><span class="mk no">✕</span></td><td>—</td></tr>
+          <tr><th class="rowhead">特別条項は年6回まで <small>月45時間を超えられる回数</small></th><td class="cell-no"><span class="mk no">✕</span></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="snags" style="margin-bottom:24px">
+      <article class="snag">
+        <h3>読むだけのつもりが、書いていた</h3>
+        <p>数値欄が出るかを確かめたくて、チェックを1つ入れた。<b>保存ボタンは押していない。</b>再読み込みしたら、チェックが残っていた。</p>
+        <div class="code">attendance_check_settings[2].target   false → true（クリックだけ）
+再読み込み                            <u>true のまま</u>
+もう一度クリックして false へ戻す        → 0/39 を確認して復旧
+
+勤務・賃金設定   保存ボタンを押すまで書かれない
+勤怠アラート     <u>クリックした瞬間に書かれる</u></div>
+        <p class="lesson"><b>教訓</b>同じ製品の中で保存の作法が違う。「保存ボタンがあるから押すまでは安全」は成り立たない。<b>調べるための操作が、調べる対象を変えてしまう。</b>画面を触る前に、そこがどちらの作法かを疑う。</p>
+      </article>
+    </div>
+
+    <div class="split" style="margin-bottom:38px">
+      <div class="col didnt">
+        <h3>だから、ここは作る場所になる</h3>
+        <p>勤怠管理Plusとは種類が違う。<b>買っても届かない領域ではなく、そもそも製品に無い領域。</b></p>
+        <ul>
+          <li><b>協定そのものの管理</b>対象期間・限度時間・特別条項・届出日・労働者代表</li>
+          <li><b>年と複数月の追跡</b>年360 / 年720 / 複数月平均80 / 特別条項の年6回</li>
+          <li><b>残り時間の可視化</b>レポートは実績しか出さない。<b>あと何時間使えるかを誰も教えてくれない</b></li>
+        </ul>
+      </div>
+      <div class="col did">
+        <h3>材料はAPIで全部そろう</h3>
+        <p>作るための入力は、読み取り側にすでにある。</p>
+        <ul>
+          <li><b>日次の勤怠</b><code>GET /api/v1/employees/{id}/work_records/{date}</code></li>
+          <li><b>月次の集計</b><code>GET /api/v1/employees/{id}/work_record_summaries/{year}/{month}</code></li>
+          <li><b>残業の申請と承認</b><code>GET /api/v1/approval_requests/overtime_works</code></li>
+          <li><b>誰がどの部署か</b><code>GET /api/v1/employee_group_memberships?base_date=</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="head"><span>BULK</span><h2>「一括が無い」のは、APIの話だった</h2></div>
+    <p class="note">従業員一覧の「一括操作」ボタンを開いて分かった。画面には一括の口が6つある。<b>境界は「freeeにできるか」ではなく「APIに口があるか」で引かれている。</b></p>
+
+    <div class="split" style="margin-bottom:24px">
+      <div class="col didnt">
+        <h3>MCP／APIから見える世界</h3>
+        <p>1件ずつしか触れない。</p>
+        <ul>
+          <li><b>汎用の5本だけ</b><code>freee_api_get / post / put / patch / delete</code></li>
+          <li><b>一括登録なし・CSVインポートなし</b>36人を入れるのに36回叩いた</li>
+          <li><b>勤務・賃金設定は口すら無い</b><code>/api/v1/... に work_rules 系のパスが存在しない</code></li>
+        </ul>
+      </div>
+      <div class="col did">
+        <h3>画面から見える世界</h3>
+        <p>まとめて触れる。しかも22項目。</p>
+        <ul>
+          <li><b>一括操作は6種</b><code>従業員の一括新規登録 / 一括招待 / 従業員情報の出力
+カスタム項目の出力 / 情報を選択して出力 / 従業員情報の一括更新</code></li>
+          <li><b>一括更新は22項目</b>所属・基本給・勤務賃金設定・社会保険・労働保険・振込口座…<code>/mass_updates</code></li>
+          <li><b>freee上でもCSVでも</b>ダウンロードせずに画面の表で直せる</li>
+          <li><b>検証の道具にもなる</b>全37人の「現在の勤務・賃金設定」が1画面で読める</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="snags" style="margin-bottom:38px">
+      <article class="snag">
+        <h3>hidden のとき、画面操作は遅くなるのではない。落ちる</h3>
+        <p>前回「同じコードが表と裏で60倍違う速さになる」と書いたが、正確ではなかった。<b>静かに落ちる。</b></p>
+        <p>富永 悠を契約社員に付け替える操作が、2つの経路でどちらも空振りした。フォームは閉じ、モーダルも閉じ、エラー欄は空のまま、値だけが元に戻る。ユーザーにChromeを前面へ出してもらい、<b>一行も変えずに同じスクリプトを流したら一発で通った。</b></p>
+        <div class="code">              hidden              visible
+チェックボックス   <u>0件選択中</u>            1件選択中
+select を設定     <u>見た目だけ変わる</u>      内部状態も変わる
+更新ボタン        <u>静かに閉じる</u>          更新される
+
+通る   ページの初回描画 / フォーム入力 / 新規作成の保存 / モーダルを開く
+落ちる チェックボックス / モーダル内の更新</div>
+        <p class="lesson"><b>教訓</b>「エラーが出ない」が最も危険な状態。APIで <code class="inline">group_id</code> が黙って捨てられたときと、症状の見た目が同じになる。書いたら必ず読み直す。</p>
+      </article>
+
+      <article class="snag">
+        <h3>空欄を見つけても、埋めようとしない</h3>
+        <p>勤務体系の作成フォームで <code class="inline">1ヶ月の平均所定労働時間</code> が 0.00 のままだった。21日 × 8時間 = 168時間 を入れようとしたら、その欄は <b>disabled</b> だった。freeeが自分で計算する。</p>
+        <div class="code">disabled : true      ← 先にこれを見るべきだった
+readOnly : false
+value    : "0.00"</div>
+        <p class="lesson"><b>教訓</b>入力したのは<b>名称・備考・労働時間制度の3つだけ</b>。残り46項目は初期値のまま保存できた。初期値が 9:00–18:00 / 休憩1時間 / 週5日 / 月21日で、そのまま契約社員の条件だった。<b>freeeの初期値は、日本の標準的な正社員そのものになっている。</b></p>
+      </article>
+    </div>
+
+    <div class="head"><span>SNAGS</span><h2>詰まった4点</h2></div>
+    <p class="note">どれも「動かない」ではなく「動いたように見えて違う」種類の詰まり方だった。エラーが出ないぶん質が悪い。</p>
+    <div class="snags">
+      <article class="snag">
+        <h3>POSTの返り値が壊れている</h3>
+        <p>同じ形のPOSTでも <code>level</code> が 2 のときと −1 のときがある。さらに、親を渡していないのに身に覚えのない親IDが返ってきた。保存そのものはすべて正しい。返り値だけが違う。</p>
+        <div class="code">POST /api/v1/groups
+  {"group":{"name":"プロダクト本部","code":"D200"}}   ← 親を渡していない
+→ {"id":918836, <u>"level":-1</u>, <u>"parent_group_id":911051</u>}
+                                    ↑ 作った覚えのないID
+
+GET /api/v1/groups
+→ {"id":918836, <s>"level":1</s>, <s>"parent_group_id":null</s>}
+                    ↑ 実際はこちらが正しい</div>
+        <p class="lesson"><b>教訓</b>POSTの返りを次の処理へ渡してはいけない。作ったらGETで読み直す。もしこの parent_group_id を次のPOSTに使っていたら、存在しない親にぶら下がる部署ができていた。</p>
+      </article>
+
+      <article class="snag">
+        <h3>所属を渡しても、黙って捨てられる</h3>
+        <p>従業員を作るとき <code>group_id</code> と <code>position_id</code> を添えた。エラーも警告も出ず 200 が返った。そして所属は空のままだった。更新でも同じだった。</p>
+        <div class="code">POST /api/v1/employees
+  {"employee":{ …, <u>"group_id":918839</u>, <u>"position_id":219965</u> }}
+→ 200 {"employee":{"id":4211185, …}}   ← 何も言われない
+
+GET /api/v1/employees/4211185/group_memberships
+→ <u>{"group_memberships":[],"total_count":0}</u>   ← 空</div>
+        <p class="lesson"><b>教訓</b>知らない項目を無視して 200 を返す。送った値が効いたかどうかは、必ず読み直して確かめるしかない。</p>
+      </article>
+
+      <article class="snag">
+        <h3>PUTは部分更新ではなく、履歴の追加</h3>
+        <p>肩書きだけ直そうとしたら、氏名が無いと弾かれた。送らなかった項目は消える前提の全置換。しかも id が変わる。上書きではなく、履歴を1本足している。だから <code>year</code> と <code>month</code> が要る。</p>
+        <div class="code">PUT /api/v1/employees/4211185/profile_rule
+  {"employee_profile_rule":{"title":"部長"}}
+→ <u>400 last_name, first_name, last_name_kana,
+      first_name_kana が指定されていません。</u>
+
+氏名を添えて再送 → 200
+  profile_rule.id  9497882 → <u>9497893</u>
+                              ↑ 別レコードになっている</div>
+        <p class="lesson"><b>教訓</b>PUTの前にGETして、返ってきた全項目に差分を乗せて送り返す。これをやらないと入力済みの情報が静かに消える。</p>
+      </article>
+
+      <article class="snag">
+        <h3>画面の自動操作は、タブが見えていないと止まる</h3>
+        <p>所属をブラウザ操作で入れるループが1件目で止まった。Chrome はバックグラウンドのタブで <code>setTimeout</code> を1分に1回まで絞る。待ち時間がすべて60倍に伸びていた。</p>
+        <div class="code"><u>await new Promise(r =&gt; setTimeout(r, 3000))</u>
+   ↑ 裏タブでは 3秒 が 60秒 になる
+
+<s>const wait = ms =&gt; new Promise(res =&gt; {
+  const end = Date.now() + ms, ch = new MessageChannel();
+  ch.port1.onmessage = () =&gt;
+    Date.now() &gt;= end ? res() : ch.port2.postMessage(0);
+  ch.port2.postMessage(0);
+});</s>   ← これなら絞られない</div>
+        <p class="lesson"><b>教訓</b>画面の自動操作は、APIと違って「環境」に依存する。同じコードが表と裏で60倍違う速さになる。設定画面はハッシュだけ変わって描画されず、所属の行の操作セルは spinner のまま返ってこない。3つの症状が同じ1つの原因だった。これはAPIには無い種類の壊れ方。<b>翌日、これは「遅くなる」ではなく「静かに落ちる」だと確定した。</b></p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>NEXT</span><h2>残っていること</h2></div>
+    <ul class="todo">
+      <li><b>雇用形態は入った</b>役員2名 <code>board-member</code>、契約社員1名 <code>fixed-term</code>、パート1名 <code>part-time</code>、残り32名 <code>regular</code>。<code>PUT /employees/{id}/profile_rule</code> を36回。全置換なので氏名を毎回添える。ついでに桐生 雅彦のカナ誤り（キリユウ→キリュウ）も直した。</li>
+      <li><b>比嘉の社会保険を手で入れる</b>freeeが判定しないと分かったので、<code>entried: true</code>／標準報酬 110,000 をAPIで入れる。「freeeがやらないことを外で埋める」実例になる。</li>
+      <li><b>会計側の部門がまだ空</b>人事労務の部署と同じ名前・同じコード（D100〜D305）で freee会計に部門を作る。労務費を会計に載せる段で突き合わせが要らなくなる。</li>
+      <li><b>拠点はセグメント1で持つ</b>本社・関西支社・九州支社・沖縄支社。部署に混ぜると部門別PLが拠点別か機能別かどちらか一方しか見られなくなる。</li>
+      <li><b>承認経路が未設定</b>メンバー → 部長／マネージャー → 本部長。これが無いと勤怠修正も残業申請も通らない。</li>
+    </ul>
+  </section>
+</div>
+
+<footer>
+  <p>事業所 <code>12755401</code>（開発用テスト事業所・人事労務アドバンスプラン）。入れたデータはすべて架空で、実在の個人情報は含まない。組織の形と規模感のみ freee株式会社の公開会社情報から借りている。すべての操作は <code>freee-mcp</code> の汎用ツール5本と、freee人事労務の画面から行った。<span id="stamp"></span></p>
+</footer>
+
+</div>
+
+<script>
+const HQ = [
+  { code:'D100', name:'管理本部',       id:918834, kids:['D101','D102','D103','D104','D105','D106','D107'] },
+  { code:'D200', name:'プロダクト本部', id:918836, kids:['D201','D202','D203'] },
+  { code:'D300', name:'ビジネス本部',   id:918837, kids:['D301','D302','D303','D304','D305'] }
+];
+const DEPT = {
+  D101:['経理部',918835], D102:['財務部',918838], D103:['人事部',918839], D104:['労務部',918840],
+  D105:['総務部',918841], D106:['法務部',918842], D107:['情報システム部',918844],
+  D201:['プロダクト企画部',918845], D202:['開発部',918846], D203:['デザイン部',918847],
+  D301:['マーケティング部',918848], D302:['セールス部',918849], D303:['パートナー営業部',918850],
+  D304:['カスタマーサクセス部',918851], D305:['カスタマーサポート部',918852]
+};
+// num, 氏名, freeeID, 生年月日, 入社日, 基本給(月/時), 所属[[部門コード, 役職, 役職コード, 主務?]]
+const EMP = [
+ ['E001','相川 悠介',4211185,'1978-05-12','2018-04-01',620000,[['D103','部長','p04',1],['D104','課長','p05',0]]],
+ ['E002','桐生 雅彦',4211242,'1972-03-08','2012-07-01',1200000,[['D100','代表取締役','p01',1]]],
+ ['E003','森下 佳奈',4211247,'1975-11-20','2013-04-01',900000,[['D100','取締役','p02',1]]],
+ ['E004','藤沢 健一',4211248,'1976-02-14','2015-04-01',660000,[['D101','部長','p04',1],['D100','本部長','p03',0]]],
+ ['E005','岡田 千尋',4211249,'1996-07-03','2021-04-01',340000,[['D101','—','p07',1]]],
+ ['E006','三宅 亮太',4211251,'1974-09-25','2016-10-01',680000,[['D102','部長','p04',1]]],
+ ['E007','白石 千夏',4211252,'1994-01-18','2020-04-01',360000,[['D102','—','p07',1]]],
+ ['E008','長瀬 佑樹',4211253,'1985-06-30','2019-04-01',520000,[['D103','課長','p05',1]]],
+ ['E009','堀内 舞',  4211254,'1990-12-05','2020-10-01',450000,[['D103','主任','p06',1]]],
+ ['E010','加瀬 亜美',4211255,'1998-08-22','2022-04-01',330000,[['D103','—','p07',1]]],
+ ['E011','三浦 隆之',4211257,'1977-04-11','2017-04-01',640000,[['D104','部長','p04',1]]],
+ ['E012','三上 詩織',4211259,'1995-05-09','2021-10-01',350000,[['D104','—','p07',1]]],
+ ['E013','大久保 誠',4211260,'1975-08-17','2016-04-01',630000,[['D105','部長','p04',1]]],
+ ['E014','平井 直樹',4211261,'1997-02-27','2022-10-01',340000,[['D105','—','p07',1]]],
+ ['E015','神谷 律子',4211263,'1973-10-02','2014-04-01',700000,[['D106','部長','p04',1]]],
+ ['E016','富永 悠',  4211264,'1992-06-14','2024-04-01',380000,[['D106','—','p07',1]]],
+ ['E017','榊原 拓也',4211266,'1979-01-23','2017-10-01',670000,[['D107','部長','p04',1]]],
+ ['E018','川嶋 亮',  4211269,'1993-09-06','2021-04-01',390000,[['D107','—','p07',1]]],
+ ['E019','東出 慎吾',4211270,'1980-03-19','2018-10-01',690000,[['D201','部長','p04',1]]],
+ ['E020','宮下 彩花',4211271,'1994-11-11','2020-04-01',400000,[['D201','—','p07',1]]],
+ ['E021','倉持 健太',4211273,'1981-07-07','2016-04-01',720000,[['D202','部長','p04',1],['D200','本部長','p03',0]]],
+ ['E022','志村 大輔',4211274,'1986-02-16','2018-04-01',560000,[['D202','課長','p05',1]]],
+ ['E023','早瀬 悠真',4211275,'1991-04-28','2019-10-01',480000,[['D202','主任','p06',1]]],
+ ['E024','相田 里奈',4211276,'1997-10-13','2022-04-01',420000,[['D202','—','p07',1]]],
+ ['E025','瀬戸 遥',  4211278,'1982-12-01','2019-04-01',650000,[['D203','部長','p04',1]]],
+ ['E026','内田 蒼',  4211279,'1998-03-25','2023-04-01',380000,[['D203','—','p07',1]]],
+ ['E027','沢村 康平',4211280,'1980-09-14','2017-04-01',660000,[['D301','部長','p04',1]]],
+ ['E028','谷口 美咲',4211281,'1996-01-30','2021-04-01',360000,[['D301','—','p07',1]]],
+ ['E029','島田 陽介',4211282,'1978-11-08','2015-10-01',700000,[['D302','部長','p04',1],['D300','本部長','p03',0]]],
+ ['E030','北原 卓',  4211283,'1995-08-19','2020-10-01',370000,[['D302','—','p07',1]]],
+ ['E031','竹内 洋平',4211285,'1977-06-22','2016-10-01',670000,[['D303','部長','p04',1]]],
+ ['E032','藤本 奈緒',4211286,'1993-03-04','2019-04-01',355000,[['D303','—','p07',1]]],
+ ['E033','小林 真央',4211287,'1983-05-16','2018-04-01',640000,[['D304','部長','p04',1]]],
+ ['E034','中西 遼',  4211289,'1996-12-09','2021-10-01',350000,[['D304','—','p07',1]]],
+ ['E035','森 千晶',  4211290,'1984-02-03','2019-10-01',610000,[['D305','部長','p04',1]]],
+ ['E036','比嘉 美穂',4211291,'1999-06-27','2023-10-01',1300,[['D305','—','p07',1]]]
+];
+const HOURLY = new Set(['E036']);
+const ETYPE = { E002:'board-member', E003:'board-member', E016:'fixed-term', E036:'part-time' };
+const ETYPE_JA = { 'board-member':'役員', 'regular':'正社員', 'fixed-term':'契約社員', 'part-time':'パート' };
+const etype = num => ETYPE[num] || 'regular';
+const BASE = new Date('2026-08-31');
+
+const deptName = c => c.startsWith('D') && DEPT[c] ? DEPT[c][0] : (HQ.find(h => h.code === c) || {}).name;
+const age = b => { const d = new Date(b); let a = BASE.getFullYear() - d.getFullYear();
+  if (BASE.getMonth() < d.getMonth() || (BASE.getMonth() === d.getMonth() && BASE.getDate() < d.getDate())) a--; return a; };
+const yen = n => n.toLocaleString('ja-JP');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
+/* ── 組織図 ── */
+const membersOf = code => EMP.flatMap(e => e[6].filter(p => p[0] === code).map(p => ({ name: e[1], pos: p[1], main: p[3] })))
+  .sort((a, b) => (b.main - a.main) || 0);
+
+document.getElementById('chart').innerHTML = HQ.map(h => {
+  const own = membersOf(h.code);
+  return `<div class="branch">
+    <div class="hq"><b>${h.name}</b><em>${h.code} · id ${h.id} · level 1</em>
+      ${own.length ? `<div class="who">${own.map(m => `<span>${esc(m.name)}　${esc(m.pos)}${m.main ? '' : ' 兼'}</span>`).join('')}</div>` : ''}
+    </div>
+    <ul class="kids">${h.kids.map(c => {
+      const [nm, id] = DEPT[c], ms = membersOf(c);
+      return `<li class="dept"><div class="dept-in">
+        <div class="dept-top"><strong>${nm}</strong><span class="count">${ms.length}人</span></div>
+        <div class="dept-code">${c} · ${id}</div>
+        <ul class="roster">${ms.map(m => `<li class="${m.main ? '' : 'sub'}"><span>${esc(m.name)}${m.main ? '' : '<span class="kenmu">兼務</span>'}</span><i>${esc(m.pos)}</i></li>`).join('')}</ul>
+      </div></li>`;
+    }).join('')}</ul>
+  </div>`;
+}).join('');
+
+/* ── 社員テーブル ── */
+const ROWS = EMP.map(e => {
+  const main = e[6].find(p => p[3]) || e[6][0];
+  const sub = e[6].filter(p => !p[3]);
+  return { num: e[0], name: e[1], id: e[2], birth: e[3], entry: e[4], pay: e[5],
+    dept: deptName(main[0]), pos: main[1], posc: main[2], age: age(e[3]), sub, etype: ETYPE_JA[etype(e[0])], etypec: etype(e[0]) };
+});
+const fd = document.getElementById('f-dept'), fp = document.getElementById('f-pos');
+[...new Set(ROWS.map(r => r.dept))].forEach(d => fd.add(new Option(d, d)));
+['代表取締役','取締役','本部長','部長','課長','主任','—'].forEach(p => fp.add(new Option(p, p)));
+
+let sortKey = 'num', sortAsc = true;
+function render() {
+  const q = document.getElementById('f-q').value.trim();
+  const fe = document.getElementById('f-et');
+  const list = ROWS.filter(r => (!fd.value || r.dept === fd.value) && (!fp.value || r.pos === fp.value) && (!fe.value || r.etype === fe.value)
+    && (!q || r.name.includes(q) || r.num.toLowerCase().includes(q.toLowerCase())))
+    .sort((a, b) => { const x = a[sortKey], y = b[sortKey];
+      const c = typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'ja'); return sortAsc ? c : -c; });
+  document.getElementById('rows').innerHTML = list.map(r => `<tr>
+    <td class="num">${r.num}</td>
+    <td>${esc(r.name)}</td>
+    <td>${esc(r.dept)}${r.sub.map(s => `<span class="sublabel">兼務 ${esc(deptName(s[0]))} / ${esc(s[1])}</span>`).join('')}</td>
+    <td><span class="chip ${r.posc}">${esc(r.pos)}</span></td>
+    <td><span class="etype e-${r.etypec}">${r.etype}</span></td>
+    <td class="num">${r.entry}</td>
+    <td class="num">${r.age}歳</td>
+    <td class="num">${HOURLY.has(r.num) ? '時給 ' + yen(r.pay) : yen(r.pay)}</td>
+    <td class="num">${r.id}</td></tr>`).join('');
+  if (!list.length) document.getElementById('rows').innerHTML = '<tr><td colspan="9" class="empty">条件に合う社員はいません</td></tr>';
+  document.getElementById('count').textContent = list.length + ' / ' + ROWS.length + ' 人';
+}
+document.querySelectorAll('th[data-k]').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.k;
+  sortAsc = sortKey === k ? !sortAsc : true;
+  sortKey = k;
+  document.querySelectorAll('th[data-k]').forEach(o => o.removeAttribute('data-sorted'));
+  th.dataset.sorted = sortAsc ? 'asc' : 'desc';
+  render();
+}));
+['f-dept','f-pos','f-et','f-q'].forEach(id => document.getElementById(id).addEventListener('input', render));
+render();
+
+/* ── 雇用形態と制度 ── */
+const RULES = [
+  ['勤怠管理の対象', 'no|打刻しない', 'yes', 'yes', 'yes'],
+  ['割増賃金（時間外・深夜・休日）', 'no', 'yes', 'yes', 'yes'],
+  ['36協定', 'no|労働者ではない', 'yes', 'yes', 'yes'],
+  ['労働時間の上限規制', 'no', 'yes', 'yes', 'yes'],
+  ['給与の性質', 't|役員報酬（定期同額）', 't|労働の対価', 't|労働の対価', 't|労働の対価', 1],
+  ['給与の計算区分', 't|monthly', 't|monthly', 't|monthly', 't|hourly'],
+  ['健康保険・厚生年金', 'yes', 'yes', 'yes', 'maybe|週20h・月88,000円'],
+  ['雇用保険', 'no|使用人兼務役員を除く', 'yes', 'yes', 'maybe|週20h以上'],
+  ['労災保険', 'no', 'yes', 'yes', 'yes', 1],
+  ['有給休暇', 'no', 'yes', 'yes', 'maybe|比例付与'],
+  ['賞与', 't|事前確定届出給与', 'yes', 't|契約による', 'no|通常なし'],
+  ['雇用契約の終了日', 't|任期（2年など）', 't|なし', 'yes|管理が要る', 't|契約による'],
+  ['割り当てる勤務体系', 't|① 勤怠管理しない', 't|② 固定 / ③ フレックス', 't|④ 契約社員', 't|⑤ パート（時給）', 1]
+];
+const MARK = { yes: ['yes', '○'], no: ['no', '✕'], maybe: ['maybe', '△'] };
+document.getElementById('matrix').innerHTML = RULES.map(r => {
+  const cells = r.slice(1, 5).map(v => {
+    const [kind, note] = String(v).split('|');
+    if (kind === 't') return `<td>${esc(note)}</td>`;
+    const [cls, glyph] = MARK[kind];
+    return `<td class="cell-${kind}"><span class="mk ${cls}">${glyph}</span>${note ? `<small>${esc(note)}</small>` : ''}</td>`;
+  }).join('');
+  return `<tr class="${r[5] ? 'divider' : ''}"><th class="rowhead">${esc(r[0])}</th>${cells}</tr>`;
+}).join('');
+
+const TYPES = [
+  ['board-member', '役員', 'board', '勤怠の外に居る。打刻も割増も有給も無い。'],
+  ['regular', '正社員', 'regular', '制度の基本形。ここが動けば大半が動く。'],
+  ['fixed-term', '契約社員', 'fixed', '正社員との違いは契約に終了日があること。'],
+  ['part-time', 'パート', 'part', '時給制。社会保険の要件判定がここで効く。']
+];
+const byType = t => ROWS.filter(r => r.etypec === t);
+TYPES.forEach(([code, label, short]) => {
+  const el = document.getElementById('c-' + short);
+  if (el) el.textContent = byType(code).length + '名';
+});
+document.getElementById('who').innerHTML = TYPES.map(([code, label, short, desc]) => {
+  const list = byType(code);
+  return `<div class="who-card t-${short}">
+    <h3>${label}<em>${list.length}名 · ${code}</em></h3>
+    <p>${desc}</p>
+    <ul>${list.map(p => `<li><span>${esc(p.name)}<br><i>${esc(p.dept)}</i></span><i>${esc(p.pos)}</i></li>`).join('')}</ul>
+  </div>`;
+}).join('');
+
+document.getElementById('plan').innerHTML = [
+  ['正社員', '固定時間制。9:00–18:00 / 休憩1時間 / 週40時間。既存の設定をそのまま使う。', '798839 · 29名'],
+  ['正社員（フレックスタイム制）', 'コアタイム 11:00–15:00 / フレキシブル 7:00–22:00 / 清算期間1ヶ月。', '808619 · 4名'],
+  ['役員（勤怠管理なし）', '打刻せず、勤怠の締めにも出てこない。労働時間制度の欄そのものが消える。', '808616 · 2名'],
+  ['契約社員', '固定時間制。勤務時間は正社員と同じ。契約の終了日を持つ層を体系で分ける。', '808701 · 1名'],
+  ['パート（時給・週20時間）', '10:00–15:00 / 休憩なし / 週4日 = 週20時間。社会保険の判定を見るための設定。', '808618 · 1名']
+].map(([t, d, w]) => `<li><b>${t}</b><span>${d}</span> <code>${w}</code></li>`).join('');
+
+/* ── 勤怠と給与 ── */
+/* [num,name,dept,pos,etype,whs,id,days,normalMin,otMin,basic,otPay,gross,dedTotal,net,[[控除名,額]...],flag] */
+const PAY = [
+['E001','相川 悠介','人事部（兼務 労務部）','部長','正社員','正社員',4211185,20,9600,720,620000,55350,675350,137907,537443,[['介護保険料',5022],['健康保険料',30535],['厚生年金保険料',56730],['子ども・子育て支援金',713],['所得税',41530],['雇用保険料',3377]],''],
+['E002','桐生 雅彦','管理本部','代表取締役','役員','役員（勤怠管理なし）',4211242,0,0,0,1200000,0,1200000,293033,906967,[['介護保険料',9801],['健康保険料',59593],['厚生年金保険料',59475],['子ども・子育て支援金',1391],['所得税',156773],['雇用保険料',6000]],'off'],
+['E003','森下 佳奈','管理本部','取締役','役員','役員（勤怠管理なし）',4211247,0,0,0,900000,0,900000,196231,703769,[['介護保険料',7128],['健康保険料',43340],['厚生年金保険料',59475],['子ども・子育て支援金',1012],['所得税',80776],['雇用保険料',4500]],'off'],
+['E004','藤沢 健一','経理部（兼務 管理本部）','部長','正社員','正社員',4211248,20,9600,900,660000,73669,733669,152628,581041,[['介護保険料',5265],['健康保険料',32013],['厚生年金保険料',59475],['子ども・子育て支援金',747],['所得税',51460],['雇用保険料',3668]],''],
+['E005','岡田 千尋','経理部','—','正社員','正社員',4211249,20,9600,1080,340000,45540,385540,60684,324856,[['健康保険料',16745],['厚生年金保険料',31110],['子ども・子育て支援金',391],['所得税',10510],['雇用保険料',1928]],''],
+['E006','三宅 亮太','財務部','部長','正社員','正社員',4211251,20,9600,600,680000,50600,730600,153268,577332,[['介護保険料',5508],['健康保険料',33490],['厚生年金保険料',59475],['子ども・子育て支援金',782],['所得税',50360],['雇用保険料',3653]],''],
+['E007','白石 千夏','財務部','—','正社員','正社員',4211252,20,9600,840,360000,37503,397503,64312,333191,[['健康保険料',17730],['厚生年金保険料',32940],['子ども・子育て支援金',414],['所得税',11240],['雇用保険料',1988]],''],
+['E008','長瀬 佑樹','人事部','課長','正社員','正社員',4211253,20,9600,960,520000,61900,581900,110109,471791,[['介護保険料',4293],['健康保険料',26103],['厚生年金保険料',48495],['子ども・子育て支援金',609],['所得税',27700],['雇用保険料',2909]],''],
+['E009','堀内 舞','人事部','主任','正社員','正社員',4211254,20,9600,1200,450000,66975,516975,84881,432094,[['健康保険料',21670],['厚生年金保険料',40260],['子ども・子育て支援金',506],['所得税',19860],['雇用保険料',2585]],''],
+['E010','加瀬 亜美','人事部','—','正社員','正社員',4211255,20,9600,660,330000,27005,357005,58211,298794,[['健康保険料',16745],['厚生年金保険料',31110],['子ども・子育て支援金',391],['所得税',8180],['雇用保険料',1785]],''],
+['E011','三浦 隆之','労務部','部長','正社員','正社員',4211257,20,9600,780,640000,61913,701913,146400,555513,[['介護保険料',5265],['健康保険料',32013],['厚生年金保険料',59475],['子ども・子育て支援金',747],['所得税',45390],['雇用保険料',3510]],''],
+['E012','三上 詩織','労務部','—','正社員','正社員',4211259,20,9600,1320,350000,57283,407283,65100,342183,[['健康保険料',17730],['厚生年金保険料',32940],['子ども・子育て支援金',414],['所得税',11980],['雇用保険料',2036]],''],
+['E013','大久保 誠','総務部','部長','正社員','正社員',4211260,20,9600,480,630000,37500,667500,136217,531283,[['介護保険料',5022],['健康保険料',30535],['厚生年金保険料',56730],['子ども・子育て支援金',713],['所得税',39880],['雇用保険料',3337]],''],
+['E014','平井 直樹','総務部','—','正社員','正社員',4211261,20,9600,540,340000,22770,362770,58610,304160,[['健康保険料',16745],['厚生年金保険料',31110],['子ども・子育て支援金',391],['所得税',8550],['雇用保険料',1814]],''],
+['E015','神谷 律子','法務部','部長','正社員','正社員',4211263,20,9600,420,700000,36461,736461,155602,580859,[['介護保険料',5751],['健康保険料',34968],['厚生年金保険料',59475],['子ども・子育て支援金',816],['所得税',50910],['雇用保険料',3682]],''],
+['E016','富永 悠','法務部','—','契約社員','契約社員',4211264,20,9600,720,380000,33930,413930,68212,345718,[['健康保険料',18715],['厚生年金保険料',34770],['子ども・子育て支援金',437],['所得税',12220],['雇用保険料',2070]],''],
+['E017','榊原 拓也','情報システム部','部長','正社員','正社員',4211266,20,9600,1440,670000,119640,789640,164583,625057,[['介護保険料',5508],['健康保険料',33490],['厚生年金保険料',59475],['子ども・子育て支援金',782],['所得税',61380],['雇用保険料',3948]],''],
+['E018','川嶋 亮','情報システム部','—','正社員','正社員',4211269,20,9600,1860,390000,89939,479939,73932,406007,[['健康保険料',18715],['厚生年金保険料',34770],['子ども・子育て支援金',437],['所得税',17610],['雇用保険料',2400]],''],
+['E019','東出 慎吾','プロダクト企画部','部長','正社員','正社員',4211270,20,9600,1140,690000,97541,787541,164023,623518,[['介護保険料',5508],['健康保険料',33490],['厚生年金保険料',59475],['子ども・子育て支援金',782],['所得税',60830],['雇用保険料',3938]],''],
+['E020','宮下 彩花','プロダクト企画部','—','正社員','正社員',4211271,20,9600,1560,400000,77383,477383,77686,399697,[['健康保険料',20193],['厚生年金保険料',37515],['子ども・子育て支援金',471],['所得税',17120],['雇用保険料',2387]],''],
+['E021','倉持 健太','開発部（兼務 プロダクト本部）','部長','正社員','正社員（フレックスタイム制）',4211273,20,9600,1500,720000,133938,853938,178727,675211,[['介護保険料',5751],['健康保険料',34968],['厚生年金保険料',59475],['子ども・子育て支援金',816],['所得税',73447],['雇用保険料',4270]],'flex'],
+['E022','志村 大輔','開発部','課長','正社員','正社員（フレックスタイム制）',4211274,20,9600,2280,560000,158318,718318,138502,579816,[['介護保険料',4536],['健康保険料',27580],['厚生年金保険料',51240],['子ども・子育て支援金',644],['所得税',50910],['雇用保険料',3592]],'flex'],
+['E023','早瀬 悠真','開発部','主任','正社員','正社員（フレックスタイム制）',4211275,20,9600,3120,480000,185705,665705,114312,551393,[['健康保険料',23148],['厚生年金保険料',43005],['子ども・子育て支援金',540],['所得税',44290],['雇用保険料',3329]],'flex'],
+['E024','相田 里奈','開発部','—','正社員','正社員（フレックスタイム制）',4211276,20,9600,2640,420000,137500,557500,88176,469324,[['健康保険料',20193],['厚生年金保険料',37515],['子ども・子育て支援金',471],['所得税',27210],['雇用保険料',2787]],'flex'],
+['E025','瀬戸 遥','デザイン部','部長','正社員','正社員',4211278,20,9600,1020,650000,82216,732216,152071,580145,[['介護保険料',5265],['健康保険料',32013],['厚生年金保険料',59475],['子ども・子育て支援金',747],['所得税',50910],['雇用保険料',3661]],''],
+['E026','内田 蒼','デザイン部','—','正社員','正社員',4211279,20,9600,1680,380000,79170,459170,72118,387052,[['健康保険料',18715],['厚生年金保険料',34770],['子ども・子育て支援金',437],['所得税',15900],['雇用保険料',2296]],''],
+['E027','沢村 康平','マーケティング部','部長','正社員','正社員',4211280,20,9600,1260,660000,103136,763136,157736,605400,[['介護保険料',5265],['健康保険料',32013],['厚生年金保険料',59475],['子ども・子育て支援金',747],['所得税',56420],['雇用保険料',3816]],''],
+['E028','谷口 美咲','マーケティング部','—','正社員','正社員',4211281,20,9600,1980,360000,88399,448399,68736,379663,[['健康保険料',17730],['厚生年金保険料',32940],['子ども・子育て支援金',414],['所得税',15410],['雇用保険料',2242]],''],
+['E029','島田 陽介','セールス部（兼務 ビジネス本部）','部長','正社員','正社員',4211282,20,9600,1620,700000,140636,840636,175983,664653,[['介護保険料',5751],['健康保険料',34968],['厚生年金保険料',59475],['子ども・子育て支援金',816],['所得税',70770],['雇用保険料',4203]],''],
+['E030','北原 卓','セールス部','—','正社員','正社員',4211283,20,9600,2460,370000,112853,482853,74196,408657,[['健康保険料',18715],['厚生年金保険料',34770],['子ども・子育て支援金',437],['所得税',17860],['雇用保険料',2414]],''],
+['E031','竹内 洋平','パートナー営業部','部長','正社員','正社員',4211285,20,9600,900,670000,74775,744775,156089,588686,[['介護保険料',5508],['健康保険料',33490],['厚生年金保険料',59475],['子ども・子育て支援金',782],['所得税',53110],['雇用保険料',3724]],''],
+['E032','藤本 奈緒','パートナー営業部','—','正社員','正社員',4211286,20,9600,1380,355000,60749,415749,65873,349876,[['健康保険料',17730],['厚生年金保険料',32940],['子ども・子育て支援金',414],['所得税',12710],['雇用保険料',2079]],''],
+['E033','小林 真央','カスタマーサクセス部','部長','正社員','正社員',4211287,20,9600,1080,640000,85725,725725,150929,574796,[['介護保険料',5265],['健康保険料',32013],['厚生年金保険料',59475],['子ども・子育て支援金',747],['所得税',49800],['雇用保険料',3629]],''],
+['E034','中西 遼','カスタマーサクセス部','—','正社員','正社員',4211289,20,9600,1740,350000,75509,425509,66662,358847,[['健康保険料',17730],['厚生年金保険料',32940],['子ども・子育て支援金',414],['所得税',13450],['雇用保険料',2128]],''],
+['E035','森 千晶','カスタマーサポート部','部長','正社員','正社員',4211290,20,9600,1200,610000,90775,700775,142454,558321,[['介護保険料',5022],['健康保険料',30535],['厚生年金保険料',56730],['子ども・子育て支援金',713],['所得税',45950],['雇用保険料',3504]],''],
+['E036','比嘉 美穂','カスタマーサポート部','—','パート','パート（時給・週20時間）',4211291,16,4800,300,104000,8125,112125,480,111645,[['所得税',480]],'part'],
+['E—','テスト 太郎','（所属なし）','—','—','正社員',4174944,0,0,0,300000,0,300000,50390,249610,[['健康保険料',14775],['厚生年金保険料',27450],['子ども・子育て支援金',345],['所得税',6320],['雇用保険料',1500]],'retired']
+];
+
+const hm = m => (m === 0 ? '0:00' : Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'));
+let paySort = 'ot', payQuery = '', paySel = 'E023';
+
+function payList() {
+  const q = payQuery.trim().toLowerCase();
+  let list = PAY.filter(r => !q || (r[0] + r[1] + r[2] + r[3] + r[5]).toLowerCase().includes(q));
+  list = list.slice().sort(paySort === 'ot' ? (a, b) => b[9] - a[9] : (a, b) => (a[0]==='E—'?'ZZ':a[0]).localeCompare(b[0]==='E—'?'ZZ':b[0]));
+  return list;
+}
+
+function renderPayRows() {
+  const list = payList();
+  document.getElementById('payRows').innerHTML = list.length ? list.map(r => {
+    const w = Math.round(Math.min(r[9] / 3120, 1) * 100);
+    const hot = r[9] > 2700;
+    const tag = r[9] > 2700 ? '<span class="tag45">45h超</span>' : (r[16] === 'off' ? '<span class="tagoff">対象外</span>' : (r[16] === 'retired' ? '<span class="tagoff">退職</span>' : ''));
+    return `<tr data-k="${r[0]}${r[1]}" aria-selected="${(r[0] + r[1]) === paySel || r[0] === paySel ? 'true' : 'false'}">
+      <td class="num">${esc(r[0])}</td><td>${esc(r[1])}${tag}</td><td>${esc(r[2])}</td><td>${esc(r[5])}</td>
+      <td class="num${r[7] ? '' : ' zero'}">${r[7]} 日</td>
+      <td class="num${r[8] ? '' : ' zero'}">${hm(r[8])}</td>
+      <td class="num ot${r[9] ? '' : ' zero'}"><b>${hm(r[9])}</b>${r[9] ? `<i class="otbar${hot ? ' hot' : ''}" style="width:${w}%"></i>` : ''}</td>
+      <td class="num${r[11] ? '' : ' zero'}">${yen(r[11])}</td>
+      <td class="num">${yen(r[12])}</td></tr>`;
+  }).join('') : '<tr><td colspan="9" class="empty">条件に合う社員はいません</td></tr>';
+  document.getElementById('payCnt').textContent = list.length + ' / ' + PAY.length + ' 人';
+}
+
+function renderPayCard() {
+  const r = PAY.find(x => (x[0] + x[1]) === paySel || x[0] === paySel) || PAY[0];
+  const ded = r[15].map(d => `<div class="kv"><span>${esc(d[0])}</span><b>− ${yen(d[1])}</b></div>`).join('');
+  const flexNote = r[16] === 'flex'
+    ? '<div class="paynote"><b>フレックスは不足時間に注意。</b>最初 <code>total_shortage_work_mins</code> を渡さずに書いたら 160時間の不足と判定され、不足時間控除 −457,120円 が立って総支給が基本給を下回った。0 を明示して解消。</div>'
+    : (r[16] === 'part'
+      ? '<div class="paynote"><b>時給者は社会保険に入っていない。</b>控除は所得税だけ。freeeは時給1,300円をそのまま月額とみなすので、加入要件の判定が働かない。ここは外で埋める。</div>'
+      : (r[16] === 'off'
+        ? '<div class="paynote"><b>勤怠管理の対象外。</b>「freeeに勤怠登録しない」を選んでいるので、労働日数も残業も出ない。それでも残業分析レポートの分母には数えられる。</div>'
+        : (r[16] === 'retired'
+          ? '<div class="paynote"><b>退職済み（2026-08-31）。</b>それでも8月分の給与明細は立つ。所属も社員番号も無いまま計算される。</div>'
+          : '')));
+  document.getElementById('payCard').innerHTML = `
+    <header>
+      <h3>${esc(r[1])}</h3>
+      <p>${esc(r[2])}${r[3] === '—' ? '' : ' · ' + esc(r[3])} · ${esc(r[4])}</p>
+      <code>${esc(r[0])} · freee ID ${r[6]} · ${esc(r[5])}</code>
+    </header>
+    <div class="paysec">
+      <h4>勤怠 — 2026年8月1日〜31日</h4>
+      <div class="kv"><span>労働日数</span><b>${r[7]} 日</b></div>
+      <div class="kv"><span>所定内労働</span><b>${hm(r[8])}</b></div>
+      <div class="kv"><span>時間外労働</span><b>${hm(r[9])}</b></div>
+      <div class="kv dim"><span>法定内残業</span><b>0:00</b></div>
+      <div class="kv dim"><span>法定休日労働</span><b>0:00</b></div>
+      <div class="kv dim"><span>深夜労働</span><b>0:00</b></div>
+      <div class="kv dim"><span>遅刻・早退</span><b>0:00</b></div>
+      <div class="kv dim"><span>欠勤</span><b>0 日</b></div>
+      <div class="kv dim"><span>不足労働時間</span><b>0:00</b></div>
+      <div class="kv sum"><span>総勤務時間</span><b>${hm(r[8] + r[9])}</b></div>
+    </div>
+    <div class="paysec">
+      <h4>有給休暇</h4>
+      <div class="kv dim"><span>取得日数</span><b>0.0 日</b></div>
+      <div class="kv dim"><span>残日数</span><b>0.0 日</b></div>
+      <div class="kv dim"><span>時間単位の取得</span><b>0:00</b></div>
+    </div>
+    <div class="paysec">
+      <h4>支給</h4>
+      <div class="kv"><span>基本給${r[16] === 'part' ? '（1,300円 × 85:00）' : ''}</span><b>${yen(r[10])}</b></div>
+      <div class="kv"><span>残業代</span><b>${r[11] ? yen(r[11]) : '0'}</b></div>
+      <div class="kv sum"><span>総支給額</span><b>${yen(r[12])}</b></div>
+    </div>
+    <div class="paysec">
+      <h4>控除</h4>
+      ${ded}
+      <div class="kv sum"><span>総控除額</span><b>− ${yen(r[13])}</b></div>
+    </div>
+    <div class="paysec">
+      <div class="kv big sum" style="margin:0;border:0;padding:0"><span>差引支給額</span><b>${yen(r[14])} 円</b></div>
+    </div>
+    ${flexNote}`;
+}
+
+/* 2026年8月のカレンダー。1日は土曜。11日は山の日で所定休日（freeeがそう返す） */
+const AUG = (() => {
+  const wd = ['日', '月', '火', '水', '木', '金', '土'];
+  const out = [];
+  for (let d = 1; d <= 31; d++) {
+    const g = new Date(2026, 7, d).getDay();
+    let kind = 'work';
+    if (g === 0) kind = 'legal';
+    else if (g === 6) kind = 'pre';
+    else if (d === 11) kind = 'holiday';
+    out.push({ d, w: wd[g], g, kind });
+  }
+  return out;
+})();
+
+function dayPlan(r) {
+  const isPart = r[16] === 'part';
+  const none = r[7] === 0;
+  const workDays = none ? [] : AUG.filter(x => x.kind === 'work' && (!isPart || (x.g >= 1 && x.g <= 4)));
+  const n = workDays.length;
+  const total = r[9];
+  let ot = [];
+  if (n > 0) {
+    ot = workDays.map((x, i) => Math.round((total / n) * (0.7 + (n > 1 ? 0.6 * i / (n - 1) : 0.3)) / 15) * 15);
+    ot[n - 1] += total - ot.reduce((a, b) => a + b, 0);
+  }
+  const inMin = isPart ? 600 : 540;
+  const brk = isPart ? 0 : 60;
+  const base = isPart ? 300 : 480;
+  const map = new Map();
+  workDays.forEach((x, i) => map.set(x.d, ot[i]));
+  return AUG.map(x => {
+    if (!map.has(x.d)) return { ...x, on: false };
+    const o = map.get(x.d);
+    return { ...x, on: true, inMin, outMin: inMin + brk + base + o, brk, work: base + o, ot: o };
+  });
+}
+
+const clk = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+
+function renderDays() {
+  const r = PAY.find(x => (x[0] + x[1]) === paySel || x[0] === paySel) || PAY[0];
+  const rows = dayPlan(r);
+  const on = rows.filter(x => x.on);
+  const kindLabel = { work: '<span class="kind w">平日</span>', pre: '<span class="kind p">所定休日</span>', legal: '<span class="kind p">法定休日</span>', holiday: '<span class="kind l">山の日</span>' };
+  const body = rows.map(x => {
+    const cls = x.on ? '' : (x.kind === 'holiday' ? ' class="hol"' : ' class="off"');
+    if (!x.on) return `<tr${cls}><td class="d">8/${x.d}</td><td>${x.w}</td><td>${kindLabel[x.kind]}</td><td colspan="5">${x.kind === 'work' ? '—' : ''}</td></tr>`;
+    return `<tr><td class="d">8/${x.d}</td><td>${x.w}</td><td>${kindLabel[x.kind]}</td>
+      <td class="num">${clk(x.inMin)}</td><td class="num">${clk(x.outMin)}</td>
+      <td class="num">${x.brk ? '1:00' : '—'}</td><td class="num">${hm(x.work)}</td>
+      <td class="num">${x.ot ? hm(x.ot) : '—'}</td></tr>`;
+  }).join('');
+  const flexNote = r[16] === 'flex'
+    ? '<p class="note" style="margin-top:10px"><b>フレックスの日次には残業が出ない。</b>7月で1件だけ日次を書いて確かめた。9:00〜19:30・休憩1時間（実労働9時間30分）でも <code class="inline">total_overtime_work_mins: 0</code> が返る。清算期間でまとめて判定するので、日ごとの残業欄は常に0になる。上の内訳は月の合計を割り戻したもの。</p>'
+    : '';
+  document.getElementById('daySec').innerHTML = `
+    <div class="dayhead">
+      <h3>${esc(r[1])} の2026年8月</h3>
+      <span>${esc(r[5])} · 出勤 ${on.length} 日 · 実労働 ${hm(on.reduce((a, x) => a + x.work, 0))} · うち残業 ${hm(r[9])}</span>
+    </div>
+    <div class="warnband" style="margin-bottom:14px">
+      <b>この日次は freee の中に存在しない。</b>
+      <p style="margin:6px 0 0">21営業日 × 34人 = 714回のAPIを避けて、月次サマリで1人1回ずつ入れた。<b>その結果、その月の日次は書けなくなった</b>（<code class="inline">400 勤怠データが直接編集またはインポートされているため更新できません</code>）。<br>下の表は、freeeに入っている月の合計を勤務体系の所定時刻に沿って割り戻した内訳。<b>合計だけが実データで、日ごとの配分は想定。</b></p>
+    </div>
+    <div class="tablewrap">
+      <table class="day">
+        <thead><tr><th>日付</th><th>曜日</th><th>区分</th><th>出勤</th><th>退勤</th><th>休憩</th><th>実労働</th><th>残業</th></tr></thead>
+        <tbody>${body}</tbody>
+        <tfoot><tr><td colspan="3">合計</td><td colspan="3" class="num">出勤 ${on.length} 日</td><td class="num">${hm(on.reduce((a, x) => a + x.work, 0))}</td><td class="num">${hm(r[9])}</td></tr></tfoot>
+      </table>
+    </div>
+    ${flexNote}`;
+}
+
+function renderPay() { renderPayRows(); renderPayCard(); renderDays(); }
+
+document.getElementById('paySearch').addEventListener('input', e => { payQuery = e.target.value; renderPayRows(); });
+document.getElementById('sortOt').addEventListener('click', () => {
+  paySort = 'ot';
+  document.getElementById('sortOt').setAttribute('aria-pressed', 'true');
+  document.getElementById('sortNum').setAttribute('aria-pressed', 'false');
+  renderPayRows();
+});
+document.getElementById('sortNum').addEventListener('click', () => {
+  paySort = 'num';
+  document.getElementById('sortNum').setAttribute('aria-pressed', 'true');
+  document.getElementById('sortOt').setAttribute('aria-pressed', 'false');
+  renderPayRows();
+});
+document.getElementById('payRows').addEventListener('click', e => {
+  const tr = e.target.closest('tr');
+  if (!tr || !tr.dataset.k) return;
+  paySel = tr.dataset.k;
+  renderPay();
+  if (window.matchMedia('(max-width: 1200px)').matches) {
+    document.getElementById('payCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+renderPay();
+
+/* ── タブ ── */
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(o => o.setAttribute('aria-selected', String(o === t)));
+  document.querySelectorAll('.panel').forEach(p => { p.hidden = p.id !== 'p-' + t.dataset.p; });
+  try { localStorage.setItem('tab', t.dataset.p); } catch (e) {}
+}));
+try {
+  const saved = localStorage.getItem('tab');
+  const t = saved && document.querySelector(`.tab[data-p="${saved}"]`);
+  if (t) t.click();
+} catch (e) {}
+document.getElementById('stamp').textContent = ' 記録日 2026-08-31 / 2026-09-01。';
+</script>
+
+</body>
+</html>

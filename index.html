@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="freeeの既存機能を起点に、目標・人間・システム・データの4視点で差分要求を整理するローカルプロトタイプ">
+  <title>freee 差分要求ワークベンチ</title>
+  <link rel="stylesheet" href="./styles.css?v=5">
+  <script src="./app.js?v=5" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <p class="eyebrow">REQUIREMENTS WORKBENCH</p>
+      <h1>freee 差分要求ワークベンチ</h1>
+      <p>既存機能を足場に、4つの視点から「何を作るか」を決める</p>
+    </div>
+    <nav class="page-tabs" id="page-tabs" aria-label="画面の切り替え">
+      <button type="button" class="page-tab" data-page="workbench" aria-selected="true">ワークベンチ</button>
+      <button type="button" class="page-tab" data-page="done" aria-selected="false">やったこと</button>
+      <button type="button" class="page-tab" data-page="org" aria-selected="false">組織図</button>
+      <button type="button" class="page-tab" data-page="emp" aria-selected="false">従業員一覧</button>
+      <button type="button" class="page-tab" data-page="pay" aria-selected="false">勤怠</button>
+      <button type="button" class="page-tab" data-page="rule" aria-selected="false">就業規則</button>
+      <button type="button" class="page-tab" data-page="map" aria-selected="false">勤怠の地図</button>
+      <button type="button" class="page-tab" data-page="log" aria-selected="false">わかったこと</button>
+    </nav>
+    <div class="header-actions" aria-label="保存と出力">
+      <span class="save-state" id="save-state" role="status">端末内に自動保存</span>
+      <button class="button button-secondary" type="button" data-action="export-json">JSON</button>
+      <button class="button button-primary" type="button" data-action="export-markdown">Spec Kit入力</button>
+    </div>
+  </header>
+
+  <section class="review-frame" id="review-frame" hidden aria-label="振り返り">
+    <iframe id="review-iframe" title="freee検証の現状" loading="lazy"></iframe>
+  </section>
+
+  <main id="workbench-main">
+    <section class="orientation" aria-labelledby="orientation-title">
+      <div>
+        <p class="section-kicker">現在の分析対象</p>
+        <h2 id="orientation-title">前日の労務費を、翌朝までに見えるようにする</h2>
+        <p>freeeが持つ機能を再実装せず、不足する差分だけを外側に作ります。</p>
+      </div>
+      <div class="guardrails" aria-label="固定した境界">
+        <span>開発用事業所 12755401</span>
+        <span>freeeはGETのみ</span>
+        <span>仕訳・試算表は対象外</span>
+      </div>
+    </section>
+
+    <section class="purpose" id="purpose" aria-labelledby="purpose-title"></section>
+
+    <section class="view-map" aria-labelledby="view-map-title">
+      <div class="view-map-copy">
+        <p class="section-kicker">4 VIEWS</p>
+        <h2 id="view-map-title">目標・人間・システム・データ</h2>
+        <p>機能とは、目的を実現する手段。人間・システム・データが噛み合って初めて成立します。<b>だから、freeeが今実現している姿を4視点で埋めた状態から出発し、そこをどう変えるかとして要求を書きます。</b>詰まったら、いつでもfreee基準へ戻せます。</p>
+      </div>
+      <figure class="view-map-figure" id="view-map-figure"></figure>
+      <div class="view-map-legend" id="view-map-legend"></div>
+    </section>
+
+    <section class="overview" aria-label="要求の充足状況">
+      <div class="overview-copy">
+        <span class="progress-label">人間による確定</span>
+        <strong id="progress-value">0 / 0</strong>
+        <span>機能</span>
+      </div>
+      <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+      <div class="view-health" id="view-health"></div>
+    </section>
+
+    <section class="pr-console" aria-labelledby="pr-console-title">
+      <div class="pr-console-bar">
+        <div class="baseline-mark">
+          <span class="branch-icon" aria-hidden="true">⑂</span>
+          <div>
+            <span>確定ベースライン</span>
+            <strong id="baseline-revision">Revision 1</strong>
+          </div>
+        </div>
+        <div class="active-pr" id="active-pr-summary"></div>
+        <div class="pr-actions">
+          <button class="button button-secondary" type="button" data-action="toggle-pr-panel" aria-expanded="false">変更履歴</button>
+          <button class="button button-primary" type="button" data-action="open-pr-dialog">変更PRを作成</button>
+        </div>
+      </div>
+      <div class="pr-panel" id="pr-panel" hidden>
+        <div id="pr-list" class="pr-list" aria-label="要求変更PRの一覧"></div>
+        <div id="pr-detail" class="pr-detail"></div>
+      </div>
+    </section>
+
+    <div class="workbench">
+      <aside class="feature-panel" aria-labelledby="feature-list-title">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">STEP 1</p>
+            <h2 id="feature-list-title">機能を選ぶ</h2>
+          </div>
+          <button class="icon-button" type="button" data-action="reset" title="入力内容を初期状態に戻す" aria-label="入力内容を初期状態に戻す">↺</button>
+        </div>
+        <p class="panel-help">freeeが今実現している機能と、外側に必要な機能を同じ一覧で比較します。</p>
+        <nav id="feature-list" class="feature-list" aria-label="分析対象の機能"></nav>
+        <div class="legend">
+          <span><i class="dot verified"></i>API確認済み</span>
+          <span><i class="dot pending"></i>要確認</span>
+          <span><i class="dot local"></i>外部で作る候補</span>
+        </div>
+      </aside>
+
+      <section class="analysis-panel" aria-live="polite">
+        <div id="feature-detail"></div>
+      </section>
+    </div>
+
+    <section class="review-drawer" aria-labelledby="review-title">
+      <div class="review-heading">
+        <div>
+          <p class="section-kicker">SPEC KIT HANDOFF</p>
+          <h2 id="review-title">仕様へ渡す前の確認</h2>
+        </div>
+        <div class="review-count" id="open-issue-count"></div>
+      </div>
+      <div id="handoff-preview" class="handoff-preview"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog class="pr-dialog" id="pr-dialog">
+    <form id="pr-form">
+      <p class="section-kicker">REQUIREMENT PULL REQUEST</p>
+      <h2>変更PRを作成</h2>
+      <p>現在の作業内容を、確定ベースラインとは別の変更案として保存します。</p>
+      <label>
+        PRタイトル
+        <input id="pr-title" name="title" required maxlength="80" placeholder="例：工程を2階層で管理する">
+      </label>
+      <label>
+        変更する理由
+        <textarea id="pr-reason" name="reason" required maxlength="500" placeholder="なぜこの変更が必要か、何を確かめたいか"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button class="button button-quiet" type="button" data-action="close-pr-dialog">キャンセル</button>
+        <button class="button button-primary" type="submit">PRを作成</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer>
+    <p>この画面は要求獲得用のローカルプロトタイプです。freee APIへの書き込みは行いません。</p>
+  </footer>
+  <script>
+  /* ページ内タブ：ワークベンチと「振り返り」(fig_attendance_map.html) を切り替える。app.js には触らない */
+  (() => {
+    const tabs = document.querySelectorAll('.page-tab');
+    const main = document.getElementById('workbench-main');
+    const frame = document.getElementById('review-frame');
+    const iframe = document.getElementById('review-iframe');
+    const fitFrame = () => {
+      if (frame.hidden) return;
+      const top = frame.getBoundingClientRect().top + window.scrollY;
+      iframe.style.height = Math.max(480, window.innerHeight - (frame.getBoundingClientRect().top) - 12) + 'px';
+    };
+    const show = (page, pushHash = true) => {
+      tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.page === page)));
+      const review = page !== 'workbench';
+      main.hidden = review;
+      frame.hidden = !review;
+      if (review) {
+        const target = './fig_attendance_map.html?v=5#' + page + '&embed';
+        if (!iframe.getAttribute('src')) iframe.setAttribute('src', target);
+        else if (iframe.contentWindow) iframe.contentWindow.location.hash = page + '&embed';
+        fitFrame();
+      }
+      if (pushHash) history.replaceState(null, '', review ? '#' + page : location.pathname);
+    };
+    tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.page)));
+    window.addEventListener('resize', fitFrame);
+    const pages = new Set([...tabs].map(t => t.dataset.page));
+    const h = location.hash.slice(1);
+    if (pages.has(h) && h !== 'workbench') show(h, false);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+# ── 認証情報・秘密（1コミット目から入れない） ──
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*token*
+*secret*
+*credential*
+freee_auth*.json
+.claude.json
+.mcp.json
+config/*.json
+
+# ── 端末ローカルの状態 ──
+.claude/settings.local.json
+.specify/memory/feature.json
+.specify/extensions/*/local-config.yml
+*.log
+!SETUP_LOG.md
+!TESTDATA_LOG.md
+
+# ── OS / エディタ ──
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*~
+*.swp
+
+# ── 作業中の生成物 ──
+tmp/
+scratch/
+*.bak
+*.orig
