@@ -1,6 +1,6 @@
 {
  "source": "freee人事労務 API（開発用テスト事業所 12755401）",
- "fetched_at": "2026-09-13T18:00:00+09:00",
+ "fetched_at": "2026-09-13T19:00:00+09:00",
  "as_of": "2026-09-13",
  "month": "2026-09",
  "endpoints": [
@@ -79,11 +79,64 @@
      "position": "課長",
      "self": false,
      "summary": {
-      "work_days": 0,
-      "overtime_mins": 0,
+      "work_days": 5,
+      "overtime_mins": 510,
       "latenight_mins": 0
      },
-     "records": []
+     "records": [
+      {
+       "date": "2026-09-02",
+       "clock_in": "09:00",
+       "clock_out": "19:30",
+       "break_mins": 60,
+       "overtime_mins": 90,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-03",
+       "clock_in": "09:00",
+       "clock_out": "20:00",
+       "break_mins": 60,
+       "overtime_mins": 120,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-07",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-08",
+       "clock_in": "09:00",
+       "clock_out": "20:30",
+       "break_mins": 60,
+       "overtime_mins": 150,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-10",
+       "clock_in": "09:00",
+       "clock_out": "19:30",
+       "break_mins": 60,
+       "overtime_mins": 90,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-11",
+       "clock_in": null,
+       "clock_out": null,
+       "break_mins": 0,
+       "overtime_mins": 0,
+       "latenight_mins": 0,
+       "time_clock_only": {
+        "clock_in": "09:00",
+        "note": "time_clocks に出勤打刻だけがある。work_records は clock_in_at null・みなし480分"
+       }
+      }
+     ]
     },
     {
      "employee_id": 4211254,
@@ -93,7 +146,7 @@
      "self": false,
      "summary": {
       "work_days": 9,
-      "overtime_mins": 1080,
+      "overtime_mins": 1380,
       "latenight_mins": 0
      },
      "records": [
@@ -168,6 +221,15 @@
        "break_mins": 60,
        "overtime_mins": 120,
        "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-12",
+       "clock_in": "10:00",
+       "clock_out": "15:00",
+       "break_mins": 0,
+       "overtime_mins": 300,
+       "latenight_mins": 0,
+       "day_pattern": "prescribed_holiday"
       }
      ]
     },
@@ -178,7 +240,7 @@
      "position": "",
      "self": false,
      "summary": {
-      "work_days": 9,
+      "work_days": 8,
       "overtime_mins": 450,
       "latenight_mins": 0
      },
@@ -225,11 +287,12 @@
       },
       {
        "date": "2026-09-08",
-       "clock_in": "09:00",
-       "clock_out": "18:00",
+       "clock_in": null,
+       "clock_out": null,
        "break_mins": 60,
        "overtime_mins": 0,
-       "latenight_mins": 0
+       "latenight_mins": 0,
+       "is_absence": true
       },
       {
        "date": "2026-09-09",
@@ -488,10 +551,240 @@
      ]
     }
    ]
+  },
+  {
+   "group": {
+    "id": 918840,
+    "code": "D104",
+    "name": "労務部"
+   },
+   "manager": {
+    "employee_id": 4211257,
+    "num": "E011",
+    "name": "三浦 隆之",
+    "position": "部長",
+    "note": ""
+   },
+   "members": [
+    {
+     "employee_id": 4211257,
+     "num": "E011",
+     "name": "三浦 隆之",
+     "position": "部長",
+     "self": true,
+     "summary": {
+      "work_days": 0,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     "records": []
+    },
+    {
+     "employee_id": 4211259,
+     "num": "E012",
+     "name": "三上 詩織",
+     "position": "",
+     "self": false,
+     "summary": {
+      "work_days": 9,
+      "overtime_mins": 1485,
+      "latenight_mins": 0
+     },
+     "records": [
+      {
+       "date": "2026-09-01",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-02",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-03",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-04",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-07",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-08",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-09",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-10",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-11",
+       "clock_in": "09:00",
+       "clock_out": "20:45",
+       "break_mins": 60,
+       "overtime_mins": 165,
+       "latenight_mins": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "group": {
+    "id": 918841,
+    "code": "D105",
+    "name": "総務部"
+   },
+   "manager": {
+    "employee_id": 4211260,
+    "num": "E013",
+    "name": "大久保 誠",
+    "position": "部長",
+    "note": ""
+   },
+   "members": [
+    {
+     "employee_id": 4211260,
+     "num": "E013",
+     "name": "大久保 誠",
+     "position": "部長",
+     "self": true,
+     "summary": {
+      "work_days": 0,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     "records": []
+    },
+    {
+     "employee_id": 4211261,
+     "num": "E014",
+     "name": "平井 直樹",
+     "position": "",
+     "self": false,
+     "summary": {
+      "work_days": 9,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     "records": [
+      {
+       "date": "2026-09-01",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-02",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-03",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-04",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-07",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-08",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-09",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-10",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-11",
+       "clock_in": "09:00",
+       "clock_out": "18:00",
+       "break_mins": 60,
+       "overtime_mins": 0,
+       "latenight_mins": 0
+      }
+     ]
+    }
+   ]
   }
  ],
  "company": {
-  "note": "日次を読んだのは6人（人事部4・経理部2・財務部2の所属長含む）。他は勤怠モニター（9/13）で「全て勤怠未登録」を確認済みのため未登録として扱う。役員2名は勤怠管理なしで対象外",
+  "note": "日次を読んだ／入れたのは 労務部・総務部を含む 12 人。他は勤怠モニター（9/13）で「全て勤怠未登録」を確認済みのため未登録として扱う。役員2名は勤怠管理なしで対象外",
   "excluded": [
    {
     "num": "E002",
@@ -876,11 +1169,64 @@
     "is_head": false,
     "data_state": "取得",
     "summary": {
-     "work_days": 0,
-     "overtime_mins": 0,
+     "work_days": 5,
+     "overtime_mins": 510,
      "latenight_mins": 0
     },
-    "records": []
+    "records": [
+     {
+      "date": "2026-09-02",
+      "clock_in": "09:00",
+      "clock_out": "19:30",
+      "break_mins": 60,
+      "overtime_mins": 90,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-03",
+      "clock_in": "09:00",
+      "clock_out": "20:00",
+      "break_mins": 60,
+      "overtime_mins": 120,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-07",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-08",
+      "clock_in": "09:00",
+      "clock_out": "20:30",
+      "break_mins": 60,
+      "overtime_mins": 150,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-10",
+      "clock_in": "09:00",
+      "clock_out": "19:30",
+      "break_mins": 60,
+      "overtime_mins": 90,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-11",
+      "clock_in": null,
+      "clock_out": null,
+      "break_mins": 0,
+      "overtime_mins": 0,
+      "latenight_mins": 0,
+      "time_clock_only": {
+       "clock_in": "09:00",
+       "note": "time_clocks に出勤打刻だけがある。work_records は clock_in_at null・みなし480分"
+      }
+     }
+    ]
    },
    {
     "employee_id": 4211254,
@@ -897,7 +1243,7 @@
     "data_state": "取得",
     "summary": {
      "work_days": 9,
-     "overtime_mins": 1080,
+     "overtime_mins": 1380,
      "latenight_mins": 0
     },
     "records": [
@@ -972,6 +1318,15 @@
       "break_mins": 60,
       "overtime_mins": 120,
       "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-12",
+      "clock_in": "10:00",
+      "clock_out": "15:00",
+      "break_mins": 0,
+      "overtime_mins": 300,
+      "latenight_mins": 0,
+      "day_pattern": "prescribed_holiday"
      }
     ]
    },
@@ -989,7 +1344,7 @@
     "is_head": false,
     "data_state": "取得",
     "summary": {
-     "work_days": 9,
+     "work_days": 8,
      "overtime_mins": 450,
      "latenight_mins": 0
     },
@@ -1036,11 +1391,12 @@
      },
      {
       "date": "2026-09-08",
-      "clock_in": "09:00",
-      "clock_out": "18:00",
+      "clock_in": null,
+      "clock_out": null,
       "break_mins": 60,
       "overtime_mins": 0,
-      "latenight_mins": 0
+      "latenight_mins": 0,
+      "is_absence": true
      },
      {
       "date": "2026-09-09",
@@ -1080,7 +1436,7 @@
     "head_num": "E011",
     "sub": [],
     "is_head": true,
-    "data_state": "未登録",
+    "data_state": "取得",
     "summary": {
      "work_days": 0,
      "overtime_mins": 0,
@@ -1100,13 +1456,86 @@
     "head_num": "E011",
     "sub": [],
     "is_head": false,
-    "data_state": "未登録",
+    "data_state": "取得",
     "summary": {
-     "work_days": 0,
-     "overtime_mins": 0,
+     "work_days": 9,
+     "overtime_mins": 1485,
      "latenight_mins": 0
     },
-    "records": []
+    "records": [
+     {
+      "date": "2026-09-01",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-02",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-03",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-04",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-07",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-08",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-09",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-10",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-11",
+      "clock_in": "09:00",
+      "clock_out": "20:45",
+      "break_mins": 60,
+      "overtime_mins": 165,
+      "latenight_mins": 0
+     }
+    ]
    },
    {
     "employee_id": 4211260,
@@ -1120,7 +1549,7 @@
     "head_num": "E013",
     "sub": [],
     "is_head": true,
-    "data_state": "未登録",
+    "data_state": "取得",
     "summary": {
      "work_days": 0,
      "overtime_mins": 0,
@@ -1140,13 +1569,86 @@
     "head_num": "E013",
     "sub": [],
     "is_head": false,
-    "data_state": "未登録",
+    "data_state": "取得",
     "summary": {
-     "work_days": 0,
+     "work_days": 9,
      "overtime_mins": 0,
      "latenight_mins": 0
     },
-    "records": []
+    "records": [
+     {
+      "date": "2026-09-01",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-02",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-03",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-04",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-07",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-08",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-09",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-10",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-11",
+      "clock_in": "09:00",
+      "clock_out": "18:00",
+      "break_mins": 60,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     }
+    ]
    },
    {
     "employee_id": 4211263,

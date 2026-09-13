@@ -108,7 +108,7 @@
 </div>
 <script>
 (async () => {
-  const D = await (await fetch('./data/saburoku_2026-09.json?v=3')).json();
+  const D = await (await fetch('./data/saburoku_2026-09.json?v=4')).json();
   const hm = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,'0')}`;
   const md = s => `${+s.slice(5,7)}/${+s.slice(8,10)}`;
   const wd = ['日','月','火','水','木','金','土'];
@@ -120,21 +120,25 @@
   const T = D.thresholds;
   const label = { safe: '安全', caution: '注意', warn: '警告', none: '打刻なし' };
 
-  /* 1人ぶんの計算。みなし（打刻なし）の日は残業に積まない */
+  /* 1人ぶんの計算。みなし（打刻なし）の日は残業に積まない。休日出勤の時間外は積む。欠勤は「未」ではない */
   const calc = dep => dep.members.map(m => {
     const rec = Object.fromEntries(m.records.map(r => [r.date, r]));
-    const punched = past.filter(d => rec[d] && rec[d].clock_in);
-    const missing = past.filter(d => !(rec[d] && rec[d].clock_in));
-    const ot = punched.reduce((a, d) => a + rec[d].overtime_mins, 0);
-    const pace = punched.length ? ot / punched.length : 0;          // 1日あたり＝時間外 ÷ 打刻した日数
+    const has = d => rec[d] && rec[d].clock_in;
+    const punched = past.filter(has);                                   // 所定日に打刻した日
+    const absent = past.filter(d => rec[d] && rec[d].is_absence);       // 欠勤（正当な不在）
+    const halfClock = past.filter(d => rec[d] && rec[d].time_clock_only); // 出勤打刻だけ（退勤なし）
+    const missing = past.filter(d => !has(d) && !(rec[d] && rec[d].is_absence)); // 打刻なし（退勤なしも含む）
+    const holidayWork = Object.keys(rec).filter(d => d <= asOf && cal[d] !== 'normal_day' && rec[d].clock_in); // 休日出勤
+    const ot = [...punched, ...holidayWork].reduce((a, d) => a + rec[d].overtime_mins, 0);
+    const pace = punched.length ? ot / punched.length : 0;              // 1日あたり＝時間外 ÷ 打刻した所定日数
     const remain = T.warning_mins - ot;
     let hitDate = null, acc = ot;
     if (pace > 0 && ot < T.warning_mins) {
       for (const d of future) { acc += pace; if (acc >= T.warning_mins) { hitDate = d; break; } }
     }
     const forecast = ot + pace * future.length;
-    const status = punched.length === 0 ? 'none' : ot >= T.warning_mins ? 'warn' : ot >= T.caution_mins ? 'caution' : 'safe';
-    return { m, rec, punched, missing, ot, pace, remain, hitDate, forecast, status };
+    const status = punched.length === 0 && holidayWork.length === 0 ? 'none' : ot >= T.warning_mins ? 'warn' : ot >= T.caution_mins ? 'caution' : 'safe';
+    return { m, rec, punched, absent, halfClock, missing, holidayWork, ot, pace, remain, hitDate, forecast, status };
   });
 
   const render = dep => {
@@ -157,13 +161,20 @@
           <span>1日あたり</span><b>${r.punched.length ? hm(Math.round(r.pace)) : '—'}</b>
           <span>超える予定日</span><b class="${r.hitDate || r.ot >= T.warning_mins ? 'hot' : ''}">${r.ot >= T.warning_mins ? '到達済み' : r.hitDate ? md(r.hitDate) + '（' + wd[new Date(r.hitDate).getDay()] + '）' : r.punched.length ? '月内は超えない見込み' : '—'}</b>
           <span>月末の見込み</span><b>${r.punched.length ? hm(Math.round(r.forecast)) : '—'}</b>
-          <span>打刻なし</span><b class="${r.missing.length ? 'hot' : ''}">${r.missing.length} 日 / ${past.length} 日</b>
+          <span>打刻なし</span><b class="${r.missing.length ? 'hot' : ''}">${r.missing.length} 日 / ${past.length} 日${r.halfClock.length ? '（退勤なし ' + r.halfClock.length + '）' : ''}</b>
+          ${r.absent.length ? `<span>欠勤</span><b>${r.absent.length} 日</b>` : ''}
+          ${r.holidayWork.length ? `<span>休日出勤</span><b class="hot">${r.holidayWork.length} 日（${hm(r.holidayWork.reduce((a, d) => a + r.rec[d].overtime_mins, 0))} を時間外に含む）</b>` : ''}
         </div>
       </div>`).join('');
 
-    const th = '<tr><th>氏名</th>' + past.map(d => `<th style="text-align:center">${md(d)}<br><small>${wd[new Date(d).getDay()]}</small></th>`).join('') + '<th style="text-align:right">合計</th></tr>';
-    const tr = rows.map(r => '<tr><td><b>' + r.m.name + '</b></td>' + past.map(d => {
+    const extra = [...new Set(rows.flatMap(r => r.holidayWork))].sort();   // 休日出勤があった日だけ列を足す
+    const cols = [...past, ...extra].sort();
+    const th = '<tr><th>氏名</th>' + cols.map(d => `<th style="text-align:center${cal[d] !== 'normal_day' ? ';color:var(--warn)' : ''}">${md(d)}<br><small>${wd[new Date(d).getDay()]}${cal[d] !== 'normal_day' ? '・休' : ''}</small></th>`).join('') + '<th style="text-align:right">合計</th></tr>';
+    const tr = rows.map(r => '<tr><td><b>' + r.m.name + '</b></td>' + cols.map(d => {
       const x = r.rec[d];
+      if (cal[d] !== 'normal_day') return x && x.clock_in ? `<td class="d hot" title="${x.clock_in}〜${x.clock_out} 休日出勤">${hm(x.overtime_mins)}</td>` : '<td class="d x">—</td>';
+      if (x && x.is_absence) return '<td class="d x" title="欠勤">欠</td>';
+      if (x && x.time_clock_only) return '<td class="d miss" title="出勤打刻のみ。退勤打刻が無い">退勤なし</td>';
       if (!x || !x.clock_in) return '<td class="d miss">未</td>';
       const cls = x.overtime_mins >= 180 ? 'hot' : x.overtime_mins === 0 ? 'x' : '';
       return `<td class="d ${cls}" title="${x.clock_in}〜${x.clock_out}">${hm(x.overtime_mins)}</td>`;
@@ -261,7 +272,7 @@
 
   document.getElementById('foot').innerHTML =
     `数字は ${D.source} から <code>${D.endpoints[0]}</code> で読んだ日次の時間外（freee が自動計算したもの）。取得 ${D.fetched_at.replace('T', ' ').slice(0, 16)}。` +
-    `「未」は打刻なし（freee は所定どおり480分を立てるが、ここでは残業に積まない）。1日あたり＝時間外 ÷ 打刻した日数。超える予定日＝そのペースで残り営業日を積んで45時間に届く日。` +
+    `「未」は打刻なし（freee は所定どおり480分を立てるが、ここでは残業に積まない）。「欠」は欠勤（is_absence）。「退勤なし」は出勤打刻だけの日（work_records では打刻なしと同じに見えるので time_clocks で見分ける）。休日出勤の時間外は合計に含める。1日あたり＝時間外 ÷ 打刻した日数。超える予定日＝そのペースで残り営業日を積んで45時間に届く日。` +
     `閾値は ${T.note}。`;
 })();
 </script>
