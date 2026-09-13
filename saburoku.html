@@ -23,6 +23,31 @@
   .dep { padding:6px 14px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink-soft); font:inherit; font-size:.85rem; font-weight:700; cursor:pointer; }
   .dep[aria-selected="true"] { background:var(--ink); border-color:var(--ink); color:#fff; }
   .dep .cnt { margin-left:6px; font-size:.72rem; font-weight:400; opacity:.8; }
+  .modes { margin-top:16px; display:flex; gap:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; width:max-content; }
+  .mode { padding:8px 18px; border:0; background:var(--surface); color:var(--ink-soft); font:inherit; font-size:.88rem; font-weight:700; cursor:pointer; }
+  .mode + .mode { border-left:1px solid var(--line); }
+  .mode[aria-selected="true"] { background:#1f5d86; color:#fff; }
+  .sum { margin-top:14px; display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+  .sum div { padding:10px 14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--none); border-radius:10px; }
+  .sum div b { display:block; font-size:1.6rem; font-variant-numeric:tabular-nums; }
+  .sum div span { font-size:.78rem; color:var(--ink-soft); }
+  .sum .warn { border-left-color:var(--warn); } .sum .caution { border-left-color:var(--caution); } .sum .safe { border-left-color:var(--safe); }
+  .filters { margin-top:12px; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; font-size:.84rem; }
+  .filters label { display:inline-flex; align-items:center; gap:5px; cursor:pointer; }
+  .filters select { font:inherit; font-size:.84rem; padding:4px 8px; border:1px solid var(--line); border-radius:6px; background:var(--surface); }
+  .filters .n { margin-left:auto; color:var(--ink-soft); font-size:.78rem; }
+  .depstrip { margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; }
+  .depstrip span { padding:3px 10px; border:1px solid var(--line); border-radius:999px; background:var(--surface); font-size:.76rem; color:var(--ink-soft); }
+  .depstrip span.hot { border-color:var(--warn); color:var(--warn); font-weight:700; }
+  .depstrip span.mid { border-color:var(--caution); color:var(--caution); font-weight:700; }
+  .depstrip span.nohead { border-style:dashed; }
+  table.all td { white-space:normal; }
+  table.all tr.warn td:first-child { box-shadow:inset 4px 0 0 var(--warn); }
+  table.all tr.caution td:first-child { box-shadow:inset 4px 0 0 var(--caution); }
+  table.all tr.none td { color:var(--ink-soft); }
+  .tag { display:inline-block; padding:1px 7px; border-radius:4px; font-size:.7rem; background:var(--none-pale); color:var(--none); }
+  .tag.head { background:#e7edf7; color:#2c4a7c; }
+  .tag.sub { background:var(--caution-pale); color:var(--caution); }
   .cards { margin-top:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; }
   .card { padding:14px 16px 12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--none); border-radius:12px; }
   .card.safe { border-top-color:var(--safe); } .card.caution { border-top-color:var(--caution); } .card.warn { border-top-color:var(--warn); }
@@ -62,15 +87,28 @@
   <p class="kicker">SABUROKU MONITOR — STEP 1</p>
   <h1 id="title">所属長の残業時間管理</h1>
   <p class="lead">freee の日次勤怠を読んで、部下ごとの今月の時間外を「残り」と「超える予定日」に直したもの。月間45時間だけを見る。通知はしない（画面だけ）。</p>
-  <div class="deps" id="deps" role="tablist"></div>
-  <div class="meta" id="meta"></div>
-  <div class="cards" id="cards"></div>
-  <div class="tablewrap"><table id="days"></table></div>
+  <div class="modes" role="tablist">
+    <button class="mode" id="mode-dep" aria-selected="true">所属長として見る</button>
+    <button class="mode" id="mode-all" aria-selected="false">全社を見る（労務担当）</button>
+  </div>
+  <div id="view-dep">
+    <div class="deps" id="deps" role="tablist"></div>
+    <div class="meta" id="meta"></div>
+    <div class="cards" id="cards"></div>
+    <div class="tablewrap"><table id="days"></table></div>
+  </div>
+  <div id="view-all" hidden>
+    <div class="meta" id="meta-all"></div>
+    <div class="sum" id="sum"></div>
+    <div class="filters" id="filters"></div>
+    <div class="depstrip" id="depstrip"></div>
+    <div class="tablewrap"><table id="all"></table></div>
+  </div>
   <p class="foot" id="foot"></p>
 </div>
 <script>
 (async () => {
-  const D = await (await fetch('./data/saburoku_2026-09.json?v=2')).json();
+  const D = await (await fetch('./data/saburoku_2026-09.json?v=3')).json();
   const hm = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,'0')}`;
   const md = s => `${+s.slice(5,7)}/${+s.slice(8,10)}`;
   const wd = ['日','月','火','水','木','金','土'];
@@ -145,8 +183,81 @@
     history.replaceState(null, '', '#dep=' + i);
   };
   deps.querySelectorAll('.dep').forEach(b => b.addEventListener('click', () => select(+b.dataset.i)));
-  const m0 = location.hash.match(/dep=(\d+)/);   // #dep=1 で部署を指定して開ける
+  const initialHash = location.hash;
+  const m0 = initialHash.match(/dep=(\d+)/);   // #dep=1 で部署を指定して開ける
   select(m0 && D.departments[+m0[1]] ? +m0[1] : 0);
+
+  /* ── 全社ビュー（労務担当）。所属長がいない部署や、所属長が見ていない場合の押さえ ── */
+  const C = D.company;
+  const heads = Object.fromEntries(C.members.filter(m => m.is_head).map(m => [m.dept, m]));
+  const allRows = calc({ members: C.members }).map(r => Object.assign(r, {
+    head: heads[r.m.dept] || null,
+    rank: { warn: 0, caution: 1, safe: 2, none: 3 }[r.status]
+  }));
+  const state = { st: new Set(['warn', 'caution', 'safe', 'none']), dept: '' };
+  const countBy = rows => ({ warn: rows.filter(r => r.status === 'warn').length, caution: rows.filter(r => r.status === 'caution').length, safe: rows.filter(r => r.status === 'safe').length, none: rows.filter(r => r.status === 'none').length });
+
+  const renderAll = () => {
+    const c = countBy(allRows);
+    document.getElementById('meta-all').innerHTML =
+      `<span>対象 <b>${allRows.length}</b> 人（役員 ${C.excluded.length} 人は勤怠管理なしで対象外）</span>` +
+      `<span>時点 <b>${md(asOf)}</b>（打刻は ${md(past[past.length-1])} まで）</span>` +
+      `<span>注意 <b>${hm(T.caution_mins)}</b> ／ 警告 <b>${hm(T.warning_mins)}</b>（月間）</span>`;
+    document.getElementById('sum').innerHTML =
+      `<div class="warn"><b>${c.warn}</b><span>警告（45h 以上）</span></div>` +
+      `<div class="caution"><b>${c.caution}</b><span>注意（30h 以上）</span></div>` +
+      `<div class="safe"><b>${c.safe}</b><span>安全（打刻あり・30h 未満）</span></div>` +
+      `<div><b>${c.none}</b><span>打刻なし（今月の打刻がゼロ）</span></div>`;
+
+    document.getElementById('depstrip').innerHTML = C.departments.map(d => {
+      const rows = allRows.filter(r => r.m.dept === d.code); const k = countBy(rows);
+      const cls = k.warn ? 'hot' : k.caution ? 'mid' : ''; const nohead = !heads[d.code] ? ' nohead' : '';
+      return `<span class="${cls}${nohead}" title="${d.hq}">${d.name}${heads[d.code] ? '' : '（所属長なし）'} ${k.warn ? '警告' + k.warn + ' ' : ''}${k.caution ? '注意' + k.caution + ' ' : ''}${k.none ? '未' + k.none : ''}</span>`;
+    }).join('');
+
+    const f = document.getElementById('filters');
+    if (!f.dataset.ready) {
+      f.innerHTML = [['warn', '警告'], ['caution', '注意'], ['safe', '安全'], ['none', '打刻なし']].map(([k, l]) =>
+        `<label><input type="checkbox" data-st="${k}" checked> ${l}</label>`).join('') +
+        `<select id="f-dept"><option value="">すべての部門</option>${C.departments.map(d => `<option value="${d.code}">${d.hq} ／ ${d.name}</option>`).join('')}</select>` +
+        `<span class="n" id="f-n"></span>`;
+      f.querySelectorAll('input[data-st]').forEach(i => i.addEventListener('change', () => { i.checked ? state.st.add(i.dataset.st) : state.st.delete(i.dataset.st); renderAll(); }));
+      f.querySelector('#f-dept').addEventListener('change', e => { state.dept = e.target.value; renderAll(); });
+      f.dataset.ready = '1';
+    }
+
+    const rows = allRows.filter(r => state.st.has(r.status) && (!state.dept || r.m.dept === state.dept))
+      .sort((a, b) => a.rank - b.rank || b.ot - a.ot || a.m.dept.localeCompare(b.m.dept) || a.m.num.localeCompare(b.m.num));
+    document.getElementById('f-n').textContent = `${rows.length} / ${allRows.length} 人`;
+    const th = '<tr><th>状態</th><th>本部</th><th>部門</th><th>所属長</th><th>氏名</th><th>役職</th><th style="text-align:right">今月の時間外</th><th style="text-align:right">残り</th><th>超える予定日</th><th style="text-align:right">打刻なし</th><th>データ</th></tr>';
+    const tr = rows.map(r => `<tr class="${r.status}">
+      <td><span class="st ${r.status}" style="margin:0">${label[r.status]}</span></td>
+      <td>${r.m.hq || ''}</td><td>${r.m.dept_name}</td>
+      <td>${r.head ? (r.head.employee_id === r.m.employee_id ? '<span class="tag head">自分（部長）</span>' : r.head.name) : '<span class="tag">所属長なし</span>'}</td>
+      <td><b>${r.m.name}</b>${r.m.sub.length ? ' <span class="tag sub" title="' + r.m.sub.join('、') + '">兼務</span>' : ''}</td>
+      <td>${r.m.position || '—'}</td>
+      <td class="n">${r.punched.length ? hm(r.ot) : '—'}</td>
+      <td class="n">${r.punched.length ? (r.remain > 0 ? hm(r.remain) : '超過 ' + hm(-r.remain)) : '—'}</td>
+      <td>${r.ot >= T.warning_mins ? '到達済み' : r.hitDate ? md(r.hitDate) + '（' + wd[new Date(r.hitDate).getDay()] + '）' : r.punched.length ? '月内は超えない見込み' : '—'}</td>
+      <td class="n">${r.missing.length} / ${past.length}</td>
+      <td><span class="tag">${r.m.data_state}</span></td>
+    </tr>`).join('');
+    const tbl = document.getElementById('all');
+    tbl.className = 'all';
+    tbl.innerHTML = th + tr;
+  };
+
+  const setMode = all => {
+    document.getElementById('mode-dep').setAttribute('aria-selected', String(!all));
+    document.getElementById('mode-all').setAttribute('aria-selected', String(all));
+    document.getElementById('view-dep').hidden = all;
+    document.getElementById('view-all').hidden = !all;
+    if (all) { renderAll(); document.getElementById('title').textContent = '全社の残業時間管理（労務担当）'; history.replaceState(null, '', '#all'); }
+    else { select(+(deps.querySelector('.dep[aria-selected="true"]') || {dataset:{i:0}}).dataset.i); }
+  };
+  document.getElementById('mode-dep').addEventListener('click', () => setMode(false));
+  document.getElementById('mode-all').addEventListener('click', () => setMode(true));
+  if (initialHash === '#all') setMode(true);
 
   document.getElementById('foot').innerHTML =
     `数字は ${D.source} から <code>${D.endpoints[0]}</code> で読んだ日次の時間外（freee が自動計算したもの）。取得 ${D.fetched_at.replace('T', ' ').slice(0, 16)}。` +
