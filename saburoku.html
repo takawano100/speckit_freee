@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>所属長の残業時間管理</title>
+<style>
+  :root {
+    --ink:#183850; --ink-soft:#47677f; --line:#cedce6; --surface:#fff; --canvas:#eef4f7;
+    --safe:#2f765b; --safe-pale:#e8f5ef; --caution:#a9640f; --caution-pale:#fbf0df;
+    --warn:#a33d3d; --warn-pale:#fff0f0; --none:#6d7887; --none-pale:#eef1f5;
+    font-family:"Yu Gothic UI","Yu Gothic",Meiryo,system-ui,sans-serif;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:20px clamp(16px,3vw,40px) 40px; background:var(--canvas); color:var(--ink); font-size:15px; line-height:1.7; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  .kicker { margin:0 0 4px; font-size:.7rem; font-weight:800; letter-spacing:.15em; color:#a94f0b; }
+  h1 { margin:0; font-size:clamp(1.3rem,2.4vw,1.8rem); }
+  .lead { margin:6px 0 0; color:var(--ink-soft); font-size:.9rem; }
+  .meta { margin:14px 0 0; display:flex; flex-wrap:wrap; gap:8px 18px; font-size:.82rem; color:var(--ink-soft); }
+  .meta b { color:var(--ink); }
+  .deps { margin-top:16px; display:flex; flex-wrap:wrap; gap:6px; }
+  .dep { padding:6px 14px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink-soft); font:inherit; font-size:.85rem; font-weight:700; cursor:pointer; }
+  .dep[aria-selected="true"] { background:var(--ink); border-color:var(--ink); color:#fff; }
+  .dep .cnt { margin-left:6px; font-size:.72rem; font-weight:400; opacity:.8; }
+  .cards { margin-top:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; }
+  .card { padding:14px 16px 12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--none); border-radius:12px; }
+  .card.safe { border-top-color:var(--safe); } .card.caution { border-top-color:var(--caution); } .card.warn { border-top-color:var(--warn); }
+  .card .who { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .card .who b { font-size:1.05rem; }
+  .card .who small { color:var(--ink-soft); font-size:.75rem; }
+  .st { display:inline-block; margin-top:6px; padding:2px 10px; border-radius:999px; font-size:.78rem; font-weight:800; }
+  .st.safe { background:var(--safe-pale); color:var(--safe); } .st.caution { background:var(--caution-pale); color:var(--caution); }
+  .st.warn { background:var(--warn-pale); color:var(--warn); } .st.none { background:var(--none-pale); color:var(--none); }
+  .big { margin-top:8px; display:flex; align-items:baseline; gap:6px; }
+  .big b { font-size:1.9rem; font-variant-numeric:tabular-nums; }
+  .big span { color:var(--ink-soft); font-size:.8rem; }
+  .bar { margin-top:6px; height:8px; border-radius:4px; background:var(--none-pale); overflow:hidden; position:relative; }
+  .bar i { display:block; height:100%; background:var(--safe); }
+  .card.caution .bar i { background:var(--caution); } .card.warn .bar i { background:var(--warn); }
+  .bar em { position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--ink); opacity:.35; }
+  .kv { margin:8px 0 0; display:grid; grid-template-columns:auto 1fr; gap:2px 10px; font-size:.82rem; }
+  .kv span { color:var(--ink-soft); }
+  .kv b { font-variant-numeric:tabular-nums; }
+  .kv b.hot { color:var(--warn); }
+  .tablewrap { margin-top:22px; overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
+  table { width:100%; border-collapse:collapse; font-size:.84rem; }
+  th, td { padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap; text-align:left; }
+  th { background:#f5f9fc; font-size:.74rem; color:var(--ink-soft); }
+  td.n { text-align:right; font-variant-numeric:tabular-nums; }
+  td.d { text-align:center; font-variant-numeric:tabular-nums; }
+  td.d.x { color:var(--none); background:var(--none-pale); }
+  td.d.hot { background:var(--caution-pale); font-weight:700; }
+  td.d.miss { color:var(--warn); background:var(--warn-pale); }
+  tr:last-child td { border-bottom:none; }
+  .foot { margin-top:16px; font-size:.78rem; color:var(--ink-soft); }
+  .foot code { font-family:Consolas,monospace; font-size:.74rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">SABUROKU MONITOR — STEP 1</p>
+  <h1 id="title">所属長の残業時間管理</h1>
+  <p class="lead">freee の日次勤怠を読んで、部下ごとの今月の時間外を「残り」と「超える予定日」に直したもの。月間45時間だけを見る。通知はしない（画面だけ）。</p>
+  <div class="deps" id="deps" role="tablist"></div>
+  <div class="meta" id="meta"></div>
+  <div class="cards" id="cards"></div>
+  <div class="tablewrap"><table id="days"></table></div>
+  <p class="foot" id="foot"></p>
+</div>
+<script>
+(async () => {
+  const D = await (await fetch('./data/saburoku_2026-09.json?v=2')).json();
+  const hm = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,'0')}`;
+  const md = s => `${+s.slice(5,7)}/${+s.slice(8,10)}`;
+  const wd = ['日','月','火','水','木','金','土'];
+  const cal = D.calendar;
+  const workdays = Object.keys(cal).filter(d => cal[d] === 'normal_day').sort();
+  const asOf = D.as_of;
+  const past = workdays.filter(d => d <= asOf);        // 経過営業日（打刻があるべき日）
+  const future = workdays.filter(d => d > asOf);        // 残り営業日
+  const T = D.thresholds;
+  const label = { safe: '安全', caution: '注意', warn: '警告', none: '打刻なし' };
+
+  /* 1人ぶんの計算。みなし（打刻なし）の日は残業に積まない */
+  const calc = dep => dep.members.map(m => {
+    const rec = Object.fromEntries(m.records.map(r => [r.date, r]));
+    const punched = past.filter(d => rec[d] && rec[d].clock_in);
+    const missing = past.filter(d => !(rec[d] && rec[d].clock_in));
+    const ot = punched.reduce((a, d) => a + rec[d].overtime_mins, 0);
+    const pace = punched.length ? ot / punched.length : 0;          // 1日あたり＝時間外 ÷ 打刻した日数
+    const remain = T.warning_mins - ot;
+    let hitDate = null, acc = ot;
+    if (pace > 0 && ot < T.warning_mins) {
+      for (const d of future) { acc += pace; if (acc >= T.warning_mins) { hitDate = d; break; } }
+    }
+    const forecast = ot + pace * future.length;
+    const status = punched.length === 0 ? 'none' : ot >= T.warning_mins ? 'warn' : ot >= T.caution_mins ? 'caution' : 'safe';
+    return { m, rec, punched, missing, ot, pace, remain, hitDate, forecast, status };
+  });
+
+  const render = dep => {
+    const rows = calc(dep);
+    document.getElementById('title').textContent = `${dep.group.name} ・ 所属長 ${dep.manager.name}（${dep.manager.position}）の残業時間管理`;
+    document.getElementById('meta').innerHTML =
+      `<span>対象月 <b>${+D.month.slice(0,4)}年${+D.month.slice(5,7)}月</b></span>` +
+      `<span>時点 <b>${md(asOf)}</b>（打刻は ${md(past[past.length-1])} まで）</span>` +
+      `<span>経過 <b>${past.length}</b> 営業日 ／ 残り <b>${future.length}</b> 営業日</span>` +
+      `<span>注意 <b>${hm(T.caution_mins)}</b> ／ 警告 <b>${hm(T.warning_mins)}</b>（月間）</span>`;
+
+    document.getElementById('cards').innerHTML = rows.map(r => `
+      <div class="card ${r.status}">
+        <div class="who"><b>${r.m.name}</b><small>${r.m.num}${r.m.position ? ' ・ ' + r.m.position : ''}${r.m.self ? ' ・ 自分' : ''}</small></div>
+        <span class="st ${r.status}">${label[r.status]}</span>
+        <div class="big"><b>${hm(r.ot)}</b><span>今月の時間外</span></div>
+        <div class="bar"><i style="width:${Math.min(100, r.ot / T.warning_mins * 100)}%"></i><em style="left:${T.caution_mins / T.warning_mins * 100}%"></em></div>
+        <div class="kv">
+          <span>残り（45hまで）</span><b class="${r.remain <= 0 ? 'hot' : ''}">${r.punched.length ? (r.remain > 0 ? hm(r.remain) : '超過 ' + hm(-r.remain)) : '—'}</b>
+          <span>1日あたり</span><b>${r.punched.length ? hm(Math.round(r.pace)) : '—'}</b>
+          <span>超える予定日</span><b class="${r.hitDate || r.ot >= T.warning_mins ? 'hot' : ''}">${r.ot >= T.warning_mins ? '到達済み' : r.hitDate ? md(r.hitDate) + '（' + wd[new Date(r.hitDate).getDay()] + '）' : r.punched.length ? '月内は超えない見込み' : '—'}</b>
+          <span>月末の見込み</span><b>${r.punched.length ? hm(Math.round(r.forecast)) : '—'}</b>
+          <span>打刻なし</span><b class="${r.missing.length ? 'hot' : ''}">${r.missing.length} 日 / ${past.length} 日</b>
+        </div>
+      </div>`).join('');
+
+    const th = '<tr><th>氏名</th>' + past.map(d => `<th style="text-align:center">${md(d)}<br><small>${wd[new Date(d).getDay()]}</small></th>`).join('') + '<th style="text-align:right">合計</th></tr>';
+    const tr = rows.map(r => '<tr><td><b>' + r.m.name + '</b></td>' + past.map(d => {
+      const x = r.rec[d];
+      if (!x || !x.clock_in) return '<td class="d miss">未</td>';
+      const cls = x.overtime_mins >= 180 ? 'hot' : x.overtime_mins === 0 ? 'x' : '';
+      return `<td class="d ${cls}" title="${x.clock_in}〜${x.clock_out}">${hm(x.overtime_mins)}</td>`;
+    }).join('') + `<td class="n"><b>${hm(r.ot)}</b></td></tr>`).join('');
+    document.getElementById('days').innerHTML = th + tr;
+  };
+
+  /* 部署の切替。本来は「ログインした所属長の部下だけ」。ここでは部署を選んで代える */
+  const deps = document.getElementById('deps');
+  deps.innerHTML = D.departments.map((dep, i) => {
+    const n = calc(dep).filter(r => r.status === 'warn' || r.status === 'caution').length;
+    return `<button class="dep" role="tab" aria-selected="${i === 0}" data-i="${i}">${dep.group.name} ・ ${dep.manager.name}<span class="cnt">${dep.members.length}人${n ? ' ・ 要対応 ' + n : ''}</span></button>`;
+  }).join('');
+  const select = i => {
+    deps.querySelectorAll('.dep').forEach(o => o.setAttribute('aria-selected', String(+o.dataset.i === i)));
+    render(D.departments[i]);
+    history.replaceState(null, '', '#dep=' + i);
+  };
+  deps.querySelectorAll('.dep').forEach(b => b.addEventListener('click', () => select(+b.dataset.i)));
+  const m0 = location.hash.match(/dep=(\d+)/);   // #dep=1 で部署を指定して開ける
+  select(m0 && D.departments[+m0[1]] ? +m0[1] : 0);
+
+  document.getElementById('foot').innerHTML =
+    `数字は ${D.source} から <code>${D.endpoints[0]}</code> で読んだ日次の時間外（freee が自動計算したもの）。取得 ${D.fetched_at.replace('T', ' ').slice(0, 16)}。` +
+    `「未」は打刻なし（freee は所定どおり480分を立てるが、ここでは残業に積まない）。1日あたり＝時間外 ÷ 打刻した日数。超える予定日＝そのペースで残り営業日を積んで45時間に届く日。` +
+    `閾値は ${T.note}。`;
+})();
+</script>
+</body>
+</html>
