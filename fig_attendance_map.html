@@ -653,7 +653,9 @@ footer code { font-family: var(--mono); font-size: .72rem; }
       <div class="ok"><b>差分要求ワークベンチ</b><small>index.html / app.js / check.js。確定した要求だけ Spec Kit 入力に出す</small><span class="st">完成 8/31</span></div>
       <div class="ok"><b>連載1本目</b><small>note 通算127「freee人事労務MCP × SDD」</small><span class="st">公開 9/10</span></div>
       <div class="ng"><b>見本（要件定義書1本）</b><small>REQUEST.md と勤怠テストデータを材料にして仕上げる</small><span class="st">未着手・3〜4ヶ月目</span></div>
-      <div class="ng"><b>GitHub リポジトリ化</b><small>git 未初期化。.gitignore を先に置き、認証情報を1コミット目から入れない。記事1本＝1PR</small><span class="st">次にやる</span></div>
+      <div class="ok"><b>GitHub リポジトリ化</b><small>takawano100/speckit_freee（public）。記事1本＝1PR。PR #1 が開いている</small><span class="st">完了 9/11</span></div>
+      <div class="ok"><b>所属長の残業時間管理 — 要求定義</b><small>REQUEST_saburoku_draft.md／TESTCASES.md（済16・未6）／saburoku.html。対応表まで</small><span class="st">9/13</span></div>
+      <div class="ng"><b>Spec Kit に渡して、動くものを作れるか</b><small>作ったものを T01〜T29 とテストデータで検証する（ATDD）</small><span class="st">次にやる</span></div>
     </div>
   </section>
 
@@ -667,6 +669,7 @@ footer code { font-family: var(--mono); font-size: .72rem; }
   <section>
     <div class="head"><span>LOG</span><h2>やったこと（新しいものが上）</h2></div>
     <ol class="tl">
+      <li class="hot"><time>2026-09-13</time><div><b>所属長の残業時間管理（月間）を、要求定義として1日で回した</b><span>36協定アラートの実測 → 4視点のたたき台 → テスト台帳（T01〜T29）→ 確認画面（所属長5部署・全社）→ 要求↔テスト↔発見の対応表。気づき＝検証にはテストケース・テストデータ・検証方法が要求と同時に要る。次は Spec Kit に渡す。</span></div></li>
       <li class="hot"><time>2026-09-10</time><div><b>note 連載1本目を公開</b><span>通算127「freee人事労務MCP × SDD の実測連載」。次は「Spec Kitに実際に渡す回」＝ここから Zenn も始める。書く前に roadmap.md を読む。</span></div></li>
       <li class="hot"><time>2026-09-06</time><div><b>検証の結論</b><span>freeeの勤怠・労務は SDD だけでは形にならない。カスタマイズが必ず入る。ここで案件を「止める」判断。</span></div></li>
       <li><time>2026-09-01</time><div><b>勤務体系5種を作成・36協定を確認・8月分の勤怠を一括投入</b><span>社員別の残業・給与一覧＋個人別の月次明細を作成。fig_org_build.html（36人の組織台帳）。API書き込み98回・画面操作70回。</span></div></li>
@@ -692,7 +695,7 @@ footer code { font-family: var(--mono); font-size: .72rem; }
   <section>
     <div class="head"><span>NEXT</span><h2>残っていること</h2></div>
     <ul class="todo">
-      <li><b>speckit_freee を GitHub リポジトリにする</b><code>.gitignore</code> を先に置き、認証情報を1コミット目から入れない。記事1本＝1プルリクエスト。</li>
+      <li><b>この要求仕様で Spec Kit が動くものを作れるか</b>`REQUEST_saburoku_draft.md` を REQUEST.md に取り込み、specify → plan → tasks → implement。出てきたものは <code>TESTCASES.md</code> と <code>data/saburoku_2026-09.json</code> で検証する。先に T25（取得失敗）・80%線・予定日の計算を決める。</li>
       <li><b>連載2本目「Spec Kitに実際に渡す回」</b>REQUEST.md とワークベンチの Spec Kit 入力を使う。ここから Zenn も始める。</li>
       <li><b>比嘉の社会保険を手で入れる</b>freeeは時給×所定時間を計算しない。<code>entried: true</code>／標準報酬 110,000 をAPIで入れる。「freeeがやらないことを外で埋める」実例。</li>
       <li><b>承認経路が未設定</b>メンバー → 部長／マネージャー → 本部長。これが無いと勤怠修正も残業申請も通らない。</li>
