@@ -1,6 +1,7 @@
 <!--
 Sync Impact Report
-- Version change: (template, unversioned) → 1.0.0
+- Version change: 1.0.0 → 1.1.0 (2026-09-14): 原則 II に「下流で見つかった漏れは要求へ戻す」を追加、品質の門に1項目追加（MINOR）
+- Previous: (template, unversioned) → 1.0.0
 - Modified principles: none (initial ratification; all 5 placeholders replaced)
   - [PRINCIPLE_1] → I. freee が正本（読むだけ）
   - [PRINCIPLE_2] → II. 要求は4視点で書く
@@ -40,6 +41,9 @@ freee に無いものだけを外で作る、が線引きである。
 - データ：何を記録するか（リソース・イベント・断面）と、決めなければ作れないこと
 - 要求の正本は `REQUEST.md`。仕様（spec）は要求から導き、要求を書き換えるときは
   `REQUEST.md` を先に直す。
+- **下流（spec・plan・tasks・implement・検証）で見つかった要求の漏れは、`REQUEST.md` の
+  「要求の漏れ台帳」に記録し、要求本文と `TESTCASES.md` を直してから下流に反映する。**
+  spec だけを直して済ませない。台帳には「どの視点の漏れか」「なぜ要求で見えなかったか」を書く。
 
 根拠：機能から考えると「freee にもうある」ものを作ってしまう。
 4視点で線を引いてから作るものを決める。
@@ -108,6 +112,7 @@ freee の挙動・API の癖・決めたこと・詰まったことは、日付�
 - freee への書き込みが混じっていないか（原則 I）
 - テストケース番号を持たないタスクが無いか（原則 III）
 - 発見が記録されているか（原則 V）
+- 下流で見つかった漏れが、要求の漏れ台帳と要求本文に戻されているか（原則 II）
 
 ## Governance
 
@@ -119,4 +124,4 @@ freee の挙動・API の癖・決めたこと・詰まったことは、日付�
   MINOR、言い回しの修正は PATCH。
 - PR のレビューでは上の「品質の門」4点を確認する。
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-14 | **Last Amended**: 2026-09-14
+**Version**: 1.1.0 | **Ratified**: 2026-09-14 | **Last Amended**: 2026-09-14
