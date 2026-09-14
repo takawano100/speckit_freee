@@ -1,50 +1,127 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: 1.0.0 → 1.1.0 (2026-09-14): 原則 II に「下流で見つかった漏れは要求へ戻す」を追加、品質の門に1項目追加（MINOR）
+- Previous: (template, unversioned) → 1.0.0
+- Modified principles: none (initial ratification; all 5 placeholders replaced)
+  - [PRINCIPLE_1] → I. freee が正本（読むだけ）
+  - [PRINCIPLE_2] → II. 要求は4視点で書く
+  - [PRINCIPLE_3] → III. テストで検証する（ATDD）
+  - [PRINCIPLE_4] → IV. 作り込まない
+  - [PRINCIPLE_5] → V. 分かったことを記録する
+- Added sections: 制約（対象・データ・言語）／開発の流れと品質の門
+- Removed sections: none
+- Templates: plan/spec/tasks templates are read at runtime; no template file modified here
+- Follow-up TODOs: none
+-->
+
+# speckit_freee 憲法
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. freee が正本（読むだけ）
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+勤怠・打刻・所属・役職・勤務カレンダーの正本は freee人事労務である。
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- これらは freee人事労務 API から **GET でのみ** 読む。freee へは書かない。
+  （テストデータの投入だけは例外で、その記録を `TESTDATA_LOG.md` に残す）
+- こちらで持ってよいのは **設定値（閾値など）とログ** だけ。
+- 業務データを写したデータベースは作らない。所属長と部下の対応表も持たず、freee の
+  所属・役職から毎回導く。
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+根拠：同じ名前のデータを2か所に持つと、どちらが正しいかを人が判断することになる。
+freee に無いものだけを外で作る、が線引きである。
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### II. 要求は4視点で書く
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+要求は **目標・人間・システム・データ** の4視点で書く。機能一覧では書かない。
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- 目標：何のために作るか、測定方法、今回は対象外とするもの
+- 人間：誰のために作るか、その人の状況が何を決めるか
+- システム：どこに線を引くか（freee にあるもの＝読む／無いもの＝作る）
+- データ：何を記録するか（リソース・イベント・断面）と、決めなければ作れないこと
+- 要求の正本は `REQUEST.md`。仕様（spec）は要求から導き、要求を書き換えるときは
+  `REQUEST.md` を先に直す。
+- **下流（spec・plan・tasks・implement・検証）で見つかった要求の漏れは、`REQUEST.md` の
+  「要求の漏れ台帳」に記録し、要求本文と `TESTCASES.md` を直してから下流に反映する。**
+  spec だけを直して済ませない。台帳には「どの視点の漏れか」「なぜ要求で見えなかったか」を書く。
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+根拠：機能から考えると「freee にもうある」ものを作ってしまう。
+4視点で線を引いてから作るものを決める。
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### III. テストで検証する（ATDD）
+
+要求と同時に、テストケースとテストデータを用意する。作ったものは必ずその台帳で検証する。
+
+- テストケースの台帳は `TESTCASES.md`（済／未／保留／範囲外と、要求との対応表）。
+- テストデータは `data/*.json`。freee 開発用テスト事業所 `12755401` に入れた架空データを
+  API で読んだもの。
+- 実装のタスクは、対応するテストケース番号（T01〜）を持つ。番号を持たないタスクは
+  要求の裏付けが無いので、要求に戻す。
+- 「動きます」ではなく「T03・T07 で確認した」と言えて完了。作りっぱなしにしない。
+
+根拠：動くものを検証するには、テストケース・テストデータ・検証方法が要求と同時に要る。
+これが 2026-09-13 の一番大きな気づきである。
+
+### IV. 作り込まない
+
+要求を確かめるのに必要な最小の形で作る。
+
+- HTML + CSS + 素の JavaScript、または同程度に軽いもの。
+  ライブラリを増やさない、フレームワークを持ち込まない、ビルド工程を作らない。
+- `TESTCASES.md` で「範囲外」と決めたものは作らない。
+- 非機能（配信・認証・権限・保存・監査）は要求として書くが、要求確認の段階では
+  作らない。本番の形は別に決める。
+- 迷ったら「その道具は、要求の確認に効くか」で判断する。
+
+根拠：架空の会社なので、作り出すとキリがない。目的は要求を固めることであって、
+製品を作ることではない。
+
+### V. 分かったことを記録する
+
+freee の挙動・API の癖・決めたこと・詰まったことは、日付つきで残す。
+
+- freee とデータの記録：`TESTDATA_LOG.md`
+- テストの確認と要求との対応：`TESTCASES.md`
+- 決定と未決：`REQUEST.md` の「決めなければ作れないこと」
+- 「動いたように見えて違う」種類の発見（返り値が壊れている、黙って捨てられる、
+  打刻なしと退勤忘れが同じに見える、など）は必ず書く。エラーが出ない問題ほど記録する。
+
+根拠：この案件の成果物は動くものではなく、記録である（記事と要件定義の見本になる）。
+
+## 制約（対象・データ・言語）
+
+- 対象は freee **開発用テスト事業所 `12755401`** のみ。本番データには触らない。
+- freee へのアクセスは freee MCP 経由。認証情報（トークン・client_secret・`.env`・
+  `.claude.json`・`.mcp.json`）はリポジトリに入れない（`.gitignore` で除外済み）。
+- 従業員データは架空。freee の個人ユーザー ID は公開物に載せない。
+- 文書・コード中のコメント・コミットメッセージは日本語で書く。
+- 性能の要求は無い（従業員 34 人・所属長 1 人あたり十数人）。
+
+## 開発の流れと品質の門
+
+1. `REQUEST.md` に4視点で要求を書く（決定・未決を明記）
+2. `TESTCASES.md` にテストケースを書き、`data/` にテストデータを用意する
+3. Spec Kit：`/speckit-specify` → `/speckit-clarify` → `/speckit-plan` → `/speckit-tasks`
+   → `/speckit-implement`。各段で Spec Kit が聞いてきたこと・勝手に決めたことを
+   `TESTDATA_LOG.md` に記録する
+4. 実装は `TESTCASES.md` の台帳で検証し、状態を更新してから完了とする
+5. 記事1本分の作業をブランチ `article/NN-...` にまとめ、PR で `main` に入れる
+
+品質の門：
+- 要求に無い機能が増えていないか（原則 IV）
+- freee への書き込みが混じっていないか（原則 I）
+- テストケース番号を持たないタスクが無いか（原則 III）
+- 発見が記録されているか（原則 V）
+- 下流で見つかった漏れが、要求の漏れ台帳と要求本文に戻されているか（原則 II）
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- この憲法は、要求（`REQUEST.md`）・仕様（`specs/`）・テスト台帳（`TESTCASES.md`）より上位に
+  ある。矛盾したら、憲法を直すか、要求を直す。黙って例外を作らない。
+- 改定は `.specify/memory/constitution.md` を直接編集し、冒頭の Sync Impact Report と
+  下のバージョンを更新する。
+- バージョンはセマンティック：原則の削除・再定義は MAJOR、原則や節の追加・実質的な拡張は
+  MINOR、言い回しの修正は PATCH。
+- PR のレビューでは上の「品質の門」4点を確認する。
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.1.0 | **Ratified**: 2026-09-14 | **Last Amended**: 2026-09-14

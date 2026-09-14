@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="freeeの既存機能を起点に、目標・人間・システム・データの4視点で差分要求を整理するローカルプロトタイプ">
   <title>freee 差分要求ワークベンチ</title>
-  <link rel="stylesheet" href="./styles.css?v=5">
+  <link rel="stylesheet" href="./styles.css?v=6">
   <script src="./app.js?v=5" defer></script>
 </head>
 <body>
@@ -17,12 +17,14 @@
     </div>
     <nav class="page-tabs" id="page-tabs" aria-label="画面の切り替え">
       <button type="button" class="page-tab" data-page="workbench" aria-selected="true">ワークベンチ</button>
+      <button type="button" class="page-tab page-tab-accent" data-page="saburoku" aria-selected="false">残業管理</button>
       <button type="button" class="page-tab" data-page="done" aria-selected="false">やったこと</button>
       <button type="button" class="page-tab" data-page="org" aria-selected="false">組織図</button>
       <button type="button" class="page-tab" data-page="emp" aria-selected="false">従業員一覧</button>
       <button type="button" class="page-tab" data-page="pay" aria-selected="false">勤怠</button>
       <button type="button" class="page-tab" data-page="rule" aria-selected="false">就業規則</button>
       <button type="button" class="page-tab" data-page="map" aria-selected="false">勤怠の地図</button>
+      <button type="button" class="page-tab" data-page="flow" aria-selected="false">打刻の流れ</button>
       <button type="button" class="page-tab" data-page="log" aria-selected="false">わかったこと</button>
     </nav>
     <div class="header-actions" aria-label="保存と出力">
@@ -171,9 +173,15 @@
       main.hidden = review;
       frame.hidden = !review;
       if (review) {
-        const target = './fig_attendance_map.html?v=5#' + page + '&embed';
-        if (!iframe.getAttribute('src')) iframe.setAttribute('src', target);
-        else if (iframe.contentWindow) iframe.contentWindow.location.hash = page + '&embed';
+        if (page === 'saburoku') {
+          /* 残業管理は独立したページ（saburoku.html）。ハブとは別に読む */
+          const target = './saburoku.html?v=1';
+          if (iframe.dataset.doc !== 'saburoku') { iframe.setAttribute('src', target); iframe.dataset.doc = 'saburoku'; }
+        } else {
+          const target = './fig_attendance_map.html?v=13#' + page + '&embed';
+          if (iframe.dataset.doc !== 'hub') { iframe.setAttribute('src', target); iframe.dataset.doc = 'hub'; }
+          else if (iframe.contentWindow) iframe.contentWindow.location.hash = page + '&embed';
+        }
         fitFrame();
       }
       if (pushHash) history.replaceState(null, '', review ? '#' + page : location.pathname);
