@@ -178,7 +178,7 @@
           const target = './saburoku.html?v=1';
           if (iframe.dataset.doc !== 'saburoku') { iframe.setAttribute('src', target); iframe.dataset.doc = 'saburoku'; }
         } else {
-          const target = './fig_attendance_map.html?v=10#' + page + '&embed';
+          const target = './fig_attendance_map.html?v=11#' + page + '&embed';
           if (iframe.dataset.doc !== 'hub') { iframe.setAttribute('src', target); iframe.dataset.doc = 'hub'; }
           else if (iframe.contentWindow) iframe.contentWindow.location.hash = page + '&embed';
         }

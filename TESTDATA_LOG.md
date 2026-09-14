@@ -1191,3 +1191,15 @@ GET /api/v1/employees/4211185/work_records/2026-08-11
 | T10 休日出勤 | 堀内 舞 9/12（土・所定休日） | 10:00–15:00 休憩なし | `total_overtime_work_mins: 300`／`total_prescribed_holiday_work_mins: 0`。**全部が時間外** |
 | T11 有給 | 加瀬 亜美 9/8 | `paid_holiday: 1` → **400「使用可能な有給休暇がありません」** | 付与が無いと入らない |
 | T11 欠勤 | 加瀬 9/8 | `is_absence: true` | `normal_work_mins: 0`・`use_default_work_pattern: false`。みなしが消える |
+
+---
+
+## 2026-09-14 — Spec Kit に渡す（記録）
+
+憲法 III・開発の流れ 3 に従い、各段で Spec Kit が聞いてきたこと・勝手に決めたことを残す。
+
+| 段 | やったこと | Spec Kit が聞いた／決めたこと |
+|---|---|---|
+| 準備 | 未決3つを決定して REQUEST.md 第2部に取り込み | — |
+| constitution | `.specify/memory/constitution.md` v1.0.0（テンプレートは空だった） | テンプレートの5原則枠に合わせて5つにした。ガバナンス節の「憲法＞要求＞spec＞台帳」はこちらで決めた |
+| specify | `specs/001-saburoku-monitor/spec.md`＋`checklists/requirements.md` | [NEEDS CLARIFICATION] は0件（未決4項目は Out of Scope／Assumptions に逃がした）。**Spec Kit の型（ユーザーストーリー優先順・FR・SC）に、4視点の要求は素直に写せた。** ただし FR に T番号を付けるのは型に無く、こちらで足した。**注意線を 36h にしたことで T03（岡田 30:45）の期待値が「注意」→「安全」に変わる**ことに spec を書く段階で気づいた（台帳は検証時に更新） |
