@@ -35,3 +35,6 @@ tmp/
 scratch/
 *.bak
 *.orig
+
+# node（検証スクリプトは依存なしだが念のため）
+node_modules/

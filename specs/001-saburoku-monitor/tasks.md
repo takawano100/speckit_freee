@@ -36,9 +36,9 @@ index.html            iframe のキャッシュ番号だけ
 
 **Purpose**: 器を作る。ロジックは書かない。
 
-- [ ] K001 `saburoku_calc.js` の骨組みを作る：`Saburoku` オブジェクトに空の関数（`businessDays`, `prevBusinessDay`, `pickThreshold`, `personMonth`, `sortMembers`, `freshness`, `hm`, `md`, `weekday`）と、末尾の `module.exports` / `window.Saburoku` の分岐（research R-3） 〔T02〕
-- [ ] K002 [P] `check_saburoku.js` の骨組みを作る：`data/*.json` を読む・`require('./saburoku_calc.js')`・`ok(name, cond, detail)` で集計し、最後に `OK:`／`NG:` を出して終了コードを返す。既存 `check.js` の流儀に合わせる 〔T02〕
-- [ ] K003 [P] `saburoku.html` を新規に書き直す骨組み：`<script src="saburoku_calc.js">` を読み、`?data=`・`?today=`・`#dep=`・`#all` を解釈して `Saburoku` を呼ぶだけの空の画面（contracts/page-url.md）。CSS は既存のものを流用してよい 〔T17〕
+- [X] K001 `saburoku_calc.js` の骨組みを作る：`Saburoku` オブジェクトに空の関数（`businessDays`, `prevBusinessDay`, `pickThreshold`, `personMonth`, `sortMembers`, `freshness`, `hm`, `md`, `weekday`）と、末尾の `module.exports` / `window.Saburoku` の分岐（research R-3） 〔T02〕
+- [X] K002 [P] `check_saburoku.js` の骨組みを作る：`data/*.json` を読む・`require('./saburoku_calc.js')`・`ok(name, cond, detail)` で集計し、最後に `OK:`／`NG:` を出して終了コードを返す。既存 `check.js` の流儀に合わせる 〔T02〕
+- [X] K003 [P] `saburoku.html` を新規に書き直す骨組み：`<script src="saburoku_calc.js">` を読み、`?data=`・`?today=`・`#dep=`・`#all` を解釈して `Saburoku` を呼ぶだけの空の画面（contracts/page-url.md）。CSS は既存のものを流用してよい 〔T17〕
 
 **Checkpoint**: `node check_saburoku.js` が「0件確認」で終了コード 0。画面は空で開く。
 
@@ -48,10 +48,10 @@ index.html            iframe のキャッシュ番号だけ
 
 **Purpose**: 営業日・閾値・日付表示。これが無いとどのストーリーも計算できない。
 
-- [ ] K004 検証：`check_saburoku.js` に営業日・前営業日・閾値選択・表示関数の assert を書く。9月の営業日は19日（9/21〜23 は休み）／今日 9/16 の前営業日は 9/15／閾値は 2026-09-01 時点で 45:00・36:00、2026-10-01 時点で 40:00・32:00／`hm(1845)==='30:45'`／`weekday('2026-09-28')==='月'`。**この時点で失敗することを確認** 〔T10・T30〕
-- [ ] K005 `saburoku_calc.js`：`businessDays(calendar)` と `prevBusinessDay(calendar, today)`（research R-2。カレンダーに無ければ null） 〔T10・T31〕
-- [ ] K006 [P] `saburoku_calc.js`：`pickThreshold(history, fallback, monthFirstDay)`（`effective_from ≤ monthFirstDay` の最新。history が無ければ fallback。次に来る更新も返す） 〔T30〕
-- [ ] K007 [P] `saburoku_calc.js`：`hm(mins)`・`md(date)`・`weekday(date)`（`Date.UTC` で曜日。research R-1） 〔T03〕
+- [X] K004 検証：`check_saburoku.js` に営業日・前営業日・閾値選択・表示関数の assert を書く。9月の営業日は19日（9/21〜23 は休み）／今日 9/16 の前営業日は 9/15／閾値は 2026-09-01 時点で 45:00・36:00、2026-10-01 時点で 40:00・32:00／`hm(1845)==='30:45'`／`weekday('2026-09-28')==='月'`。**この時点で失敗することを確認** 〔T10・T30〕
+- [X] K005 `saburoku_calc.js`：`businessDays(calendar)` と `prevBusinessDay(calendar, today)`（research R-2。カレンダーに無ければ null） 〔T10・T31〕
+- [X] K006 [P] `saburoku_calc.js`：`pickThreshold(history, fallback, monthFirstDay)`（`effective_from ≤ monthFirstDay` の最新。history が無ければ fallback。次に来る更新も返す） 〔T30〕
+- [X] K007 [P] `saburoku_calc.js`：`hm(mins)`・`md(date)`・`weekday(date)`（`Date.UTC` で曜日。research R-1） 〔T03〕
 
 **Checkpoint**: K004 の assert が通る。
 
@@ -65,15 +65,15 @@ index.html            iframe のキャッシュ番号だけ
 
 ### 検証（先に書く）
 
-- [ ] K008 [US1] `check_saburoku.js`：`personMonth` の assert。三上 ot=1485・remain=1215・pace=165・hitDate='2026-09-28'・forecast=3135・status='safe'／岡田 ot=1845・hitDate='2026-09-18'・forecast=3895・status='safe'（注意線36h）／白石 ot=2745・status='warn'・hitDate=null／堀内 ot=1380（休日5h込み）・pace=120・hitDate=null／加瀬 ot=450 〔T02・T03・T04・T07〕
-- [ ] K009 [P] [US1] `check_saburoku.js`：`sortMembers` の assert。人事部は 堀内（remain 1320）→ 加瀬（2250）→ 長瀬 → 相川（none）の順。相川は労務部の members に居ない（JSON の形で担保。全社 members の dept で確認） 〔T13・T14・T16〕
+- [X] K008 [US1] `check_saburoku.js`：`personMonth` の assert。三上 ot=1485・remain=1215・pace=165・hitDate='2026-09-28'・forecast=3135・status='safe'／岡田 ot=1845・hitDate='2026-09-18'・forecast=3895・status='safe'（注意線36h）／白石 ot=2745・status='warn'・hitDate=null／堀内 ot=1380（休日5h込み）・pace=120・hitDate=null／加瀬 ot=450 〔T02・T03・T04・T07〕
+- [X] K009 [P] [US1] `check_saburoku.js`：`sortMembers` の assert。人事部は 堀内（remain 1320）→ 加瀬（2250）→ 長瀬 → 相川（none）の順。相川は労務部の members に居ない（JSON の形で担保。全社 members の dept で確認） 〔T13・T14・T16〕
 
 ### 実装
 
-- [ ] K010 [US1] `saburoku_calc.js`：`personMonth(member, calendar, today, threshold)`（data-model の PersonMonth。punched／holidayWork／ot／pace（休日分を除く）／remain／hitDate／forecast／status／paceIsRough） 〔T02・T03・T04・T07・T10〕
-- [ ] K011 [US1] `saburoku_calc.js`：`sortMembers(rows)`（warn→caution→safe→none、同じなら remain 昇順） 〔T02〕
-- [ ] K012 [US1] `saburoku.html`：所属長ビュー。部署ボタン（`departments`）、カード（氏名・役職・自分・状態・実績・バー・残り・1日あたり・予定日・月末見込み）、`#dep=n` の読み書き。予定日は `paceIsRough` なら「まだ目安」を添える 〔T02・T03・T04・T07・T13・T24〕
-- [ ] K013 [US1] `saburoku.html`：画面上部に「対象月・時点・経過／残り営業日・**閾値 45:00／36:00（2025-04-01〜）・次回 2026-09-15〜 40:00／32:00**」を出す 〔T30〕
+- [X] K010 [US1] `saburoku_calc.js`：`personMonth(member, calendar, today, threshold)`（data-model の PersonMonth。punched／holidayWork／ot／pace（休日分を除く）／remain／hitDate／forecast／status／paceIsRough） 〔T02・T03・T04・T07・T10〕
+- [X] K011 [US1] `saburoku_calc.js`：`sortMembers(rows)`（warn→caution→safe→none、同じなら remain 昇順） 〔T02〕
+- [X] K012 [US1] `saburoku.html`：所属長ビュー。部署ボタン（`departments`）、カード（氏名・役職・自分・状態・実績・バー・残り・1日あたり・予定日・月末見込み）、`#dep=n` の読み書き。予定日は `paceIsRough` なら「まだ目安」を添える 〔T02・T03・T04・T07・T13・T24〕
+- [X] K013 [US1] `saburoku.html`：画面上部に「対象月・時点・経過／残り営業日・**閾値 45:00／36:00（2025-04-01〜）・次回 2026-09-15〜 40:00／32:00**」を出す 〔T30〕
 
 **Checkpoint**: `node check_saburoku.js` で US1 の assert が通る。ヘッドレス Chrome で `#dep=3` を撮り、三上 9/28（月）を目視。
 

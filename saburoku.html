@@ -17,16 +17,50 @@
   .kicker { margin:0 0 4px; font-size:.7rem; font-weight:800; letter-spacing:.15em; color:#a94f0b; }
   h1 { margin:0; font-size:clamp(1.3rem,2.4vw,1.8rem); }
   .lead { margin:6px 0 0; color:var(--ink-soft); font-size:.9rem; }
+  .stale { margin:14px 0 0; padding:12px 16px; background:var(--warn-pale); border:2px solid var(--warn); border-radius:10px; color:var(--warn); font-weight:800; }
+  .stale small { display:block; font-weight:400; color:var(--ink-soft); }
   .meta { margin:14px 0 0; display:flex; flex-wrap:wrap; gap:8px 18px; font-size:.82rem; color:var(--ink-soft); }
   .meta b { color:var(--ink); }
+  .meta .th { padding:2px 10px; border:1px solid var(--line); border-radius:999px; background:var(--surface); }
+  .modes { margin-top:16px; display:flex; border:1px solid var(--line); border-radius:10px; overflow:hidden; width:max-content; }
+  .mode { padding:8px 18px; border:0; background:var(--surface); color:var(--ink-soft); font:inherit; font-size:.88rem; font-weight:700; cursor:pointer; }
+  .mode + .mode { border-left:1px solid var(--line); }
+  .mode[aria-selected="true"] { background:#1f5d86; color:#fff; }
   .deps { margin-top:16px; display:flex; flex-wrap:wrap; gap:6px; }
   .dep { padding:6px 14px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink-soft); font:inherit; font-size:.85rem; font-weight:700; cursor:pointer; }
   .dep[aria-selected="true"] { background:var(--ink); border-color:var(--ink); color:#fff; }
   .dep .cnt { margin-left:6px; font-size:.72rem; font-weight:400; opacity:.8; }
-  .modes { margin-top:16px; display:flex; gap:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; width:max-content; }
-  .mode { padding:8px 18px; border:0; background:var(--surface); color:var(--ink-soft); font:inherit; font-size:.88rem; font-weight:700; cursor:pointer; }
-  .mode + .mode { border-left:1px solid var(--line); }
-  .mode[aria-selected="true"] { background:#1f5d86; color:#fff; }
+  .cards { margin-top:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; }
+  .card { padding:14px 16px 12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--none); border-radius:12px; }
+  .card.safe { border-top-color:var(--safe); } .card.caution { border-top-color:var(--caution); } .card.warn { border-top-color:var(--warn); }
+  .card .who { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .card .who b { font-size:1.05rem; }
+  .card .who small { color:var(--ink-soft); font-size:.75rem; }
+  .st { display:inline-block; margin-top:6px; padding:2px 10px; border-radius:999px; font-size:.78rem; font-weight:800; }
+  .st.safe { background:var(--safe-pale); color:var(--safe); } .st.caution { background:var(--caution-pale); color:var(--caution); }
+  .st.warn { background:var(--warn-pale); color:var(--warn); } .st.none { background:var(--none-pale); color:var(--none); }
+  .big { margin-top:8px; display:flex; align-items:baseline; gap:6px; }
+  .big b { font-size:1.9rem; font-variant-numeric:tabular-nums; }
+  .big span { color:var(--ink-soft); font-size:.8rem; }
+  .bar { margin-top:6px; height:8px; border-radius:4px; background:var(--none-pale); overflow:hidden; position:relative; }
+  .bar i { display:block; height:100%; background:var(--safe); }
+  .card.caution .bar i { background:var(--caution); } .card.warn .bar i { background:var(--warn); }
+  .bar em { position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--ink); opacity:.35; }
+  .kv { margin:8px 0 0; display:grid; grid-template-columns:auto 1fr; gap:2px 10px; font-size:.82rem; }
+  .kv span { color:var(--ink-soft); }
+  .kv b { font-variant-numeric:tabular-nums; }
+  .kv b.hot { color:var(--warn); }
+  .kv small { color:var(--ink-soft); font-weight:400; }
+  .tablewrap { margin-top:22px; overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
+  table { width:100%; border-collapse:collapse; font-size:.84rem; }
+  th, td { padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap; text-align:left; }
+  th { background:#f5f9fc; font-size:.74rem; color:var(--ink-soft); }
+  td.n { text-align:right; font-variant-numeric:tabular-nums; }
+  td.d { text-align:center; font-variant-numeric:tabular-nums; }
+  td.d.x { color:var(--none); background:var(--none-pale); }
+  td.d.hot { background:var(--caution-pale); font-weight:700; }
+  td.d.miss { color:var(--warn); background:var(--warn-pale); }
+  tr:last-child td { border-bottom:none; }
   .sum { margin-top:14px; display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
   .sum div { padding:10px 14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--none); border-radius:10px; }
   .sum div b { display:block; font-size:1.6rem; font-variant-numeric:tabular-nums; }
@@ -48,232 +82,211 @@
   .tag { display:inline-block; padding:1px 7px; border-radius:4px; font-size:.7rem; background:var(--none-pale); color:var(--none); }
   .tag.head { background:#e7edf7; color:#2c4a7c; }
   .tag.sub { background:var(--caution-pale); color:var(--caution); }
-  .cards { margin-top:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; }
-  .card { padding:14px 16px 12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--none); border-radius:12px; }
-  .card.safe { border-top-color:var(--safe); } .card.caution { border-top-color:var(--caution); } .card.warn { border-top-color:var(--warn); }
-  .card .who { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
-  .card .who b { font-size:1.05rem; }
-  .card .who small { color:var(--ink-soft); font-size:.75rem; }
-  .st { display:inline-block; margin-top:6px; padding:2px 10px; border-radius:999px; font-size:.78rem; font-weight:800; }
-  .st.safe { background:var(--safe-pale); color:var(--safe); } .st.caution { background:var(--caution-pale); color:var(--caution); }
-  .st.warn { background:var(--warn-pale); color:var(--warn); } .st.none { background:var(--none-pale); color:var(--none); }
-  .big { margin-top:8px; display:flex; align-items:baseline; gap:6px; }
-  .big b { font-size:1.9rem; font-variant-numeric:tabular-nums; }
-  .big span { color:var(--ink-soft); font-size:.8rem; }
-  .bar { margin-top:6px; height:8px; border-radius:4px; background:var(--none-pale); overflow:hidden; position:relative; }
-  .bar i { display:block; height:100%; background:var(--safe); }
-  .card.caution .bar i { background:var(--caution); } .card.warn .bar i { background:var(--warn); }
-  .bar em { position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--ink); opacity:.35; }
-  .kv { margin:8px 0 0; display:grid; grid-template-columns:auto 1fr; gap:2px 10px; font-size:.82rem; }
-  .kv span { color:var(--ink-soft); }
-  .kv b { font-variant-numeric:tabular-nums; }
-  .kv b.hot { color:var(--warn); }
-  .tablewrap { margin-top:22px; overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
-  table { width:100%; border-collapse:collapse; font-size:.84rem; }
-  th, td { padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap; text-align:left; }
-  th { background:#f5f9fc; font-size:.74rem; color:var(--ink-soft); }
-  td.n { text-align:right; font-variant-numeric:tabular-nums; }
-  td.d { text-align:center; font-variant-numeric:tabular-nums; }
-  td.d.x { color:var(--none); background:var(--none-pale); }
-  td.d.hot { background:var(--caution-pale); font-weight:700; }
-  td.d.miss { color:var(--warn); background:var(--warn-pale); }
-  tr:last-child td { border-bottom:none; }
   .foot { margin-top:16px; font-size:.78rem; color:var(--ink-soft); }
   .foot code { font-family:Consolas,monospace; font-size:.74rem; }
+  .fail { margin-top:16px; padding:14px 16px; background:var(--warn-pale); border:2px solid var(--warn); border-radius:10px; color:var(--warn); }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p class="kicker">SABUROKU MONITOR — STEP 1</p>
+  <p class="kicker">SABUROKU MONITOR — 001-saburoku-monitor</p>
   <h1 id="title">所属長の残業時間管理</h1>
-  <p class="lead">freee の日次勤怠を読んで、部下ごとの今月の時間外を「残り」と「超える予定日」に直したもの。月間45時間だけを見る。通知はしない（画面だけ）。</p>
+  <p class="lead">freee人事労務の日次勤怠を読んで、部下ごとの今月の時間外を「残り」と「超える予定日」に直す。月間の上限だけを見る。通知はしない（画面だけ）。</p>
+  <div id="stale" hidden></div>
   <div class="modes" role="tablist">
-    <button class="mode" id="mode-dep" aria-selected="true">所属長として見る</button>
-    <button class="mode" id="mode-all" aria-selected="false">全社を見る（労務担当）</button>
+    <button type="button" role="tab" class="mode" id="mode-dep" aria-selected="true">所属長として見る</button>
+    <button type="button" role="tab" class="mode" id="mode-all" aria-selected="false">全社を見る（労務担当）</button>
   </div>
+  <div class="meta" id="meta"></div>
   <div id="view-dep">
     <div class="deps" id="deps" role="tablist"></div>
-    <div class="meta" id="meta"></div>
     <div class="cards" id="cards"></div>
     <div class="tablewrap"><table id="days"></table></div>
   </div>
   <div id="view-all" hidden>
-    <div class="meta" id="meta-all"></div>
     <div class="sum" id="sum"></div>
     <div class="filters" id="filters"></div>
     <div class="depstrip" id="depstrip"></div>
-    <div class="tablewrap"><table id="all"></table></div>
+    <div class="tablewrap"><table id="all" class="all"></table></div>
   </div>
+  <div id="fail" class="fail" hidden></div>
   <p class="foot" id="foot"></p>
 </div>
+<script src="saburoku_calc.js"></script>
 <script>
+/* 画面は描画だけ。計算は saburoku_calc.js（純関数）。契約は specs/001-saburoku-monitor/contracts/page-url.md */
 (async () => {
-  const D = await (await fetch('./data/saburoku_2026-09.json?v=4')).json();
-  const hm = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,'0')}`;
-  const md = s => `${+s.slice(5,7)}/${+s.slice(8,10)}`;
-  const wd = ['日','月','火','水','木','金','土'];
-  const cal = D.calendar;
-  const workdays = Object.keys(cal).filter(d => cal[d] === 'normal_day').sort();
-  const asOf = D.as_of;
-  const past = workdays.filter(d => d <= asOf);        // 経過営業日（打刻があるべき日）
-  const future = workdays.filter(d => d > asOf);        // 残り営業日
-  const T = D.thresholds;
+  const S = window.Saburoku;
+  const q = new URLSearchParams(location.search);
+  const dataPath = q.get('data') || './data/saburoku_2026-09.json';
+  const $ = id => document.getElementById(id);
   const label = { safe: '安全', caution: '注意', warn: '警告', none: '打刻なし' };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  /* 1人ぶんの計算。みなし（打刻なし）の日は残業に積まない。休日出勤の時間外は積む。欠勤は「未」ではない */
-  const calc = dep => dep.members.map(m => {
-    const rec = Object.fromEntries(m.records.map(r => [r.date, r]));
-    const has = d => rec[d] && rec[d].clock_in;
-    const punched = past.filter(has);                                   // 所定日に打刻した日
-    const absent = past.filter(d => rec[d] && rec[d].is_absence);       // 欠勤（正当な不在）
-    const halfClock = past.filter(d => rec[d] && rec[d].time_clock_only); // 出勤打刻だけ（退勤なし）
-    const missing = past.filter(d => !has(d) && !(rec[d] && rec[d].is_absence)); // 打刻なし（退勤なしも含む）
-    const holidayWork = Object.keys(rec).filter(d => d <= asOf && cal[d] !== 'normal_day' && rec[d].clock_in); // 休日出勤
-    const ot = [...punched, ...holidayWork].reduce((a, d) => a + rec[d].overtime_mins, 0);
-    const pace = punched.length ? ot / punched.length : 0;              // 1日あたり＝時間外 ÷ 打刻した所定日数
-    const remain = T.warning_mins - ot;
-    let hitDate = null, acc = ot;
-    if (pace > 0 && ot < T.warning_mins) {
-      for (const d of future) { acc += pace; if (acc >= T.warning_mins) { hitDate = d; break; } }
-    }
-    const forecast = ot + pace * future.length;
-    const status = punched.length === 0 && holidayWork.length === 0 ? 'none' : ot >= T.warning_mins ? 'warn' : ot >= T.caution_mins ? 'caution' : 'safe';
-    return { m, rec, punched, absent, halfClock, missing, holidayWork, ot, pace, remain, hitDate, forecast, status };
-  });
+  /* ── 読めない朝（K024・T25）：一覧の枠を出し「取得できず」 ── */
+  let D;
+  try {
+    const res = await fetch(dataPath + (dataPath.includes('?') ? '&' : '?') + 'v=' + Date.now());
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    D = await res.json();
+  } catch (err) {
+    $('title').textContent = '所属長の残業時間管理 — 今朝の数字を読めていません';
+    $('fail').hidden = false;
+    $('fail').innerHTML = `<b>数字を読めていません。</b>この画面の数字は無効です。空白は「残業なし」ではありません。<br><small>読もうとしたもの：<code>${esc(dataPath)}</code>／理由：${esc(err.message)}</small>`;
+    $('cards').innerHTML = `<div class="card none"><div class="who"><b>取得できず</b></div><span class="st none">取得できず</span><div class="big"><b>—</b><span>今月の時間外</span></div></div>`;
+    $('days').innerHTML = '<tr><th>氏名</th><th>状態</th></tr><tr><td>全員</td><td class="d miss">取得できず</td></tr>';
+    $('meta').innerHTML = `<span>対象月 <b>—</b></span><span>時点 <b>—</b></span>`;
+    document.querySelectorAll('.mode, .deps').forEach(el => el.setAttribute('disabled', ''));
+    return;
+  }
 
-  const render = dep => {
-    const rows = calc(dep);
-    document.getElementById('title').textContent = `${dep.group.name} ・ 所属長 ${dep.manager.name}（${dep.manager.position}）の残業時間管理`;
-    document.getElementById('meta').innerHTML =
-      `<span>対象月 <b>${+D.month.slice(0,4)}年${+D.month.slice(5,7)}月</b></span>` +
-      `<span>時点 <b>${md(asOf)}</b>（打刻は ${md(past[past.length-1])} まで）</span>` +
-      `<span>経過 <b>${past.length}</b> 営業日 ／ 残り <b>${future.length}</b> 営業日</span>` +
-      `<span>注意 <b>${hm(T.caution_mins)}</b> ／ 警告 <b>${hm(T.warning_mins)}</b>（月間）</span>`;
+  const today = q.get('today') || D.as_of;                 // research R-1：端末の時計は使わない
+  const monthFirst = D.month + '-01';
+  const th = S.pickThreshold(D.threshold_history, D.thresholds, monthFirst);
+  const cal = D.calendar;
+  const bd = S.businessDays(cal);
+  const past = bd.filter(d => d < today), future = bd.filter(d => d >= today);
 
-    document.getElementById('cards').innerHTML = rows.map(r => `
-      <div class="card ${r.status}">
-        <div class="who"><b>${r.m.name}</b><small>${r.m.num}${r.m.position ? ' ・ ' + r.m.position : ''}${r.m.self ? ' ・ 自分' : ''}</small></div>
-        <span class="st ${r.status}">${label[r.status]}</span>
-        <div class="big"><b>${hm(r.ot)}</b><span>今月の時間外</span></div>
-        <div class="bar"><i style="width:${Math.min(100, r.ot / T.warning_mins * 100)}%"></i><em style="left:${T.caution_mins / T.warning_mins * 100}%"></em></div>
-        <div class="kv">
-          <span>残り（45hまで）</span><b class="${r.remain <= 0 ? 'hot' : ''}">${r.punched.length ? (r.remain > 0 ? hm(r.remain) : '超過 ' + hm(-r.remain)) : '—'}</b>
-          <span>1日あたり</span><b>${r.punched.length ? hm(Math.round(r.pace)) : '—'}</b>
-          <span>超える予定日</span><b class="${r.hitDate || r.ot >= T.warning_mins ? 'hot' : ''}">${r.ot >= T.warning_mins ? '到達済み' : r.hitDate ? md(r.hitDate) + '（' + wd[new Date(r.hitDate).getDay()] + '）' : r.punched.length ? '月内は超えない見込み' : '—'}</b>
-          <span>月末の見込み</span><b>${r.punched.length ? hm(Math.round(r.forecast)) : '—'}</b>
-          <span>打刻なし</span><b class="${r.missing.length ? 'hot' : ''}">${r.missing.length} 日 / ${past.length} 日${r.halfClock.length ? '（退勤なし ' + r.halfClock.length + '）' : ''}</b>
-          ${r.absent.length ? `<span>欠勤</span><b>${r.absent.length} 日</b>` : ''}
-          ${r.holidayWork.length ? `<span>休日出勤</span><b class="hot">${r.holidayWork.length} 日（${hm(r.holidayWork.reduce((a, d) => a + r.rec[d].overtime_mins, 0))} を時間外に含む）</b>` : ''}
-        </div>
-      </div>`).join('');
+  /* ── 鮮度（K023・T25・T31）── */
+  const fr = S.freshness ? safe(() => S.freshness(D, today)) : null;
+  function safe(fn) { try { return fn(); } catch (e) { return null; } }
+  if (fr && fr.undeterminable) {
+    $('stale').hidden = false;
+    $('stale').innerHTML = `前営業日を判定できません（カレンダーが前月を含んでいません）。<small>数字は ${esc(fmtDT(D.fetched_at))} 取得・打刻は ${fr.lastPunchDate ? S.md(fr.lastPunchDate) : '—'} まで。今日 ${S.md(today)}。</small>`;
+  } else if (fr && fr.stale) {
+    $('stale').hidden = false;
+    $('stale').innerHTML = `前回 ${esc(fmtDT(D.fetched_at))} の数字です（${S.md(fr.lastPunchDate)} の打刻まで）。<small>前営業日 ${S.md(fr.prevBusinessDay)}（${S.weekday(fr.prevBusinessDay)}）の打刻を含んでいません。今日 ${S.md(today)}（${S.weekday(today)}）の朝の数字としては古い。</small>`;
+  }
+  function fmtDT(iso) { return iso ? iso.replace('T', ' ').slice(0, 16).replace(/-/g, '/') : '—'; }
 
-    const extra = [...new Set(rows.flatMap(r => r.holidayWork))].sort();   // 休日出勤があった日だけ列を足す
-    const cols = [...past, ...extra].sort();
-    const th = '<tr><th>氏名</th>' + cols.map(d => `<th style="text-align:center${cal[d] !== 'normal_day' ? ';color:var(--warn)' : ''}">${md(d)}<br><small>${wd[new Date(d).getDay()]}${cal[d] !== 'normal_day' ? '・休' : ''}</small></th>`).join('') + '<th style="text-align:right">合計</th></tr>';
-    const tr = rows.map(r => '<tr><td><b>' + r.m.name + '</b></td>' + cols.map(d => {
+  /* ── 共通のメタ（K013・T30）── */
+  const nextTh = th.next ? `・次回 ${th.next.effective_from.replace(/-/g, '/')}〜 ${S.hm(th.next.warning_mins)}／${S.hm(th.next.caution_mins)}` : '';
+  $('meta').innerHTML =
+    `<span>対象月 <b>${+D.month.slice(0, 4)}年${+D.month.slice(5, 7)}月</b>（勤務月）</span>` +
+    `<span>時点 <b>${S.md(today)}（${S.weekday(today)}）</b>・打刻は ${past.length ? S.md(past[past.length - 1]) : '—'} まで</span>` +
+    `<span>経過 <b>${past.length}</b> ／ 残り <b>${future.length}</b> 営業日</span>` +
+    `<span class="th">閾値 警告 <b>${S.hm(th.warning_mins)}</b>／注意 <b>${S.hm(th.caution_mins)}</b>（${th.effective_from ? th.effective_from.replace(/-/g, '/') + '〜' : '既定'}）${esc(nextTh)}</span>`;
+
+  /* ── 1人ぶんのカード（K012・K016）── */
+  const card = r => {
+    const pct = Math.min(100, r.ot / th.warning_mins * 100);
+    const hit = r.ot >= th.warning_mins ? '到達済み'
+      : r.hitDate ? `${S.md(r.hitDate)}（${S.weekday(r.hitDate)}）${r.paceIsRough ? ' <small>まだ目安</small>' : ''}`
+      : r.punched.length ? '月内は超えない見込み' : '—';
+    return `<div class="card ${r.status}">
+      <div class="who"><b>${esc(r.m.name)}</b><small>${esc(r.m.num)}${r.m.position ? ' ・ ' + esc(r.m.position) : ''}${r.m.self ? ' ・ 自分' : ''}</small></div>
+      <span class="st ${r.status}">${label[r.status]}</span>
+      <div class="big"><b>${S.hm(r.ot)}</b><span>今月の時間外</span></div>
+      <div class="bar"><i style="width:${pct}%"></i><em style="left:${th.caution_mins / th.warning_mins * 100}%"></em></div>
+      <div class="kv">
+        <span>残り（${S.hm(th.warning_mins)} まで）</span><b class="${r.remain <= 0 ? 'hot' : ''}">${r.punched.length || r.holidayWork.length ? (r.remain > 0 ? S.hm(r.remain) : '超過 ' + S.hm(-r.remain)) : '—'}</b>
+        <span>1日あたり</span><b>${r.punched.length ? S.hm(r.pace) : '—'}</b>
+        <span>超える予定日</span><b class="${r.hitDate || r.ot >= th.warning_mins ? 'hot' : ''}">${hit}</b>
+        <span>月末の見込み</span><b>${r.punched.length ? S.hm(r.forecast) : '—'}</b>
+        <span>打刻なし</span><b class="${r.missing.length ? 'hot' : ''}">${r.missing.length} 日 / ${past.length} 日${r.halfClock.length ? '（退勤なし ' + r.halfClock.length + '）' : ''}</b>
+        ${r.absent.length ? `<span>欠勤</span><b>${r.absent.length} 日</b>` : ''}
+        ${r.holidayWork.length ? `<span>休日出勤</span><b class="hot">${r.holidayWork.length} 日（${S.hm(r.otHoliday)} を合計に含む）</b>` : ''}
+      </div>
+    </div>`;
+  };
+
+  /* ── 日別の表（K017）── */
+  const dayTable = rows => {
+    const extra = [...new Set(rows.flatMap(r => r.holidayWork))];
+    const cols = [...new Set([...past, ...extra])].sort();
+    const th_ = '<tr><th>氏名</th>' + cols.map(d => `<th style="text-align:center${cal[d] !== 'normal_day' ? ';color:var(--warn)' : ''}">${S.md(d)}<br><small>${S.weekday(d)}${cal[d] !== 'normal_day' ? '・休' : ''}</small></th>`).join('') + '<th style="text-align:right">合計</th></tr>';
+    const tr = rows.map(r => '<tr><td><b>' + esc(r.m.name) + '</b></td>' + cols.map(d => {
       const x = r.rec[d];
-      if (cal[d] !== 'normal_day') return x && x.clock_in ? `<td class="d hot" title="${x.clock_in}〜${x.clock_out} 休日出勤">${hm(x.overtime_mins)}</td>` : '<td class="d x">—</td>';
+      if (cal[d] !== 'normal_day') return x && x.clock_in ? `<td class="d hot" title="${x.clock_in}〜${x.clock_out} 休日出勤">${S.hm(x.overtime_mins)}</td>` : '<td class="d x">—</td>';
       if (x && x.is_absence) return '<td class="d x" title="欠勤">欠</td>';
-      if (x && x.time_clock_only) return '<td class="d miss" title="出勤打刻のみ。退勤打刻が無い">退勤なし</td>';
+      if (x && x.time_clock_only && !x.clock_in) return '<td class="d miss" title="出勤打刻のみ。退勤打刻が無い">退勤なし</td>';
       if (!x || !x.clock_in) return '<td class="d miss">未</td>';
       const cls = x.overtime_mins >= 180 ? 'hot' : x.overtime_mins === 0 ? 'x' : '';
-      return `<td class="d ${cls}" title="${x.clock_in}〜${x.clock_out}">${hm(x.overtime_mins)}</td>`;
-    }).join('') + `<td class="n"><b>${hm(r.ot)}</b></td></tr>`).join('');
-    document.getElementById('days').innerHTML = th + tr;
+      return `<td class="d ${cls}" title="${x.clock_in}〜${x.clock_out}">${S.hm(x.overtime_mins)}</td>`;
+    }).join('') + `<td class="n"><b>${S.hm(r.ot)}</b></td></tr>`).join('');
+    return th_ + tr;
   };
 
-  /* 部署の切替。本来は「ログインした所属長の部下だけ」。ここでは部署を選んで代える */
-  const deps = document.getElementById('deps');
+  /* ── 所属長ビュー（K012）── */
+  const calcDept = dep => S.sortMembers(dep.members.map(m => S.personMonth(m, cal, today, th)));
+  const renderDept = dep => {
+    const rows = calcDept(dep);
+    $('title').textContent = `${dep.group.name} ・ 所属長 ${dep.manager.name}（${dep.manager.position}）の残業時間管理`;
+    $('cards').innerHTML = rows.map(card).join('');
+    $('days').innerHTML = dayTable(rows);
+  };
+  const deps = $('deps');
   deps.innerHTML = D.departments.map((dep, i) => {
-    const n = calc(dep).filter(r => r.status === 'warn' || r.status === 'caution').length;
-    return `<button class="dep" role="tab" aria-selected="${i === 0}" data-i="${i}">${dep.group.name} ・ ${dep.manager.name}<span class="cnt">${dep.members.length}人${n ? ' ・ 要対応 ' + n : ''}</span></button>`;
+    const n = calcDept(dep).filter(r => r.status === 'warn' || r.status === 'caution').length;
+    return `<button type="button" class="dep" role="tab" aria-selected="${i === 0}" data-i="${i}">${esc(dep.group.name)} ・ ${esc(dep.manager.name)}<span class="cnt">${dep.members.length}人${n ? ' ・ 要対応 ' + n : ''}</span></button>`;
   }).join('');
-  const select = i => {
+  const selectDep = i => {
     deps.querySelectorAll('.dep').forEach(o => o.setAttribute('aria-selected', String(+o.dataset.i === i)));
-    render(D.departments[i]);
-    history.replaceState(null, '', '#dep=' + i);
+    renderDept(D.departments[i]);
+    history.replaceState(null, '', location.pathname + location.search + '#dep=' + i);
   };
-  deps.querySelectorAll('.dep').forEach(b => b.addEventListener('click', () => select(+b.dataset.i)));
-  const initialHash = location.hash;
-  const m0 = initialHash.match(/dep=(\d+)/);   // #dep=1 で部署を指定して開ける
-  select(m0 && D.departments[+m0[1]] ? +m0[1] : 0);
+  deps.querySelectorAll('.dep').forEach(b => b.addEventListener('click', () => selectDep(+b.dataset.i)));
 
-  /* ── 全社ビュー（労務担当）。所属長がいない部署や、所属長が見ていない場合の押さえ ── */
+  /* ── 全社ビュー（K019・K020）── */
   const C = D.company;
   const heads = Object.fromEntries(C.members.filter(m => m.is_head).map(m => [m.dept, m]));
-  const allRows = calc({ members: C.members }).map(r => Object.assign(r, {
-    head: heads[r.m.dept] || null,
-    rank: { warn: 0, caution: 1, safe: 2, none: 3 }[r.status]
-  }));
+  const allRows = C.members.map(m => Object.assign(S.personMonth(m, cal, today, th), { head: heads[m.dept] || null }));
   const state = { st: new Set(['warn', 'caution', 'safe', 'none']), dept: '' };
-  const countBy = rows => ({ warn: rows.filter(r => r.status === 'warn').length, caution: rows.filter(r => r.status === 'caution').length, safe: rows.filter(r => r.status === 'safe').length, none: rows.filter(r => r.status === 'none').length });
-
+  const countBy = rows => Object.fromEntries(['warn', 'caution', 'safe', 'none'].map(k => [k, rows.filter(r => r.status === k).length]));
   const renderAll = () => {
     const c = countBy(allRows);
-    document.getElementById('meta-all').innerHTML =
-      `<span>対象 <b>${allRows.length}</b> 人（役員 ${C.excluded.length} 人は勤怠管理なしで対象外）</span>` +
-      `<span>時点 <b>${md(asOf)}</b>（打刻は ${md(past[past.length-1])} まで）</span>` +
-      `<span>注意 <b>${hm(T.caution_mins)}</b> ／ 警告 <b>${hm(T.warning_mins)}</b>（月間）</span>`;
-    document.getElementById('sum').innerHTML =
-      `<div class="warn"><b>${c.warn}</b><span>警告（45h 以上）</span></div>` +
-      `<div class="caution"><b>${c.caution}</b><span>注意（30h 以上）</span></div>` +
-      `<div class="safe"><b>${c.safe}</b><span>安全（打刻あり・30h 未満）</span></div>` +
+    $('title').textContent = '全社の残業時間管理（労務担当）';
+    $('sum').innerHTML =
+      `<div class="warn"><b>${c.warn}</b><span>警告（${S.hm(th.warning_mins)} 以上）</span></div>` +
+      `<div class="caution"><b>${c.caution}</b><span>注意（${S.hm(th.caution_mins)} 以上）</span></div>` +
+      `<div class="safe"><b>${c.safe}</b><span>安全（打刻あり・${S.hm(th.caution_mins)} 未満）</span></div>` +
       `<div><b>${c.none}</b><span>打刻なし（今月の打刻がゼロ）</span></div>`;
-
-    document.getElementById('depstrip').innerHTML = C.departments.map(d => {
-      const rows = allRows.filter(r => r.m.dept === d.code); const k = countBy(rows);
-      const cls = k.warn ? 'hot' : k.caution ? 'mid' : ''; const nohead = !heads[d.code] ? ' nohead' : '';
-      return `<span class="${cls}${nohead}" title="${d.hq}">${d.name}${heads[d.code] ? '' : '（所属長なし）'} ${k.warn ? '警告' + k.warn + ' ' : ''}${k.caution ? '注意' + k.caution + ' ' : ''}${k.none ? '未' + k.none : ''}</span>`;
+    $('depstrip').innerHTML = C.departments.map(d => {
+      const k = countBy(allRows.filter(r => r.m.dept === d.code));
+      const cls = k.warn ? 'hot' : k.caution ? 'mid' : ''; const nohead = heads[d.code] ? '' : ' nohead';
+      return `<span class="${cls}${nohead}" title="${esc(d.hq)}">${esc(d.name)}${heads[d.code] ? '' : '（所属長なし）'} ${k.warn ? '警告' + k.warn + ' ' : ''}${k.caution ? '注意' + k.caution + ' ' : ''}${k.none ? '未' + k.none : ''}</span>`;
     }).join('');
-
-    const f = document.getElementById('filters');
+    const f = $('filters');
     if (!f.dataset.ready) {
-      f.innerHTML = [['warn', '警告'], ['caution', '注意'], ['safe', '安全'], ['none', '打刻なし']].map(([k, l]) =>
-        `<label><input type="checkbox" data-st="${k}" checked> ${l}</label>`).join('') +
-        `<select id="f-dept"><option value="">すべての部門</option>${C.departments.map(d => `<option value="${d.code}">${d.hq} ／ ${d.name}</option>`).join('')}</select>` +
-        `<span class="n" id="f-n"></span>`;
+      f.innerHTML = [['warn', '警告'], ['caution', '注意'], ['safe', '安全'], ['none', '打刻なし']].map(([k, l]) => `<label><input type="checkbox" data-st="${k}" checked> ${l}</label>`).join('') +
+        `<select id="f-dept"><option value="">すべての部門</option>${C.departments.map(d => `<option value="${d.code}">${esc(d.hq)} ／ ${esc(d.name)}</option>`).join('')}</select><span class="n" id="f-n"></span>`;
       f.querySelectorAll('input[data-st]').forEach(i => i.addEventListener('change', () => { i.checked ? state.st.add(i.dataset.st) : state.st.delete(i.dataset.st); renderAll(); }));
       f.querySelector('#f-dept').addEventListener('change', e => { state.dept = e.target.value; renderAll(); });
       f.dataset.ready = '1';
     }
-
-    const rows = allRows.filter(r => state.st.has(r.status) && (!state.dept || r.m.dept === state.dept))
-      .sort((a, b) => a.rank - b.rank || b.ot - a.ot || a.m.dept.localeCompare(b.m.dept) || a.m.num.localeCompare(b.m.num));
-    document.getElementById('f-n').textContent = `${rows.length} / ${allRows.length} 人`;
-    const th = '<tr><th>状態</th><th>本部</th><th>部門</th><th>所属長</th><th>氏名</th><th>役職</th><th style="text-align:right">今月の時間外</th><th style="text-align:right">残り</th><th>超える予定日</th><th style="text-align:right">打刻なし</th><th>データ</th></tr>';
-    const tr = rows.map(r => `<tr class="${r.status}">
-      <td><span class="st ${r.status}" style="margin:0">${label[r.status]}</span></td>
-      <td>${r.m.hq || ''}</td><td>${r.m.dept_name}</td>
-      <td>${r.head ? (r.head.employee_id === r.m.employee_id ? '<span class="tag head">自分（部長）</span>' : r.head.name) : '<span class="tag">所属長なし</span>'}</td>
-      <td><b>${r.m.name}</b>${r.m.sub.length ? ' <span class="tag sub" title="' + r.m.sub.join('、') + '">兼務</span>' : ''}</td>
-      <td>${r.m.position || '—'}</td>
-      <td class="n">${r.punched.length ? hm(r.ot) : '—'}</td>
-      <td class="n">${r.punched.length ? (r.remain > 0 ? hm(r.remain) : '超過 ' + hm(-r.remain)) : '—'}</td>
-      <td>${r.ot >= T.warning_mins ? '到達済み' : r.hitDate ? md(r.hitDate) + '（' + wd[new Date(r.hitDate).getDay()] + '）' : r.punched.length ? '月内は超えない見込み' : '—'}</td>
-      <td class="n">${r.missing.length} / ${past.length}</td>
-      <td><span class="tag">${r.m.data_state}</span></td>
-    </tr>`).join('');
-    const tbl = document.getElementById('all');
-    tbl.className = 'all';
-    tbl.innerHTML = th + tr;
+    const rows = S.sortMembers(allRows.filter(r => state.st.has(r.status) && (!state.dept || r.m.dept === state.dept)));
+    $('f-n').textContent = `${rows.length} / ${allRows.length} 人（役員 ${C.excluded.length} 人は対象外）`;
+    $('all').innerHTML = '<tr><th>状態</th><th>本部</th><th>部門</th><th>所属長</th><th>氏名</th><th>役職</th><th style="text-align:right">今月の時間外</th><th style="text-align:right">残り</th><th>超える予定日</th><th style="text-align:right">打刻なし</th><th>データ</th></tr>' +
+      rows.map(r => `<tr class="${r.status}">
+        <td><span class="st ${r.status}" style="margin:0">${label[r.status]}</span></td>
+        <td>${esc(r.m.hq || '')}</td><td>${esc(r.m.dept_name)}</td>
+        <td>${r.head ? (r.head.employee_id === r.m.employee_id ? '<span class="tag head">自分（部長）</span>' : esc(r.head.name)) : '<span class="tag">所属長なし</span>'}</td>
+        <td><b>${esc(r.m.name)}</b>${r.m.sub && r.m.sub.length ? ' <span class="tag sub" title="' + esc(r.m.sub.join('、')) + '">兼務</span>' : ''}</td>
+        <td>${esc(r.m.position || '—')}</td>
+        <td class="n">${r.punched.length || r.holidayWork.length ? S.hm(r.ot) : '—'}</td>
+        <td class="n">${r.punched.length || r.holidayWork.length ? (r.remain > 0 ? S.hm(r.remain) : '超過 ' + S.hm(-r.remain)) : '—'}</td>
+        <td>${r.ot >= th.warning_mins ? '到達済み' : r.hitDate ? S.md(r.hitDate) + '（' + S.weekday(r.hitDate) + '）' : r.punched.length ? '月内は超えない見込み' : '—'}</td>
+        <td class="n">${r.missing.length} / ${past.length}</td>
+        <td><span class="tag">${esc(r.m.data_state || '')}</span></td>
+      </tr>`).join('');
   };
 
+  /* ── 切替と初期表示 ── */
+  const initialHash = location.hash;
   const setMode = all => {
-    document.getElementById('mode-dep').setAttribute('aria-selected', String(!all));
-    document.getElementById('mode-all').setAttribute('aria-selected', String(all));
-    document.getElementById('view-dep').hidden = all;
-    document.getElementById('view-all').hidden = !all;
-    if (all) { renderAll(); document.getElementById('title').textContent = '全社の残業時間管理（労務担当）'; history.replaceState(null, '', '#all'); }
-    else { select(+(deps.querySelector('.dep[aria-selected="true"]') || {dataset:{i:0}}).dataset.i); }
+    $('mode-dep').setAttribute('aria-selected', String(!all));
+    $('mode-all').setAttribute('aria-selected', String(all));
+    $('view-dep').hidden = all; $('view-all').hidden = !all;
+    if (all) { renderAll(); history.replaceState(null, '', location.pathname + location.search + '#all'); }
+    else selectDep(+((deps.querySelector('.dep[aria-selected="true"]') || { dataset: { i: 0 } }).dataset.i));
   };
-  document.getElementById('mode-dep').addEventListener('click', () => setMode(false));
-  document.getElementById('mode-all').addEventListener('click', () => setMode(true));
-  if (initialHash === '#all') setMode(true);
+  $('mode-dep').addEventListener('click', () => setMode(false));
+  $('mode-all').addEventListener('click', () => setMode(true));
+  const m0 = initialHash.match(/dep=(\d+)/);
+  if (initialHash === '#all') setMode(true); else selectDep(m0 && D.departments[+m0[1]] ? +m0[1] : 0);
 
-  document.getElementById('foot').innerHTML =
-    `数字は ${D.source} から <code>${D.endpoints[0]}</code> で読んだ日次の時間外（freee が自動計算したもの）。取得 ${D.fetched_at.replace('T', ' ').slice(0, 16)}。` +
-    `「未」は打刻なし（freee は所定どおり480分を立てるが、ここでは残業に積まない）。「欠」は欠勤（is_absence）。「退勤なし」は出勤打刻だけの日（work_records では打刻なしと同じに見えるので time_clocks で見分ける）。休日出勤の時間外は合計に含める。1日あたり＝時間外 ÷ 打刻した日数。超える予定日＝そのペースで残り営業日を積んで45時間に届く日。` +
-    `閾値は ${T.note}。`;
+  $('foot').innerHTML = `数字は ${esc(D.source)} から <code>${esc(D.endpoints[0])}</code> で読んだ日次の時間外（freee が自動計算したもの）。取得 ${esc(fmtDT(D.fetched_at))}。` +
+    `「未」は打刻なし（freee は所定どおり480分を立てるが、残業には積まない）。「欠」は欠勤。「退勤なし」は出勤打刻だけの日（打刻の記録で見分ける）。休日出勤の時間外は合計に含め、1日あたりには含めない。閾値の正本は freee の36協定設定で、こちらは有効開始日つきの写し。`;
 })();
 </script>
 </body>
