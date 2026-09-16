@@ -87,13 +87,13 @@ index.html            iframe のキャッシュ番号だけ
 
 ### 検証（先に書く）
 
-- [ ] K014 [US2] `check_saburoku.js`：長瀬 `missing.length===4`・`halfClock.length===1`・`punched.length===5`・pace=102／加瀬 `absent.length===1`・`missing.length===0`／平井 ot=0・status='safe'／相川 status='none'・missing=9／堀内 `holidayWork=['2026-09-12']` 〔T01・T05・T06・T10・T11・T12〕
+- [X] K014 [US2] `check_saburoku.js`：長瀬 `missing.length===4`・`halfClock.length===1`・`punched.length===5`・pace=102／加瀬 `absent.length===1`・`missing.length===0`／平井 ot=0・status='safe'／相川 status='none'・missing=9／堀内 `holidayWork=['2026-09-12']` 〔T01・T05・T06・T10・T11・T12〕
 
 ### 実装
 
-- [ ] K015 [US2] `saburoku_calc.js`：`personMonth` に absent／halfClock／missing の区別を入れる（K010 に含めてよいが、assert はここで通す） 〔T05・T06・T11・T12〕
-- [ ] K016 [US2] `saburoku.html`：カードに「打刻なし n日/N日（退勤なし k）」「欠勤 n日」「休日出勤 n日（h:mm を合計に含む）」を出す。0 のものは出さない 〔T05・T06・T10・T11・T12〕
-- [ ] K017 [US2] `saburoku.html`：日別の表。列＝経過営業日＋休日出勤があった日（「休」）。セル＝時間外／「未」／「欠」／「退勤なし」。3時間以上は色 〔T06・T10・T11・T12・T16〕
+- [X] K015 [US2] `saburoku_calc.js`：`personMonth` に absent／halfClock／missing の区別を入れる（K010 に含めてよいが、assert はここで通す） 〔T05・T06・T11・T12〕
+- [X] K016 [US2] `saburoku.html`：カードに「打刻なし n日/N日（退勤なし k）」「欠勤 n日」「休日出勤 n日（h:mm を合計に含む）」を出す。0 のものは出さない 〔T05・T06・T10・T11・T12〕
+- [X] K017 [US2] `saburoku.html`：日別の表。列＝経過営業日＋休日出勤があった日（「休」）。セル＝時間外／「未」／「欠」／「退勤なし」。3時間以上は色 〔T06・T10・T11・T12・T16〕
 
 **Checkpoint**: US2 の assert が通る。人事部の画面で 長瀬の行に「未・退勤なし」、加瀬に「欠」、堀内に 9/12（土・休）列。
 
@@ -107,12 +107,12 @@ index.html            iframe のキャッシュ番号だけ
 
 ### 検証（先に書く）
 
-- [ ] K018 [US3] `check_saburoku.js`：`company.members` 全員を `personMonth` → 件数 warn=1／caution=0／safe=6／none=27、`sortMembers` の先頭が白石、`excluded.length===2`、`head_num` の無い部署は 0 件 〔T15・T17〕
+- [X] K018 [US3] `check_saburoku.js`：`company.members` 全員を `personMonth` → 件数 warn=1／caution=0／safe=6／none=27、`sortMembers` の先頭が白石、`excluded.length===2`、`head_num` の無い部署は 0 件 〔T15・T17〕
 
 ### 実装
 
-- [ ] K019 [US3] `saburoku.html`：「所属長として見る／全社を見る」の切替と `#all` 〔T17〕
-- [ ] K020 [US3] `saburoku.html`：全社ビュー。件数カード・部門ストリップ（要対応数・「（所属長なし）」）・状態と部門のフィルタ・一覧（状態・本部・部門・所属長／自分（部長）／所属長なし・氏名・兼務・役職・時間外・残り・予定日・打刻なし・データ） 〔T13・T15・T17〕
+- [X] K019 [US3] `saburoku.html`：「所属長として見る／全社を見る」の切替と `#all` 〔T17〕
+- [X] K020 [US3] `saburoku.html`：全社ビュー。件数カード・部門ストリップ（要対応数・「（所属長なし）」）・状態と部門のフィルタ・一覧（状態・本部・部門・所属長／自分（部長）／所属長なし・氏名・兼務・役職・時間外・残り・予定日・打刻なし・データ） 〔T13・T15・T17〕
 
 **Checkpoint**: US3 の assert が通る。`#all` の画面で白石が先頭、件数が一致。
 
@@ -126,13 +126,13 @@ index.html            iframe のキャッシュ番号だけ
 
 ### 検証（先に書く）
 
-- [ ] K021 [US4] `check_saburoku.js`：`freshness(staleData, '2026-09-15')` → stale=true・prev='2026-09-14'・last='2026-09-11'／`freshness(data, '2026-09-14')` → stale=false／`freshness(data, '2026-09-13')`（日曜）→ prev='2026-09-11'・stale=false／カレンダー外（today='2026-09-01'）→ undeterminable=true 〔T25・T31〕
+- [X] K021 [US4] `check_saburoku.js`：`freshness(staleData, '2026-09-15')` → stale=true・prev='2026-09-14'・last='2026-09-11'／`freshness(data, '2026-09-14')` → stale=false／`freshness(data, '2026-09-13')`（日曜）→ prev='2026-09-11'・stale=false／カレンダー外（today='2026-09-01'）→ undeterminable=true 〔T25・T31〕
 
 ### 実装
 
-- [ ] K022 [US4] `saburoku_calc.js`：`freshness(data, today)`（data-model の Freshness） 〔T25・T31〕
-- [ ] K023 [US4] `saburoku.html`：stale なら最上部に赤で「前回 9/13 19:00 の数字です（9/11 の打刻まで）」、undeterminable なら「前営業日を判定できない（カレンダーが前月を含まない）」。fresh なら下に取得日時だけ 〔T25・T31〕
-- [ ] K024 [US4] `saburoku.html`：JSON の fetch 失敗・parse 失敗のとき、一覧の枠を出して全員「取得できず」（メンバー名は出せないので「取得できず」の行を1つ＋赤の説明）。ハッシュ・クエリは保持 〔T25〕
+- [X] K022 [US4] `saburoku_calc.js`：`freshness(data, today)`（data-model の Freshness） 〔T25・T31〕
+- [X] K023 [US4] `saburoku.html`：stale なら最上部に赤で「前回 9/13 19:00 の数字です（9/11 の打刻まで）」、undeterminable なら「前営業日を判定できない（カレンダーが前月を含まない）」。fresh なら下に取得日時だけ 〔T25・T31〕
+- [X] K024 [US4] `saburoku.html`：JSON の fetch 失敗・parse 失敗のとき、一覧の枠を出して全員「取得できず」（メンバー名は出せないので「取得できず」の行を1つ＋赤の説明）。ハッシュ・クエリは保持 〔T25〕
 
 **Checkpoint**: `?data=..._t25_stale.json` で赤い注意書き、`..._t25_broken.json` で「取得できず」。
 
@@ -140,11 +140,11 @@ index.html            iframe のキャッシュ番号だけ
 
 ## Phase 7: Polish & 検証の記録
 
-- [ ] K025 `index.html`：iframe の `./saburoku.html?v=N` の N を上げる（それ以外は触らない） 〔T17〕
-- [ ] K026 quickstart.md の URL を順に開いてヘッドレス Chrome で撮り、`specs/001-saburoku-monitor/shots/` に保存（目視の証拠） 〔T02〜T07・T17・T25・T30〕
-- [ ] K027 `TESTCASES.md` を更新：T01〜T07・T09〜T17・T25・T30 の状態を「済（Spec Kit 実装で再現）」に、T03 の期待値を「安全・予定日 9/18」に書き換え、T31 は未のまま。確認ログに行を足す 〔T01〜T31〕
-- [ ] K028 `TESTDATA_LOG.md`：Spec Kit の表に tasks・implement の行（聞かれたこと・勝手に決めたこと・こちらが直したこと。K番号の件を含む） 〔T17〕
-- [ ] K029 [P] 記事133の材料ファイル（`My_First_Skills_Graphs/下書きドラフト案/note_draft_axis_b_133_speckit_plan_implement_材料.md`）に、implement で起こったことと「Spec Kit なしの saburoku.html との差」を追記 〔T17〕
+- [X] K025 `index.html`：iframe の `./saburoku.html?v=N` の N を上げる（それ以外は触らない） 〔T17〕
+- [X] K026 quickstart.md の URL を順に開いてヘッドレス Chrome で撮り、`specs/001-saburoku-monitor/shots/` に保存（目視の証拠） 〔T02〜T07・T17・T25・T30〕
+- [X] K027 `TESTCASES.md` を更新：T01〜T07・T09〜T17・T25・T30 の状態を「済（Spec Kit 実装で再現）」に、T03 の期待値を「安全・予定日 9/18」に書き換え、T31 は未のまま。確認ログに行を足す 〔T01〜T31〕
+- [X] K028 `TESTDATA_LOG.md`：Spec Kit の表に tasks・implement の行（聞かれたこと・勝手に決めたこと・こちらが直したこと。K番号の件を含む） 〔T17〕
+- [X] K029 [P] 記事133の材料ファイル（`My_First_Skills_Graphs/下書きドラフト案/note_draft_axis_b_133_speckit_plan_implement_材料.md`）に、implement で起こったことと「Spec Kit なしの saburoku.html との差」を追記 〔T17〕
 
 ---
 

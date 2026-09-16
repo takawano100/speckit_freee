@@ -105,6 +105,64 @@ tryRun('K009', () => {
   ok('T14', '相川に兼務がある', aikawa.sub.length > 0);
 });
 
+/* ── K014: US2 打刻の状態 〔T01・T05・T06・T10・T11・T12〕 ── */
+tryRun('K014', () => {
+  const nagase = pm('人事部', '長瀬 佑樹');
+  eq('T06', '長瀬 打刻した日 5', nagase.punched.length, 5);
+  eq('T06', '長瀬 打刻なし 4（退勤なしを含む）', nagase.missing.length, 4);
+  eq('T12', '長瀬 退勤なし 1（9/11）', nagase.halfClock, ['2026-09-11']);
+  eq('T06', '長瀬 時間外 8:30', nagase.ot, 510);
+  eq('T06', '長瀬 1日あたり 1:42（5日で割る）', nagase.pace, 102);
+  const kase = pm('人事部', '加瀬 亜美');
+  eq('T11', '加瀬 欠勤 1（9/8）', kase.absent, ['2026-09-08']);
+  eq('T11', '加瀬 打刻なし 0（欠勤は数えない）', kase.missing.length, 0);
+  eq('T11', '加瀬 打刻した日 8', kase.punched.length, 8);
+  const hirai = pm('総務部', '平井 直樹');
+  eq('T01', '平井 時間外 0:00', hirai.ot, 0);
+  eq('T01', '平井 状態 安全（打刻はある）', hirai.status, 'safe');
+  eq('T01', '平井 打刻なし 0', hirai.missing.length, 0);
+  const aikawa = pm('人事部', '相川 悠介');
+  eq('T05', '相川 状態 打刻なし', aikawa.status, 'none');
+  eq('T05', '相川 打刻なし 9/9', aikawa.missing.length, 9);
+  const horiuchi = pm('人事部', '堀内 舞');
+  eq('T10', '堀内 休日出勤 9/12', horiuchi.holidayWork, ['2026-09-12']);
+  eq('T10', '堀内 休日の時間外 5:00', horiuchi.otHoliday, 300);
+});
+
+/* ── K018: US3 全社 〔T15・T17〕 ── */
+tryRun('K018', () => {
+  const th = S.pickThreshold(D.threshold_history, D.thresholds, monthFirst);
+  const rows = S.sortMembers(D.company.members.map(m => S.personMonth(m, D.calendar, today, th)));
+  const c = k => rows.filter(r => r.status === k).length;
+  eq('T17', '全社 34人', rows.length, 34);
+  eq('T17', '警告 1', c('warn'), 1);
+  eq('T17', '注意 0（注意線 36h）', c('caution'), 0);
+  eq('T17', '安全 6', c('safe'), 6);
+  eq('T17', '打刻なし 27', c('none'), 27);
+  eq('T17', '先頭は白石', rows[0].m.name, '白石 千夏');
+  eq('T17', '役員 2 人は対象外', D.company.excluded.length, 2);
+  eq('T15', '部長のいない部署 0', D.company.departments.filter(d => !d.head_num).length, 0);
+  ok('T13', '部長は is_head', D.company.members.filter(m => m.is_head).length === 15);
+});
+
+/* ── K021: US4 鮮度 〔T25・T31〕 ── */
+tryRun('K021', () => {
+  const stale = read('saburoku_2026-09_t25_stale.json');
+  const f1 = S.freshness(stale, stale.as_of);          // 今日 9/15（火）
+  eq('T25', '古い朝：前営業日 9/14', f1.prevBusinessDay, '2026-09-14');
+  eq('T25', '古い朝：打刻の最終日 9/12（堀内の土曜出勤）', f1.lastPunchDate, '2026-09-12');
+  eq('T25', '古い朝：stale=true', f1.stale, true);
+  const f2 = S.freshness(D, '2026-09-14');            // 今日 9/14（月）。前営業日 9/11 を含む
+  eq('T25', '9/14 の朝：stale=false', f2.stale, false);
+  const f3 = S.freshness(D, '2026-09-13');            // 日曜
+  eq('T25', '日曜：前営業日 9/11・stale=false', [f3.prevBusinessDay, f3.stale], ['2026-09-11', false]);
+  const f4 = S.freshness(D, '2026-09-01');            // 月初。カレンダーに前営業日が無い
+  eq('T31', '月初：undeterminable=true', f4.undeterminable, true);
+  let broken = null;
+  try { JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'saburoku_2026-09_t25_broken.json'), 'utf8')); } catch (e) { broken = e; }
+  ok('T25', '壊れた JSON は parse で例外（画面は「取得できず」を出す）', broken !== null);
+});
+
 /* ── 出力 ── */
 for (const line of results) console.log(line);
 const total = results.length;

@@ -175,10 +175,10 @@
       if (review) {
         if (page === 'saburoku') {
           /* 残業管理は独立したページ（saburoku.html）。ハブとは別に読む */
-          const target = './saburoku.html?v=1';
+          const target = './saburoku.html?v=2';
           if (iframe.dataset.doc !== 'saburoku') { iframe.setAttribute('src', target); iframe.dataset.doc = 'saburoku'; }
         } else {
-          const target = './fig_attendance_map.html?v=13#' + page + '&embed';
+          const target = './fig_attendance_map.html?v=14#' + page + '&embed';
           if (iframe.dataset.doc !== 'hub') { iframe.setAttribute('src', target); iframe.dataset.doc = 'hub'; }
           else if (iframe.contentWindow) iframe.contentWindow.location.hash = page + '&embed';
         }

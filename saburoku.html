@@ -92,7 +92,8 @@
   <p class="kicker">SABUROKU MONITOR — 001-saburoku-monitor</p>
   <h1 id="title">所属長の残業時間管理</h1>
   <p class="lead">freee人事労務の日次勤怠を読んで、部下ごとの今月の時間外を「残り」と「超える予定日」に直す。月間の上限だけを見る。通知はしない（画面だけ）。</p>
-  <div id="stale" hidden></div>
+  <div id="stale" class="stale" hidden></div>
+  <div id="fail" class="fail" hidden></div>
   <div class="modes" role="tablist">
     <button type="button" role="tab" class="mode" id="mode-dep" aria-selected="true">所属長として見る</button>
     <button type="button" role="tab" class="mode" id="mode-all" aria-selected="false">全社を見る（労務担当）</button>
@@ -109,7 +110,6 @@
     <div class="depstrip" id="depstrip"></div>
     <div class="tablewrap"><table id="all" class="all"></table></div>
   </div>
-  <div id="fail" class="fail" hidden></div>
   <p class="foot" id="foot"></p>
 </div>
 <script src="saburoku_calc.js"></script>

@@ -103,8 +103,25 @@
   Saburoku.sortMembers = rows =>
     [...rows].sort((a, b) => a.rank - b.rank || a.remain - b.remain || String(a.m.num).localeCompare(String(b.m.num)));
 
-  /* ── 鮮度（K022）── */
-  Saburoku.freshness = () => { throw new Error('K022 未実装'); };
+  /* ── 鮮度（K022）── data-model.md の Freshness（FR-012・R-2）
+   *   prevBusinessDay : カレンダーの営業日で today より前の最後の日（無ければ null）
+   *   lastPunchDate   : データ中の打刻の最終日（全メンバーの records で clock_in がある最大の日付）
+   *   stale           : 前営業日の打刻を含んでいない（lastPunchDate < prevBusinessDay）
+   *   undeterminable  : カレンダーに前営業日が無い（月初。カレンダーが前月を含まない。T31）
+   */
+  Saburoku.freshness = (data, today) => {
+    const prev = Saburoku.prevBusinessDay(data.calendar || {}, today);
+    const members = [
+      ...((data.departments || []).flatMap(d => d.members || [])),
+      ...(((data.company || {}).members) || [])
+    ];
+    let last = null;
+    for (const m of members) for (const r of (m.records || [])) {
+      if (r.clock_in && r.date < today && (!last || r.date > last)) last = r.date;
+    }
+    if (!prev) return { prevBusinessDay: null, lastPunchDate: last, stale: false, undeterminable: true };
+    return { prevBusinessDay: prev, lastPunchDate: last, stale: !last || last < prev, undeterminable: false };
+  };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = Saburoku;
   else root.Saburoku = Saburoku;
