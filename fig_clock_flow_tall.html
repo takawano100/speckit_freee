@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>毎日の打刻から、所属長の残業時間管理まで（縦）</title>
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fffdf8; font-family:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif; }
+  svg { display:block; width:1080px; height:1800px; }
+  .title { font-size:36px; font-weight:800; fill:#243330; }
+  .sub { font-size:18px; fill:#56665f; }
+  .h { font-size:24px; font-weight:800; fill:#243330; }
+  .t { font-size:20px; font-weight:700; fill:#243330; }
+  .s { font-size:16.5px; fill:#56665f; }
+  .m { font-size:14px; fill:#7e8b84; font-family:Consolas,"BIZ UDGothic",monospace; }
+  .o { fill:#c2653f; }
+  .box { fill:#fff; stroke:#c9c0ae; stroke-width:2; }
+  .api { fill:#ddefec; stroke:#1f7a72; stroke-width:2; }
+  .make { fill:#fbe9dd; stroke:#c2653f; stroke-width:2; }
+  .band { fill:#f3efe6; }
+  .arrow { stroke:#56665f; stroke-width:2.5; fill:none; marker-end:url(#ar); }
+  .arrow.thin { stroke:#7e8b84; stroke-width:2; stroke-dasharray:6 5; }
+  .arrow.o { stroke:#c2653f; marker-end:url(#aro); fill:none; }
+  .btn { fill:#1f7a72; }
+  .btn2 { fill:#fff; stroke:#1f7a72; stroke-width:2; }
+  .btnt { font-size:17px; font-weight:700; fill:#fff; text-anchor:middle; }
+  .btnt2 { font-size:15px; font-weight:700; fill:#1f7a72; text-anchor:middle; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 1080 1800" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="打刻から所属長の残業時間管理までの流れ（縦長）">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#56665f"/></marker>
+    <marker id="aro" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#c2653f"/></marker>
+  </defs>
+  <rect x="0" y="0" width="1080" height="1800" fill="#fffdf8"/>
+
+  <!-- タイトル -->
+  <text x="60" y="72" class="title">毎日の打刻から、所属長の残業時間管理まで</text>
+  <text x="60" y="104" class="sub">従業員が打刻し、freee が集計して給与にする。ここまでは freee のまま。無いのは「月の途中で残りを見る」ところ。</text>
+  <text x="60" y="128" class="sub"><tspan font-weight="700" fill="#c2653f">今回の範囲：</tspan>残業時間の上限チェックは 月間・複数月（2〜6ヶ月の平均）・年間 の3種類あるが、今回は<tspan font-weight="700">月間だけ</tspan>に絞る。</text>
+
+  <!-- ① 従業員 -->
+  <rect x="40" y="150" width="1000" height="460" rx="16" class="band"/>
+  <text x="70" y="188" class="h">① 従業員（毎日）</text>
+
+  <rect x="80" y="210" width="250" height="380" rx="28" class="box"/>
+  <rect x="100" y="230" width="210" height="340" rx="16" fill="#f6f4ee" stroke="#e3dcce"/>
+  <text x="205" y="262" class="s" text-anchor="middle">freee人事労務（アプリ / Web）</text>
+  <text x="205" y="286" class="m" text-anchor="middle">ログイン済み ・ 9/14 (月) 08:58</text>
+  <rect x="118" y="304" width="174" height="52" rx="10" class="btn"/><text x="205" y="338" class="btnt">出勤</text>
+  <rect x="118" y="366" width="174" height="52" rx="10" class="btn2"/><text x="205" y="400" class="btnt2">退勤</text>
+  <rect x="118" y="428" width="84" height="44" rx="10" class="btn2"/><text x="160" y="457" class="btnt2">休憩開始</text>
+  <rect x="208" y="428" width="84" height="44" rx="10" class="btn2"/><text x="250" y="457" class="btnt2">休憩終了</text>
+  <text x="118" y="504" class="s">きょうの打刻</text>
+  <text x="118" y="528" class="m">出勤 —:—　退勤 —:—</text>
+  <text x="118" y="556" class="m">打刻を忘れたら → 修正申請</text>
+
+  <text x="380" y="240" class="t">毎日、出勤と退勤を押す</text>
+  <text x="380" y="272" class="s">これが全ての数字の出発点。押さない日は、freee が</text>
+  <text x="380" y="296" class="s">所定どおり 8時間 を立ててしまう（みなし）。</text>
+  <text x="380" y="346" class="t">打刻の入口は 1つではない</text>
+  <text x="380" y="378" class="s">・Web の打刻ボタン ／ スマホアプリ（位置情報つき）</text>
+  <text x="380" y="404" class="s">・Slack ／ LINE 連携の打刻</text>
+  <text x="380" y="430" class="s">・カレンダー入力（打刻ではなく、時間を手で書く）</text>
+  <text x="380" y="456" class="s">・管理者の直接編集 ／ CSV 取り込み</text>
+  <text x="380" y="482" class="s">・API</text>
+  <text x="440" y="482" class="m">POST /employees/{id}/time_clocks</text>
+  <text x="380" y="532" class="s">打刻忘れ・修正は「勤務時間の修正申請」→ 上長が承認。</text>
+  <text x="380" y="558" class="s">この申請・承認の経路も freee にある。</text>
+
+  <!-- ↓ 打刻 -->
+  <path d="M205,592 L205,660" class="arrow"/>
+  <text x="222" y="636" class="m">打刻</text>
+
+  <!-- ② freee -->
+  <rect x="40" y="640" width="1000" height="572" rx="16" class="band"/>
+  <text x="70" y="682" class="h">② freee人事労務 — そのまま使う</text>
+  <text x="640" y="682" class="s">緑＝freee にある。API で読める</text>
+
+  <rect x="90" y="710" width="230" height="86" rx="12" class="api"/>
+  <text x="205" y="746" class="t" text-anchor="middle">打刻</text>
+  <text x="205" y="774" class="m" text-anchor="middle">time_clocks</text>
+
+  <path d="M205,798 L205,838" class="arrow"/>
+
+  <rect x="90" y="842" width="230" height="110" rx="12" class="api"/>
+  <text x="205" y="876" class="t" text-anchor="middle">日次勤怠</text>
+  <text x="205" y="902" class="s" text-anchor="middle">所定 8h ／ 時間外 ／ 深夜</text>
+  <text x="205" y="922" class="s" text-anchor="middle">freee が自動計算</text>
+  <text x="205" y="944" class="m" text-anchor="middle">work_records/{date}</text>
+
+  <!-- 申請→承認（日次を直す） -->
+  <rect x="380" y="856" width="230" height="86" rx="12" class="api"/>
+  <text x="495" y="892" class="t" text-anchor="middle">申請 → 承認</text>
+  <text x="495" y="924" class="m" text-anchor="middle">approval_requests</text>
+  <path d="M378,899 L326,899" class="arrow thin"/>
+  <text x="640" y="884" class="s">修正・残業・休暇の申請を</text>
+  <text x="640" y="908" class="s">上長が承認して、日次が直る</text>
+
+  <path d="M205,954 L205,994" class="arrow"/>
+
+  <rect x="90" y="998" width="230" height="86" rx="12" class="api"/>
+  <text x="205" y="1034" class="t" text-anchor="middle">月次集計</text>
+  <text x="205" y="1062" class="m" text-anchor="middle">work_record_summaries</text>
+
+  <path d="M205,1086 L205,1126" class="arrow"/>
+
+  <rect x="90" y="1130" width="230" height="70" rx="12" class="api"/>
+  <text x="205" y="1160" class="t" text-anchor="middle">月末に締める</text>
+  <text x="205" y="1186" class="s" text-anchor="middle">→ 翌月25日に給与</text>
+
+  <!-- 給与担当・勤怠モニター -->
+  <path d="M322,1041 L376,1041" class="arrow"/>
+  <rect x="380" y="980" width="630" height="206" rx="14" class="box"/>
+  <text x="404" y="1016" class="t">給与担当が見る ・ 勤怠モニター（freee にある）</text>
+  <text x="404" y="1048" class="s">タブは「支払月」で並ぶ。9月の残業は「10月」の札の下にある。</text>
+  <text x="404" y="1074" class="s">締めのあと、前月分の残業代を当月に払う。だから残業時間は</text>
+  <text x="404" y="1100" class="s">「翌月の締めになってから」見えれば足りる、という作り。</text>
+  <text x="404" y="1126" class="s">36協定は「超えたらアイコン」だけ。従業員にも上長にも通知は無い。</text>
+  <text x="404" y="1164" class="m">事後 ・ 正確さが要る ・ 給与の座標系</text>
+
+  <!-- 境界 -->
+  <line x1="40" y1="1230" x2="1040" y2="1230" stroke="#c2653f" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="70" y="1262" class="t o">③ ここから下は freee に無い。外で作る。</text>
+  <text x="560" y="1262" class="s">橙＝作る。freee は読むだけ</text>
+
+  <!-- 所属長 -->
+  <rect x="90" y="1290" width="920" height="260" rx="14" class="make"/>
+  <text x="114" y="1328" class="t">所属長が見る ・ 毎朝1分の残業時間管理</text>
+  <text x="114" y="1362" class="s">違反で罰せられるのは会社と所属長。だから所属長が、月の途中で手を打てなければ意味がない。</text>
+  <text x="114" y="1400" class="s">・自分の部下だけ ／ 支払月ではなく「勤務月」で見る</text>
+  <text x="114" y="1426" class="s">・残り時間 ＝ 45時間 − 今月の実績</text>
+  <text x="114" y="1452" class="s">・いまのペースで、いつ超えるか（到達予定日）</text>
+  <text x="114" y="1478" class="s">・超える前に届く（閾値の 80% で本人と所属長へ。モニターを開かなくても）</text>
+  <text x="114" y="1504" class="s">・36協定の限度時間・特別条項は freee に欄が無いので、こちらで持つ</text>
+  <text x="114" y="1536" class="m">事前 ・ 早さが要る ・ 36協定の座標系　　読むだけ：work_records / employee_group_memberships</text>
+
+  <!-- 日次 → 所属長（橙） -->
+  <path d="M88,899 L60,899 L60,1420 L88,1420" class="arrow o" stroke-width="3"/>
+  <text x="44" y="1170" class="m o" text-anchor="middle" transform="rotate(-90 44,1170)">日次を毎朝読む</text>
+
+  <!-- 予防のループ（所属長 → 従業員） -->
+  <path d="M550,1552 L550,1600 L1060,1600 L1060,578 L334,578" class="arrow o thin" stroke-width="2.5"/>
+  <text x="575" y="1590" class="s o">所属長が仕事を減らす → 翌日からの打刻が減る（予防のループ）</text>
+  <text x="700" y="570" class="m o">予防のループ</text>
+
+  <!-- 凡例と注意 -->
+  <rect x="60" y="1640" width="16" height="16" rx="3" class="api"/><text x="84" y="1654" class="s">freee にある。そのまま使う（API で読める）</text>
+  <rect x="440" y="1640" width="16" height="16" rx="3" class="make"/><text x="464" y="1654" class="s">freee に無い。外で作る</text>
+  <rect x="700" y="1640" width="16" height="16" rx="3" class="box"/><text x="724" y="1654" class="s">人と画面</text>
+
+  <rect x="60" y="1690" width="960" height="80" rx="10" fill="#fbe9dd"/>
+  <rect x="60" y="1690" width="6" height="80" fill="#c2653f"/>
+  <text x="84" y="1722" class="s"><tspan class="t o" font-size="16.5px">前提の注意：</tspan>打刻が無い日も freee は所定どおり 480分 を立てる（みなし）。所属長の残業時間管理は</text>
+  <text x="84" y="1750" class="s">「打刻に基づく数字」と「みなしの数字」を見分けて出す。前提①「毎日打刻する」が崩れると、管理の数字も崩れる。</text>
+</svg>
+</body>
+</html>

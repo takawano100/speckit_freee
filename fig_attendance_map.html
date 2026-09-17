@@ -575,6 +575,28 @@ table.rules td.w { font-family: var(--mono); font-size: .72rem; color: var(--ink
   #p-map .stage::before { display: none; }
 }
 
+/* ── 打刻の流れ（fig_clock_flow の複製） ── */
+#p-flow { --mid: var(--ink-mid); --soft: var(--ink-soft); }
+#p-flow .figwrap { overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
+#p-flow svg { display:block; min-width:960px; width:100%; height:auto; font-family:inherit; }
+#p-flow .t { font-size:15px; fill:var(--ink); }
+#p-flow .h { font-size:18px; font-weight:800; fill:var(--ink); }
+#p-flow .s { font-size:12.5px; fill:var(--mid); }
+#p-flow .m { font-size:11.5px; fill:var(--soft); font-family:Consolas,monospace; }
+#p-flow .box { fill:#fff; stroke:var(--line); stroke-width:1.5; }
+#p-flow .api { fill:var(--api-lift); stroke:var(--api); stroke-width:1.5; }
+#p-flow .make { fill:var(--screen-lift); stroke:var(--screen); stroke-width:1.5; }
+#p-flow .arrow { stroke:var(--mid); stroke-width:2; fill:none; marker-end:url(#ar); }
+#p-flow .arrow.thin { stroke:var(--soft); stroke-width:1.5; stroke-dasharray:5 4; }
+#p-flow .btn { fill:#1f7a72; }
+#p-flow .btn2 { fill:#fff; stroke:#1f7a72; stroke-width:1.5; }
+#p-flow .btnt { font-size:13px; font-weight:700; fill:#fff; text-anchor:middle; }
+#p-flow .btnt2 { font-size:12px; font-weight:700; fill:#1f7a72; text-anchor:middle; }
+#p-flow .flownote { margin:14px 0 0; padding:12px 16px; background:var(--screen-lift); border-left:4px solid var(--screen); border-radius:0 8px 8px 0; font-size:.88rem; color:var(--mid); }
+#p-flow .note b { color:var(--screen); }
+#p-flow ul.legend { margin:14px 0 0; padding:0; list-style:none; display:flex; gap:18px; flex-wrap:wrap; font-size:.8rem; color:var(--mid); }
+#p-flow ul.legend i { display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:-2px; margin-right:6px; border:1.5px solid; }
+
 /* index.html の枠内表示 */
 .embed .top, .embed .tabs { display: none; }
 .embed body, .embed .wrap { padding-top: 0; }
@@ -616,6 +638,7 @@ footer code { font-family: var(--mono); font-size: .72rem; }
   <button class="tab" role="tab" aria-selected="false" data-p="pay">勤怠</button>
   <button class="tab" role="tab" aria-selected="false" data-p="rule">就業規則</button>
   <button class="tab" role="tab" aria-selected="false" data-p="map">勤怠の地図</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="flow">打刻の流れ</button>
   <button class="tab" role="tab" aria-selected="false" data-p="log">わかったこと</button>
 </div>
 
@@ -630,7 +653,9 @@ footer code { font-family: var(--mono); font-size: .72rem; }
       <div class="ok"><b>差分要求ワークベンチ</b><small>index.html / app.js / check.js。確定した要求だけ Spec Kit 入力に出す</small><span class="st">完成 8/31</span></div>
       <div class="ok"><b>連載1本目</b><small>note 通算127「freee人事労務MCP × SDD」</small><span class="st">公開 9/10</span></div>
       <div class="ng"><b>見本（要件定義書1本）</b><small>REQUEST.md と勤怠テストデータを材料にして仕上げる</small><span class="st">未着手・3〜4ヶ月目</span></div>
-      <div class="ng"><b>GitHub リポジトリ化</b><small>git 未初期化。.gitignore を先に置き、認証情報を1コミット目から入れない。記事1本＝1PR</small><span class="st">次にやる</span></div>
+      <div class="ok"><b>GitHub リポジトリ化</b><small>takawano100/speckit_freee（public）。記事1本＝1PR。PR #1 が開いている</small><span class="st">完了 9/11</span></div>
+      <div class="ok"><b>所属長の残業時間管理 — 要求定義</b><small>REQUEST_saburoku_draft.md／TESTCASES.md（済16・未6）／saburoku.html。対応表まで</small><span class="st">9/13</span></div>
+      <div class="ok"><b>Spec Kit に渡して、動くものを作れるか</b><small>9/16 implement まで済。node 72件一致・T01〜T30 を再現。残り＝T31（月初）のデータ、記事133</small><span class="st">9/16 済</span></div>
     </div>
   </section>
 
@@ -644,6 +669,9 @@ footer code { font-family: var(--mono); font-size: .72rem; }
   <section>
     <div class="head"><span>LOG</span><h2>やったこと（新しいものが上）</h2></div>
     <ol class="tl">
+      <li class="hot"><time>2026-09-16</time><div><b>Spec Kit で plan → tasks → implement まで通した</b><span>T30・T25 のテストデータ → plan（憲法チェック5つ PASS。途中で漏れ #2＝月初の前営業日はカレンダー外 → 要求へ戻す）→ tasks 29（全部 T番号、ID は K001）→ implement：検証を先に書いて失敗 → 純関数 → 画面。<code>node check_saburoku.js</code> <b>72件すべて一致</b>。テストが spec の古い数字を2つ見つけた。画面は Spec Kit なし版と同じ見た目、違うのは「正しいと言える根拠」。</span></div></li>
+      <li class="hot"><time>2026-09-14</time><div><b>Spec Kit に渡し始めた（憲法 → specify）</b><span>未決3つを決定（予定日は案A・注意線 36h・取得失敗は赤で表示）→ REQUEST.md 第2部に取り込み → 憲法 v1.0.0（freee が正本／4視点／ATDD／作り込まない／記録する）→ <code>specs/001-saburoku-monitor/spec.md</code>（4ストーリー・FR16・SC7、全部に T番号）。品質チェック全項目パス。<b>clarify 4問</b>：古いの基準＝前営業日の打刻／読めない朝は全員「取得できず」／並びは状態の重い順／閾値は freee が正本・有効開始日つきで写す（年度替わりは古い閾値）→ T30 追加。**clarify の4問目で要求の漏れ（年度替わりの閾値）が見つかり、REQUEST.md に「要求の漏れ台帳」を新設・憲法 v1.1.0。記事132のドラフトを書いた**（My_First_Skills_Graphs）。次は plan → tasks → implement。</span></div></li>
+      <li class="hot"><time>2026-09-13</time><div><b>所属長の残業時間管理（月間）を、要求定義として1日で回した</b><span>36協定アラートの実測 → 4視点のたたき台 → テスト台帳（T01〜T29）→ 確認画面（所属長5部署・全社）→ 要求↔テスト↔発見の対応表。気づき＝検証にはテストケース・テストデータ・検証方法が要求と同時に要る。次は Spec Kit に渡す。</span></div></li>
       <li class="hot"><time>2026-09-10</time><div><b>note 連載1本目を公開</b><span>通算127「freee人事労務MCP × SDD の実測連載」。次は「Spec Kitに実際に渡す回」＝ここから Zenn も始める。書く前に roadmap.md を読む。</span></div></li>
       <li class="hot"><time>2026-09-06</time><div><b>検証の結論</b><span>freeeの勤怠・労務は SDD だけでは形にならない。カスタマイズが必ず入る。ここで案件を「止める」判断。</span></div></li>
       <li><time>2026-09-01</time><div><b>勤務体系5種を作成・36協定を確認・8月分の勤怠を一括投入</b><span>社員別の残業・給与一覧＋個人別の月次明細を作成。fig_org_build.html（36人の組織台帳）。API書き込み98回・画面操作70回。</span></div></li>
@@ -658,6 +686,7 @@ footer code { font-family: var(--mono); font-size: .72rem; }
     <div class="files">
       <a href="./"><b>差分要求ワークベンチ</b><code>index.html / app.js / check.js</code><span>freee既存機能に「そのまま利用・追加・変更・外部補完・対象外・保留」を選び、Spec Kit入力を出す</span></a>
       <a href="fig_org_build.html"><b>36人の組織台帳</b><code>fig_org_build.html</code><span>投入した組織・社員・勤怠と給与・制度・わかったこと（このページの元）</span></a>
+      <a href="fig_clock_flow.html"><b>毎日の打刻から、所属長の残業時間管理まで</b><code>fig_clock_flow.html</code><span>前提のポンチ絵。従業員の打刻 → freee の集計 → 給与担当の勤怠モニター／所属長の残業時間管理（作る）。note 用の縦長は <code>fig_clock_flow_tall.html</code> / <code>.png</code></span></a>
       <a href="fig_4views_direction.html"><b>4視点の向き</b><code>fig_4views_direction.html</code><span>目標／人間／システム／データの図</span></a>
       <a href="REQUEST.md"><b>REQUEST.md</b><code>4視点で書いた要求</code><span>見本（要件定義書）の材料</span></a>
       <a href="TESTDATA_LOG.md"><b>TESTDATA_LOG.md</b><code>50KB</code><span>テストデータ投入の記録</span></a>
@@ -668,7 +697,7 @@ footer code { font-family: var(--mono); font-size: .72rem; }
   <section>
     <div class="head"><span>NEXT</span><h2>残っていること</h2></div>
     <ul class="todo">
-      <li><b>speckit_freee を GitHub リポジトリにする</b><code>.gitignore</code> を先に置き、認証情報を1コミット目から入れない。記事1本＝1プルリクエスト。</li>
+      <li><b>この要求仕様で Spec Kit が動くものを作れるか</b>`REQUEST_saburoku_draft.md` を REQUEST.md に取り込み、specify → plan → tasks → implement。出てきたものは <code>TESTCASES.md</code> と <code>data/saburoku_2026-09.json</code> で検証する。先に T25（取得失敗）・80%線・予定日の計算を決める。</li>
       <li><b>連載2本目「Spec Kitに実際に渡す回」</b>REQUEST.md とワークベンチの Spec Kit 入力を使う。ここから Zenn も始める。</li>
       <li><b>比嘉の社会保険を手で入れる</b>freeeは時給×所定時間を計算しない。<code>entried: true</code>／標準報酬 110,000 をAPIで入れる。「freeeがやらないことを外で埋める」実例。</li>
       <li><b>承認経路が未設定</b>メンバー → 部長／マネージャー → 本部長。これが無いと勤怠修正も残業申請も通らない。</li>
@@ -1071,6 +1100,130 @@ footer code { font-family: var(--mono); font-size: .72rem; }
   <p>出典 — エンドポイントは freee API の利用可能な口の一覧。<b class="badge ok">実機</b>の2点は事業所 <code>12755401</code> / 従業員 <code>4174944</code> / <code>2026-08-14</code> で実際に取得した結果。働き方設定は固定時間制・所定9:00–18:00・休憩1時間・法定休日=日曜・割増は法定どおり。書き込みはしていません。</p>
 </footer>
 
+</div>
+
+<!-- ── 打刻の流れ（前提の図） ── -->
+<div class="panel" id="p-flow" role="tabpanel" hidden>
+  <section>
+    <div class="head"><span>FLOW</span><h2>毎日の打刻から、所属長の残業時間管理まで</h2></div>
+    <p class="note">従業員が毎日 freee に打刻する。freee はそれを日次・月次に集計して給与にする。ここまでは freee のまま使う。無いのは「所属長が、月の途中で、部下の残業の残りを見る」ところ。そこだけ外で作る。<b>今回の範囲：</b>残業時間の上限チェックは 月間・複数月（2〜6ヶ月の平均）・年間 の3種類あるが、今回は<b>月間だけ</b>に絞る。単体の図は <a href="fig_clock_flow.html">fig_clock_flow.html</a>。</p>
+    <div class="figwrap">
+    <svg viewBox="0 0 1280 650" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="打刻から所属長モニターまでの流れ">
+    <defs>
+      <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#56665f"/></marker>
+    </defs>
+
+    <!-- 帯：領域のラベル -->
+    <text x="40" y="40" class="h">① 従業員（毎日）</text>
+    <text x="400" y="40" class="h">② freee人事労務 — そのまま使う</text>
+    <text x="960" y="40" class="h">③ 見る人</text>
+
+    <!-- 境界線 -->
+    <line x1="925" y1="60" x2="925" y2="585" stroke="#c2653f" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="935" y="578" class="m" fill="#c2653f">ここから右の下段が「作る」</text>
+
+    <!-- ①従業員：スマホの打刻画面 -->
+    <rect x="60" y="70" width="230" height="400" rx="26" class="box"/>
+    <rect x="80" y="90" width="190" height="360" rx="14" fill="#f6f4ee" stroke="#e3dcce"/>
+    <text x="175" y="118" class="s" text-anchor="middle">freee人事労務（アプリ / Web）</text>
+    <text x="175" y="140" class="m" text-anchor="middle">ログイン済み ・ 9/14 (月) 08:58</text>
+    <rect x="98" y="160" width="154" height="46" rx="8" class="btn"/><text x="175" y="189" class="btnt">出勤</text>
+    <rect x="98" y="218" width="154" height="46" rx="8" class="btn2"/><text x="175" y="247" class="btnt2">退勤</text>
+    <rect x="98" y="276" width="74" height="40" rx="8" class="btn2"/><text x="135" y="301" class="btnt2">休憩開始</text>
+    <rect x="178" y="276" width="74" height="40" rx="8" class="btn2"/><text x="215" y="301" class="btnt2">休憩終了</text>
+    <text x="98" y="348" class="s">きょうの打刻</text>
+    <text x="98" y="368" class="m">出勤 —:—　退勤 —:—</text>
+    <text x="98" y="404" class="s">打刻を忘れたら</text>
+    <text x="98" y="424" class="m">→ 勤務時間の修正申請</text>
+    <text x="60" y="500" class="s">打刻の入口は他にも：</text>
+    <text x="60" y="520" class="m">Slack / LINE 連携打刻</text>
+    <text x="60" y="538" class="m">カレンダー入力（手で時間を書く）</text>
+    <text x="60" y="556" class="m">管理者の直接編集</text>
+    <text x="60" y="574" class="m">API  POST /time_clocks</text>
+
+    <!-- 矢印 ①→② -->
+    <path d="M292,190 L392,190" class="arrow"/>
+    <text x="300" y="180" class="m">打刻</text>
+
+    <!-- ② freee の流れ -->
+    <rect x="395" y="150" width="150" height="80" rx="10" class="api"/>
+    <text x="470" y="180" class="t" text-anchor="middle" font-weight="700">打刻</text>
+    <text x="470" y="200" class="m" text-anchor="middle">time_clocks</text>
+
+    <path d="M547,190 L597,190" class="arrow"/>
+
+    <rect x="600" y="140" width="170" height="100" rx="10" class="api"/>
+    <text x="685" y="168" class="t" text-anchor="middle" font-weight="700">日次勤怠</text>
+    <text x="685" y="188" class="s" text-anchor="middle">所定8h ／ 時間外 ／ 深夜</text>
+    <text x="685" y="206" class="s" text-anchor="middle">freee が自動計算</text>
+    <text x="685" y="226" class="m" text-anchor="middle">work_records/{date}</text>
+
+    <path d="M772,190 L822,190" class="arrow"/>
+
+    <rect x="825" y="150" width="90" height="80" rx="10" class="api"/>
+    <text x="870" y="182" class="t" text-anchor="middle" font-weight="700">月次</text>
+    <text x="870" y="200" class="s" text-anchor="middle">集計</text>
+    <text x="870" y="220" class="m" text-anchor="middle">summaries</text>
+
+    <!-- 申請・承認 -->
+    <rect x="395" y="290" width="150" height="70" rx="10" class="api"/>
+    <text x="470" y="316" class="t" text-anchor="middle" font-weight="700">申請 → 承認</text>
+    <text x="470" y="336" class="s" text-anchor="middle">修正・残業・休暇</text>
+    <text x="470" y="353" class="m" text-anchor="middle">approval_requests</text>
+    <path d="M470,288 L470,234" class="arrow thin"/>
+    <text x="480" y="268" class="m">打刻忘れ・修正</text>
+
+    <!-- 締めて給与 -->
+    <rect x="600" y="480" width="170" height="70" rx="10" class="api"/>
+    <text x="685" y="508" class="t" text-anchor="middle" font-weight="700">月末に締める</text>
+    <text x="685" y="528" class="s" text-anchor="middle">→ 翌月25日に給与</text>
+    <text x="685" y="544" class="m" text-anchor="middle">payroll_statements</text>
+    <path d="M870,232 L870,515 L772,515" class="arrow"/>
+
+    <!-- ③ 見る人：上段（freeeにある） -->
+    <rect x="960" y="120" width="290" height="150" rx="12" class="box"/>
+    <text x="980" y="150" class="t" font-weight="700">給与担当 ・ 勤怠モニター</text>
+    <text x="980" y="172" class="s">freee にある。支払月で並ぶ。</text>
+    <text x="980" y="192" class="s">締めのあとに残業時間が確定して見える。</text>
+    <text x="980" y="212" class="s">36協定は「超えたらアイコン」だけ。</text>
+    <text x="980" y="232" class="s">通知は無い。</text>
+    <text x="980" y="256" class="m">事後 ・ 正確さが要る</text>
+    <path d="M917,190 L957,190" class="arrow"/>
+
+    <!-- ③ 見る人：下段（作る） -->
+    <rect x="960" y="330" width="290" height="230" rx="12" class="make"/>
+    <text x="980" y="360" class="t" font-weight="700">所属長 ・ 毎朝1分の残業時間管理</text>
+    <text x="980" y="382" class="s">freee に無い。ここを作る。</text>
+    <text x="980" y="404" class="s">自分の部下だけ ／ 勤務月で見る</text>
+    <text x="980" y="424" class="s">残り時間 = 45h − 今月の実績</text>
+    <text x="980" y="444" class="s">いまのペースで、いつ超えるか</text>
+    <text x="980" y="464" class="s">超える前に届く（80% で本人・所属長へ）</text>
+    <text x="980" y="484" class="s">36協定の限度時間は、こちらで持つ</text>
+    <text x="980" y="514" class="m">事前 ・ 早さが要る</text>
+    <text x="980" y="540" class="m">読むだけ：work_records / memberships</text>
+    <path d="M700,242 C700,340 800,430 957,430" class="arrow" stroke="#c2653f"/>
+    <text x="790" y="455" class="m" fill="#c2653f">日次を毎朝読む</text>
+
+    <!-- 所属長の行動 -->
+    <path d="M1105,562 L1105,612 L40,612 L40,300 L56,300" class="arrow thin" stroke="#c2653f"/>
+    <text x="330" y="632" class="s" fill="#c2653f">所属長が仕事を減らす・振り分ける → 翌日からの打刻が減る（予防）</text>
+  </svg>
+    </div>
+    <ul class="legend">
+    <li><i style="background:#ddefec;border-color:#1f7a72"></i>freee にある。そのまま使う（APIで読める）</li>
+    <li><i style="background:#fbe9dd;border-color:#c2653f"></i>freee に無い。外で作る</li>
+    <li><i style="background:#fff;border-color:#c9c0ae"></i>人と画面</li>
+  </ul>
+    <p class="flownote"><b>前提の注意：</b>打刻が無い日も、freee は所定どおり 480分 を立てる（みなし）。所属長の残業時間管理は「打刻に基づく数字」と「みなしの数字」を見分けて出す必要がある。だから前提①「従業員が毎日打刻する」が崩れると、管理の数字も崩れる。</p>
+  </section>
+
+  <section>
+    <div class="head"><span>TALL</span><h2>縦長版（note に貼る画像）</h2></div>
+    <p class="note">同じ内容を上から下へ並べたもの。ファイルは <code>fig_clock_flow_tall.png</code>（1080×1800）。元のSVGは <a href="fig_clock_flow_tall.html">fig_clock_flow_tall.html</a>。</p>
+    <div style="max-width:720px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fffdf8">
+      <img src="fig_clock_flow_tall.png?v=3" alt="毎日の打刻から、所属長の残業時間管理まで（縦長）" style="display:block;width:100%;height:auto">
+    </div>
+  </section>
 </div>
 
 <!-- ── わかったこと ── -->
