@@ -7,7 +7,7 @@
 
 | エンティティ | 主キー | 属性 | 出どころ |
 |---|---|---|---|
-| 従業員 | `employee_id` | `num`（社員番号）・`name`・`position`（役職。空＝一般）・`etype`（regular / fixed-term / part-time）・`dept`（主務の部署コード）・`dept_name`・`hq`（本部）・`head_num`（その部署の部長の社員番号）・`sub[]`（兼務先）・`is_head`・`data_state`（取得／未登録） | `employees` + `employee_group_memberships` |
+| 従業員 | `employee_id` | `num`（社員番号）・`name`・`position`（役職。空＝一般）・`etype`（regular / fixed-term / part-time）・`dept`（主務の部署コード）・`dept_name`・`hq`（本部）・`head_num`（その部署の部長の社員番号。無ければ null）・`sub[]`（兼務先）・`is_head`・`data_state`（取得／未登録）・**`entry_date`・`retire_date`（任意。月内の入社・退職。2周目）** | `employees` + `employee_group_memberships`（**対象者＝対象月に1日でも在籍した人。所属は在籍最終日を基準日に読む**） |
 | 部署 | `code` | `name`・`group_id`・`hq`・`head_num`（部長が居なければ null） | `groups` + 役職 |
 | 勤務カレンダー | `date` | `normal_day` / `prescribed_holiday` / `legal_holiday` | `work_records[].day_pattern` |
 | 日次勤怠 | `employee_id` × `date` | `clock_in`・`clock_out`（無ければ null）・`break_mins`・`overtime_mins`・`latenight_mins`・`is_absence`・`day_pattern`（休日出勤のとき）・`time_clock_only`（出勤打刻だけの日） | `work_record_summaries?work_records=true` + `time_clocks` |
@@ -42,6 +42,8 @@
 | `forecast` | `ot + pace × future.length` | FR-005 |
 | `status` | `none`（打刻も休日出勤も無い）／`warn`（ot ≥ warning）／`caution`（ot ≥ caution）／`safe` | FR-006 |
 | `paceIsRough` | `punched.length < 3` | Edge（T24） |
+| `enrollFrom` / `enrollTo` | 在籍期間。`entry_date`（無ければ月初）〜 `retire_date`（無ければ月末）。`past`・`future` はこの範囲で切る | FR-017（2周目） |
+| `retired` / `notYetJoined` | `retire_date < today` ／ `entry_date > today`。退職済みなら `hitDate`=null・`forecast` は出さない | FR-017（2周目） |
 
 ### 部署の一覧 `DeptView`
 `members` を `status` の重い順（warn → caution → safe → none）、同じなら `remain` 昇順。部長は `self: true`。（FR-001）

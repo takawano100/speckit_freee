@@ -18,7 +18,7 @@
   "calendar": { "2026-09-01": "normal_day", "2026-09-05": "prescribed_holiday", "2026-09-06": "legal_holiday" },
   "departments": [                              // 所属長ビュー用（部署ごとに部長＋部下）
     { "group": { "id": 918839, "code": "D103", "name": "人事部" },
-      "manager": { "employee_id": 4211185, "num": "E001", "name": "相川 悠介", "position": "部長", "note": "..." },
+      "manager": { "employee_id": 4211185, "num": "E001", "name": "相川 悠介", "position": "部長", "note": "..." },   // 部長がいない部署は null（2周目・T15）
       "members": [ ] }
   ],
   "company": {                                  // 全社ビュー用
@@ -36,6 +36,8 @@
 {
   "employee_id": 4211254, "num": "E009", "name": "堀内 舞", "position": "主任",
   "self": false,                                // 所属長ビュー：部長自身なら true
+  "entry_date": "2026-09-08",                   // 任意（2周目）。月内の入社日。無ければ月初から在籍
+  "retire_date": "2026-09-10",                  // 任意（2周目）。月内の退職日。無ければ月末まで在籍
   "summary": { "work_days": 9, "overtime_mins": 1380, "latenight_mins": 0 },   // freee の月次（参考。判定には使わない）
   "records": [ ]
 }
@@ -58,3 +60,4 @@
 - `records` に無い営業日＝打刻なし（みなし）。JSON に「打刻なし」の行は作らない
 - `calendar` は対象月の全日を持つ（月初の前営業日判定に前月が要る件は R-2・漏れ台帳 #2 候補）
 - 壊れた JSON・読めない JSON は、画面が「全員 取得できず」を出す（FR-012）。T25 用に `_t25_broken.json` を置いている
+- 対象者は「対象月に1日でも在籍した人」。作る側は所属を在籍最終日の `base_date` で読む（漏れ台帳 #3）。`records` は在籍期間内の日だけ

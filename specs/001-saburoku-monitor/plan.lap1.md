@@ -1,6 +1,6 @@
 # Implementation Plan: 所属長の残業時間管理（月間）
 
-**Branch**: `001-saburoku-monitor`（作業ブランチは `article/03-saburoku-monitor`） | **Date**: 2026-09-16（1周目）・2026-09-17（2周目） | **Spec**: [spec.md](spec.md)
+**Branch**: `001-saburoku-monitor`（作業ブランチは `article/03-saburoku-monitor`） | **Date**: 2026-09-16 | **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `/specs/001-saburoku-monitor/spec.md`
 
@@ -88,37 +88,3 @@ index.html               # 変更しない（iframe の src のキャッシュ�
 ## Complexity Tracking
 
 憲法の違反なし。記入不要。
-
-
----
-
-## 2周目（2026-09-17）— 差分だけ
-
-対象：FR-017（月途中の入社・退職）、FR-011 追記（所属長なしの部署を所属長ビューにも出す）。技術・構成・研究は1周目のまま。
-
-### Technical Context の差分
-変更なし。`setup-plan.ps1` は plan.md が既にあると上書きしない（1周目の内容が残る）。
-
-### Constitution Check（再評価）
-
-| 原則 | 判定 | 根拠 |
-|---|---|---|
-| I. freee が正本 | **PASS** | 入社日・退職日は freee の従業員情報から読む。JSON に写すだけ |
-| II. 漏れは要求へ戻す | **PASS** | plan の途中で **漏れ #3（対象者＝対象月に在籍した人。所属は在籍最終日を基準日に読む）** → 台帳 → REQUEST 本文（システム視点）→ TESTCASES T18 → spec FR-017 の順で戻した |
-| III. テストで検証 | **PASS** | T15・T18 のデータは実装の前に用意済み。tasks に T番号 |
-| IV. 作り込まない | **PASS** | 純関数に引数2つ（entry_date／retire_date）と画面の印だけ。範囲は広げない |
-| V. 記録 | **PASS** | TESTDATA_LOG の表に段ごとに追記 |
-
-### 設計の差分
-
-- `saburoku_calc.js`
-  - `personMonth(member, calendar, today, threshold)`：`member.entry_date`／`member.retire_date` があれば、`past`・`future` を在籍期間（入社日以降・退職日以前）で切る。`retired`（退職日 < today）と `notYetJoined`（入社日 > today）を返す。退職済みなら `hitDate`・`forecast` は出さない
-  - `freshness`：変更なし（打刻の最終日は在籍期間に関係なく全員から取る）
-- `saburoku.html`
-  - 所属長ビュー：`departments[].manager` が null なら見出しを「○○部 ・ 所属長なし」、ボタンにも「所属長なし」
-  - カード：`retired` なら「退職 9/10」の印、予定日・月末見込みは「—」。`entry_date` が月内なら「入社 9/8」の印
-  - 日別の表：在籍期間外の日は「—」（打刻なしの「未」にしない）
-- `check_saburoku.js`：K018 の件数（34→35人、safe 6→8、部長のいない部署 0→1、is_head 15→14）と、T15・T18 の assert を足す
-
-### plan で見つかったこと → 要求へ戻したもの
-- **#3**：対象者が「誰か」を書いていなかった。所属は `base_date` 時点の所属なので、今日基準で読むと退職者が消える。**「所属」も時間が流れると変わる**（#1 閾値・#2 カレンダーと同じ根）。
