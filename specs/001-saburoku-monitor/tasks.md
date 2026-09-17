@@ -148,6 +148,34 @@ index.html            iframe のキャッシュ番号だけ
 
 ---
 
+## Phase 8: 2周目（2026-09-17）— 保留3つを要求で決めて反映
+
+**Purpose**: T18（月途中の入社・退職＝FR-017）と T15（所属長のいない部署＝FR-011 追記）。T27 は決定 #11 で済（タスクなし）。
+1周目の K001〜K029 は済。`setup-tasks.ps1` は tasks.md が既にあると上書きしない。
+
+**Independent Test**: `node check_saburoku.js` で 新井 ot=480・punched=4・missing=0／富永 ot=480・missing=0・retired=true・hitDate=null／全社 35人・safe 8・none 26・所属長なし 1 部署。画面 `#dep=4`（新井「入社 9/8」）、`#dep=5`（富永「退職 9/10」）、`#dep=6`（見出し「カスタマーサポート部 ・ 所属長なし」）。
+
+### 検証（先に書く）
+
+- [ ] K030 [US2] `check_saburoku.js`：T18 の assert。新井（総務部）ot=480・punched.length=4・missing.length=0・pace=120・hitDate=null・notYetJoined=false／富永（法務部）ot=480・punched.length=8・missing.length=0・retired=true・hitDate=null・forecast=null 〔T18〕
+- [ ] K031 [P] [US3] `check_saburoku.js`：K018 の件数を更新（35人・safe 8・none 26・`head_num` の無い部署 1・is_head 14）。T15 の assert：`departments` にカスタマーサポート部があり `manager` が null 〔T15・T17〕
+
+### 実装
+
+- [ ] K032 [US2] `saburoku_calc.js`：`personMonth` に在籍期間を入れる。`enrollFrom`＝`entry_date`（無ければ月初）、`enrollTo`＝`retire_date`（無ければ月末）。`past`・`future` をこの範囲で切る。`retired`（retire_date < today）なら `hitDate`=null・`forecast`=null。`notYetJoined`（entry_date > today）。返り値に `enrollFrom`・`enrollTo`・`retired`・`notYetJoined` 〔T18〕
+- [ ] K033 [US2] `saburoku.html`：カードに「入社 9/8」「退職 9/10」の印（`.who small` に）。退職済みは予定日・月末見込みを「—」。日別の表で在籍期間外の日は `—`（「未」にしない）〔T18〕
+- [ ] K034 [US3] `saburoku.html`：`departments[].manager` が null のとき、部署ボタンを「○○部 ・ 所属長なし」、見出しを「○○部 ・ 所属長なし の残業時間管理」。カードは普通に出す（`self` は無い）〔T15〕
+- [ ] K035 [US3] `saburoku.html`：全社ビューの所属長列は変更なし（既に「所属長なし」を出す）。件数の表示が 35 人になることを目視 〔T15・T17〕
+
+### 検証の記録
+
+- [ ] K036 `index.html`：iframe の `./saburoku.html?v=N` を上げる 〔T17〕
+- [ ] K037 ヘッドレス Chrome で `#dep=4`・`#dep=5`・`#dep=6`・`#all` を撮り `specs/001-saburoku-monitor/shots/lap2_*.png` に保存 〔T15・T18〕
+- [ ] K038 `TESTCASES.md`：T15・T18 を「済（2周目）」、T25 を「済」に直す。確認ログに 9/17 の行 〔T15・T18・T25〕
+- [ ] K039 `TESTDATA_LOG.md`：2026-09-14 の表に 2周目の段ごとの行（clarify 2問・plan 漏れ #3・tasks 10・implement の推移・/cost・時刻）〔T17〕
+
+---
+
 ## Dependencies & Execution Order
 
 - Phase 1 → Phase 2 → US1 → US2 → US3 → US4 → Polish。**US2 は US1 の `personMonth` を拡張する**ので、US1 のあと
