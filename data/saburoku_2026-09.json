@@ -938,6 +938,43 @@
      "note_t18": "T18 用。退職 9/10（架空。freee の retire_date は未設定）。9/11 以降は打刻なしに数えない"
     }
    ]
+  },
+  {
+   "group": {
+    "id": 918852,
+    "code": "D305",
+    "name": "カスタマーサポート部"
+   },
+   "manager": null,
+   "note_t15": "T15 用。部長がいない部署。manager は null",
+   "members": [
+    {
+     "employee_id": 4211290,
+     "num": "E035",
+     "name": "森 千晶",
+     "position": "課長",
+     "self": false,
+     "summary": {
+      "work_days": 0,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     "records": []
+    },
+    {
+     "employee_id": 4211291,
+     "num": "E036",
+     "name": "比嘉 美穂",
+     "position": "",
+     "self": false,
+     "summary": {
+      "work_days": 0,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     "records": []
+    }
+   ]
   }
  ],
  "company": {
