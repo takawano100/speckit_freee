@@ -48,7 +48,7 @@
     return { warning_mins: cur.warning_mins, caution_mins: cur.caution_mins, effective_from: cur.effective_from, source: cur.source || '', next };
   };
 
-  /* ── 1人ぶんの月次断面（K010・K015）── data-model.md の PersonMonth
+  /* ── 1人ぶんの月次断面（K010・K015・K032）── data-model.md の PersonMonth
    *   punched   : 営業日（today より前）で打刻のある日           FR-003
    *   absent    : 欠勤の日（is_absence）                        FR-009
    *   halfClock : 出勤打刻だけの日（time_clock_only）           FR-008
@@ -63,8 +63,15 @@
     const rec = Object.fromEntries((member.records || []).map(r => [r.date, r]));
     const has = d => !!(rec[d] && rec[d].clock_in);
     const bd = Saburoku.businessDays(calendar);
-    const past = bd.filter(d => d < today);
-    const future = bd.filter(d => d >= today);
+    /* 在籍期間（FR-017・2周目）：入社日以降・退職日以前の所定日だけを数える。入社前・退職後は打刻なしにも数えない */
+    const allDays = Object.keys(calendar).sort();
+    const enrollFrom = member.entry_date || (allDays[0] || null);
+    const enrollTo = member.retire_date || (allDays[allDays.length - 1] || null);
+    const inEnroll = d => (!enrollFrom || d >= enrollFrom) && (!enrollTo || d <= enrollTo);
+    const retired = !!(member.retire_date && member.retire_date < today);
+    const notYetJoined = !!(member.entry_date && member.entry_date > today);
+    const past = bd.filter(d => d < today && inEnroll(d));
+    const future = bd.filter(d => d >= today && inEnroll(d));
 
     const punched = past.filter(has);
     const absent = past.filter(d => rec[d] && rec[d].is_absence);
@@ -79,11 +86,11 @@
     const remain = threshold.warning_mins - ot;
 
     let hitDate = null;
-    if (pace > 0 && ot < threshold.warning_mins) {
+    if (!retired && pace > 0 && ot < threshold.warning_mins) {
       let acc = ot;
       for (const d of future) { acc += pace; if (acc >= threshold.warning_mins) { hitDate = d; break; } }
     }
-    const forecast = ot + pace * future.length;
+    const forecast = retired ? null : ot + pace * future.length;   // 退職済みなら見込みは出さない（FR-017）
 
     const status = (punched.length === 0 && holidayWork.length === 0) ? 'none'
       : ot >= threshold.warning_mins ? 'warn'
@@ -95,6 +102,7 @@
       punched, absent, halfClock, missing, holidayWork,
       ot, otWeekday, otHoliday, pace, remain, hitDate, forecast, status,
       paceIsRough: punched.length > 0 && punched.length < 3,
+      enrollFrom, enrollTo, retired, notYetJoined,
       rank: RANK[status]
     };
   };

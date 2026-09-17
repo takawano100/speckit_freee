@@ -134,15 +134,36 @@ tryRun('K018', () => {
   const th = S.pickThreshold(D.threshold_history, D.thresholds, monthFirst);
   const rows = S.sortMembers(D.company.members.map(m => S.personMonth(m, D.calendar, today, th)));
   const c = k => rows.filter(r => r.status === k).length;
-  eq('T17', '全社 34人', rows.length, 34);
+  eq('T17', '全社 35人（2周目：新井を足した）', rows.length, 35);
   eq('T17', '警告 1', c('warn'), 1);
   eq('T17', '注意 0（注意線 36h）', c('caution'), 0);
-  eq('T17', '安全 6', c('safe'), 6);
-  eq('T17', '打刻なし 27', c('none'), 27);
+  eq('T17', '安全 8（2周目：新井・富永）', c('safe'), 8);
+  eq('T17', '打刻なし 26', c('none'), 26);
   eq('T17', '先頭は白石', rows[0].m.name, '白石 千夏');
   eq('T17', '役員 2 人は対象外', D.company.excluded.length, 2);
-  eq('T15', '部長のいない部署 0', D.company.departments.filter(d => !d.head_num).length, 0);
-  ok('T13', '部長は is_head', D.company.members.filter(m => m.is_head).length === 15);
+  eq('T15', '部長のいない部署 1（カスタマーサポート部）', D.company.departments.filter(d => !d.head_num).map(d => d.name), ['カスタマーサポート部']);
+  ok('T13', '部長は is_head（14。カスタマーサポート部は空）', D.company.members.filter(m => m.is_head).length === 14);
+  const cs = D.departments.find(d => d.group.name === 'カスタマーサポート部');
+  ok('T15', '所属長ビューにカスタマーサポート部があり manager は null', cs && cs.manager === null);
+});
+
+/* ── K030: 2周目 T18 在籍期間 〔T18〕 ── */
+tryRun('K030', () => {
+  const arai = pm('総務部', '新井 光');
+  eq('T18', '新井（9/8 入社）時間外 8:00', arai.ot, 480);
+  eq('T18', '新井 打刻した日 4', arai.punched.length, 4);
+  eq('T18', '新井 打刻なし 0（入社前は数えない）', arai.missing.length, 0);
+  eq('T18', '新井 1日あたり 2:00', arai.pace, 120);
+  eq('T18', '新井 予定日なし（月内は超えない）', arai.hitDate, null);
+  eq('T18', '新井 在籍 9/8〜月末', [arai.enrollFrom, arai.enrollTo], ['2026-09-08', '2026-09-30']);
+  eq('T18', '新井 まだ入社していない=false', arai.notYetJoined, false);
+  const tominaga = pm('法務部', '富永 悠');
+  eq('T18', '富永（9/10 退職）時間外 8:00', tominaga.ot, 480);
+  eq('T18', '富永 打刻した日 8', tominaga.punched.length, 8);
+  eq('T18', '富永 打刻なし 0（9/11 は退職後）', tominaga.missing.length, 0);
+  eq('T18', '富永 退職済み', tominaga.retired, true);
+  eq('T18', '富永 予定日なし', tominaga.hitDate, null);
+  eq('T18', '富永 月末見込みなし', tominaga.forecast, null);
 });
 
 /* ── K021: US4 鮮度 〔T25・T31〕 ── */

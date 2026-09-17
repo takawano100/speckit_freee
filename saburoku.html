@@ -175,15 +175,15 @@
       : r.punched.length ? '月内は超えない見込み' : '—';
     return `<div class="card ${r.status}">
       <div class="who"><b>${esc(r.m.name)}</b><small>${esc(r.m.num)}${r.m.position ? ' ・ ' + esc(r.m.position) : ''}${r.m.self ? ' ・ 自分' : ''}</small></div>
-      <span class="st ${r.status}">${label[r.status]}</span>
+      <span class="st ${r.status}">${label[r.status]}</span>${r.m.entry_date ? ` <span class="tag head">入社 ${S.md(r.m.entry_date)}</span>` : ''}${r.m.retire_date ? ` <span class="tag sub">退職 ${S.md(r.m.retire_date)}</span>` : ''}
       <div class="big"><b>${S.hm(r.ot)}</b><span>今月の時間外</span></div>
       <div class="bar"><i style="width:${pct}%"></i><em style="left:${th.caution_mins / th.warning_mins * 100}%"></em></div>
       <div class="kv">
         <span>残り（${S.hm(th.warning_mins)} まで）</span><b class="${r.remain <= 0 ? 'hot' : ''}">${r.punched.length || r.holidayWork.length ? (r.remain > 0 ? S.hm(r.remain) : '超過 ' + S.hm(-r.remain)) : '—'}</b>
         <span>1日あたり</span><b>${r.punched.length ? S.hm(r.pace) : '—'}</b>
-        <span>超える予定日</span><b class="${r.hitDate || r.ot >= th.warning_mins ? 'hot' : ''}">${hit}</b>
-        <span>月末の見込み</span><b>${r.punched.length ? S.hm(r.forecast) : '—'}</b>
-        <span>打刻なし</span><b class="${r.missing.length ? 'hot' : ''}">${r.missing.length} 日 / ${past.length} 日${r.halfClock.length ? '（退勤なし ' + r.halfClock.length + '）' : ''}</b>
+        <span>超える予定日</span><b class="${r.hitDate || r.ot >= th.warning_mins ? 'hot' : ''}">${r.retired ? '—（退職）' : hit}</b>
+        <span>月末の見込み</span><b>${r.retired || !r.punched.length ? '—' : S.hm(r.forecast)}</b>
+        <span>打刻なし</span><b class="${r.missing.length ? 'hot' : ''}">${r.missing.length} 日 / ${r.past.length} 日${r.halfClock.length ? '（退勤なし ' + r.halfClock.length + '）' : ''}</b>
         ${r.absent.length ? `<span>欠勤</span><b>${r.absent.length} 日</b>` : ''}
         ${r.holidayWork.length ? `<span>休日出勤</span><b class="hot">${r.holidayWork.length} 日（${S.hm(r.otHoliday)} を合計に含む）</b>` : ''}
       </div>
@@ -197,6 +197,7 @@
     const th_ = '<tr><th>氏名</th>' + cols.map(d => `<th style="text-align:center${cal[d] !== 'normal_day' ? ';color:var(--warn)' : ''}">${S.md(d)}<br><small>${S.weekday(d)}${cal[d] !== 'normal_day' ? '・休' : ''}</small></th>`).join('') + '<th style="text-align:right">合計</th></tr>';
     const tr = rows.map(r => '<tr><td><b>' + esc(r.m.name) + '</b></td>' + cols.map(d => {
       const x = r.rec[d];
+      if ((r.enrollFrom && d < r.enrollFrom) || (r.enrollTo && d > r.enrollTo)) return '<td class="d x" title="在籍期間外">—</td>';
       if (cal[d] !== 'normal_day') return x && x.clock_in ? `<td class="d hot" title="${x.clock_in}〜${x.clock_out} 休日出勤">${S.hm(x.overtime_mins)}</td>` : '<td class="d x">—</td>';
       if (x && x.is_absence) return '<td class="d x" title="欠勤">欠</td>';
       if (x && x.time_clock_only && !x.clock_in) return '<td class="d miss" title="出勤打刻のみ。退勤打刻が無い">退勤なし</td>';
@@ -211,14 +212,14 @@
   const calcDept = dep => S.sortMembers(dep.members.map(m => S.personMonth(m, cal, today, th)));
   const renderDept = dep => {
     const rows = calcDept(dep);
-    $('title').textContent = `${dep.group.name} ・ 所属長 ${dep.manager.name}（${dep.manager.position}）の残業時間管理`;
+    $('title').textContent = dep.manager ? `${dep.group.name} ・ 所属長 ${dep.manager.name}（${dep.manager.position}）の残業時間管理` : `${dep.group.name} ・ 所属長なし の残業時間管理`;
     $('cards').innerHTML = rows.map(card).join('');
     $('days').innerHTML = dayTable(rows);
   };
   const deps = $('deps');
   deps.innerHTML = D.departments.map((dep, i) => {
     const n = calcDept(dep).filter(r => r.status === 'warn' || r.status === 'caution').length;
-    return `<button type="button" class="dep" role="tab" aria-selected="${i === 0}" data-i="${i}">${esc(dep.group.name)} ・ ${esc(dep.manager.name)}<span class="cnt">${dep.members.length}人${n ? ' ・ 要対応 ' + n : ''}</span></button>`;
+    return `<button type="button" class="dep" role="tab" aria-selected="${i === 0}" data-i="${i}">${esc(dep.group.name)} ・ ${dep.manager ? esc(dep.manager.name) : '<u>所属長なし</u>'}<span class="cnt">${dep.members.length}人${n ? ' ・ 要対応 ' + n : ''}</span></button>`;
   }).join('');
   const selectDep = i => {
     deps.querySelectorAll('.dep').forEach(o => o.setAttribute('aria-selected', String(+o.dataset.i === i)));
@@ -266,7 +267,7 @@
         <td class="n">${r.punched.length || r.holidayWork.length ? S.hm(r.ot) : '—'}</td>
         <td class="n">${r.punched.length || r.holidayWork.length ? (r.remain > 0 ? S.hm(r.remain) : '超過 ' + S.hm(-r.remain)) : '—'}</td>
         <td>${r.ot >= th.warning_mins ? '到達済み' : r.hitDate ? S.md(r.hitDate) + '（' + S.weekday(r.hitDate) + '）' : r.punched.length ? '月内は超えない見込み' : '—'}</td>
-        <td class="n">${r.missing.length} / ${past.length}</td>
+        <td class="n">${r.missing.length} / ${r.past.length}</td>
         <td><span class="tag">${esc(r.m.data_state || '')}</span></td>
       </tr>`).join('');
   };
