@@ -779,12 +779,169 @@
        "latenight_mins": 0
       }
      ]
+    },
+    {
+     "employee_id": 4299001,
+     "num": "E037",
+     "name": "新井 光",
+     "position": "",
+     "self": false,
+     "entry_date": "2026-09-08",
+     "summary": {
+      "work_days": 4,
+      "overtime_mins": 480,
+      "latenight_mins": 0
+     },
+     "records": [
+      {
+       "date": "2026-09-08",
+       "clock_in": "09:00",
+       "clock_out": "20:00",
+       "break_mins": 60,
+       "overtime_mins": 120,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-09",
+       "clock_in": "09:00",
+       "clock_out": "20:00",
+       "break_mins": 60,
+       "overtime_mins": 120,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-10",
+       "clock_in": "09:00",
+       "clock_out": "20:00",
+       "break_mins": 60,
+       "overtime_mins": 120,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-11",
+       "clock_in": "09:00",
+       "clock_out": "20:00",
+       "break_mins": 60,
+       "overtime_mins": 120,
+       "latenight_mins": 0
+      }
+     ],
+     "note_t18": "T18 用。freee には未登録（JSON だけ）。入社 9/8。それ以前は打刻なしに数えない"
+    }
+   ]
+  },
+  {
+   "group": {
+    "id": 918842,
+    "code": "D106",
+    "name": "法務部"
+   },
+   "manager": {
+    "employee_id": 4211263,
+    "num": "E015",
+    "name": "神谷 律子",
+    "position": "部長",
+    "note": ""
+   },
+   "members": [
+    {
+     "employee_id": 4211263,
+     "num": "E015",
+     "name": "神谷 律子",
+     "position": "部長",
+     "self": true,
+     "summary": {
+      "work_days": 0,
+      "overtime_mins": 0,
+      "latenight_mins": 0
+     },
+     "records": []
+    },
+    {
+     "employee_id": 4211264,
+     "num": "E016",
+     "name": "富永 悠",
+     "position": "",
+     "self": false,
+     "retire_date": "2026-09-10",
+     "summary": {
+      "work_days": 8,
+      "overtime_mins": 480,
+      "latenight_mins": 0
+     },
+     "records": [
+      {
+       "date": "2026-09-01",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-02",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-03",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-04",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-07",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-08",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-09",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      },
+      {
+       "date": "2026-09-10",
+       "clock_in": "09:00",
+       "clock_out": "19:00",
+       "break_mins": 60,
+       "overtime_mins": 60,
+       "latenight_mins": 0
+      }
+     ],
+     "note_t18": "T18 用。退職 9/10（架空。freee の retire_date は未設定）。9/11 以降は打刻なしに数えない"
     }
    ]
   }
  ],
  "company": {
-  "note": "日次を読んだ／入れたのは 労務部・総務部を含む 12 人。他は勤怠モニター（9/13）で「全て勤怠未登録」を確認済みのため未登録として扱う。役員2名は勤怠管理なしで対象外",
+  "note": "日次を読んだ／入れたのは 労務部・総務部を含む 12 人。他は勤怠モニター（9/13）で「全て勤怠未登録」を確認済みのため未登録として扱う。役員2名は勤怠管理なしで対象外。9/17 2周目：T18 用に 新井（E037・9/8 入社・freee 未登録）と 富永（退職 9/10・架空）、T15 用にカスタマーサポート部の部長を空にした",
   "excluded": [
    {
     "num": "E002",
@@ -901,7 +1058,8 @@
     "name": "カスタマーサポート部",
     "group_id": 918852,
     "hq": "ビジネス本部",
-    "head_num": "E035"
+    "head_num": null,
+    "note_t15": "T15 用。部長を空にした（架空）。実データでは E035 が部長"
    }
   ],
   "members": [
@@ -1682,13 +1840,79 @@
     "head_num": "E015",
     "sub": [],
     "is_head": false,
-    "data_state": "未登録",
+    "data_state": "取得",
     "summary": {
-     "work_days": 0,
-     "overtime_mins": 0,
+     "work_days": 8,
+     "overtime_mins": 480,
      "latenight_mins": 0
     },
-    "records": []
+    "records": [
+     {
+      "date": "2026-09-01",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-02",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-03",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-04",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-07",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-08",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-09",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-10",
+      "clock_in": "09:00",
+      "clock_out": "19:00",
+      "break_mins": 60,
+      "overtime_mins": 60,
+      "latenight_mins": 0
+     }
+    ],
+    "retire_date": "2026-09-10"
    },
    {
     "employee_id": 4211266,
@@ -2058,21 +2282,22 @@
     "employee_id": 4211290,
     "num": "E035",
     "name": "森 千晶",
-    "position": "部長",
+    "position": "課長",
     "etype": "regular",
     "dept": "D305",
     "dept_name": "カスタマーサポート部",
     "hq": "ビジネス本部",
-    "head_num": "E035",
+    "head_num": null,
     "sub": [],
-    "is_head": true,
+    "is_head": false,
     "data_state": "未登録",
     "summary": {
      "work_days": 0,
      "overtime_mins": 0,
      "latenight_mins": 0
     },
-    "records": []
+    "records": [],
+    "note_t15": "T15 用。部長→課長に変えた"
    },
    {
     "employee_id": 4211291,
@@ -2083,7 +2308,7 @@
     "dept": "D305",
     "dept_name": "カスタマーサポート部",
     "hq": "ビジネス本部",
-    "head_num": "E035",
+    "head_num": null,
     "sub": [],
     "is_head": false,
     "data_state": "未登録",
@@ -2093,6 +2318,60 @@
      "latenight_mins": 0
     },
     "records": []
+   },
+   {
+    "employee_id": 4299001,
+    "num": "E037",
+    "name": "新井 光",
+    "position": "",
+    "etype": "regular",
+    "dept": "D105",
+    "dept_name": "総務部",
+    "hq": "管理本部",
+    "head_num": "E013",
+    "sub": [],
+    "is_head": false,
+    "entry_date": "2026-09-08",
+    "data_state": "取得",
+    "summary": {
+     "work_days": 4,
+     "overtime_mins": 480,
+     "latenight_mins": 0
+    },
+    "records": [
+     {
+      "date": "2026-09-08",
+      "clock_in": "09:00",
+      "clock_out": "20:00",
+      "break_mins": 60,
+      "overtime_mins": 120,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-09",
+      "clock_in": "09:00",
+      "clock_out": "20:00",
+      "break_mins": 60,
+      "overtime_mins": 120,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-10",
+      "clock_in": "09:00",
+      "clock_out": "20:00",
+      "break_mins": 60,
+      "overtime_mins": 120,
+      "latenight_mins": 0
+     },
+     {
+      "date": "2026-09-11",
+      "clock_in": "09:00",
+      "clock_out": "20:00",
+      "break_mins": 60,
+      "overtime_mins": 120,
+      "latenight_mins": 0
+     }
+    ]
    }
   ]
  },
